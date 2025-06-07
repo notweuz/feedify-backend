@@ -3,6 +3,8 @@ package ru.ntwz.makemyfeed.service.implementation;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.ntwz.makemyfeed.dto.mapper.PostMapper;
 import ru.ntwz.makemyfeed.dto.request.PostCreateDTO;
@@ -15,6 +17,8 @@ import ru.ntwz.makemyfeed.model.Post;
 import ru.ntwz.makemyfeed.model.User;
 import ru.ntwz.makemyfeed.repository.PostRepository;
 import ru.ntwz.makemyfeed.service.PostService;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -40,7 +44,14 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new PostNotFoundException("Post with id " + id + " not found"));
 
-        return PostMapper.toPostDTO(post);
+        List<Post> comments = postRepository.findTop10CommentsByParentPostId(id, Pageable.ofSize(4)).getContent();
+
+        PostDTO postDTO = PostMapper.toPostDTO(post);
+        postDTO.setComments(comments.stream()
+                .map(PostMapper::toCommentDTO)
+                .toList());
+
+        return postDTO;
     }
 
     @Override
