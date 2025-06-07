@@ -3,6 +3,7 @@ package ru.ntwz.makemyfeed.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import java.time.Instant;
 
@@ -19,7 +20,11 @@ public class Post {
 
     @Column
     @NotNull
+    @Length(max = 1024)
     private String content;
+
+    @Column
+    private Integer rating = 0;
 
     @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)

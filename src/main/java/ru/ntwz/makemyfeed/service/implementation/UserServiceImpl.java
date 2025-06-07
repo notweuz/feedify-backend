@@ -29,4 +29,10 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User with username '" + username + "' not found"));
     }
+
+    @Override
+    public User findById(Long id) throws UserNotFoundException {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User with ID '" + id + "' not found"));
+    }
 }

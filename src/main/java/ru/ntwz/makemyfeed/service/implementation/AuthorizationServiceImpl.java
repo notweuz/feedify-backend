@@ -9,6 +9,7 @@ import ru.ntwz.makemyfeed.dto.request.SignUpDTO;
 import ru.ntwz.makemyfeed.dto.response.AccessTokenDTO;
 import ru.ntwz.makemyfeed.exception.InvalidPasswordException;
 import ru.ntwz.makemyfeed.exception.NotAuthorizedException;
+import ru.ntwz.makemyfeed.exception.UserNotFoundException;
 import ru.ntwz.makemyfeed.model.User;
 import ru.ntwz.makemyfeed.service.AuthorizationService;
 import ru.ntwz.makemyfeed.service.BCryptService;
@@ -74,12 +75,10 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             throw new NotAuthorizedException("Invalid access token");
         }
 
-        User user = userService.findByUsername(String.valueOf(userId));
-
-        if (user == null) {
-            throw new NotAuthorizedException("User not found for ID: " + userId);
+        try {
+            return userService.findById(userId);
+        } catch (UserNotFoundException ex) {
+            throw new NotAuthorizedException("User not found for access token: " + accessToken);
         }
-
-        return user;
     }
 }
