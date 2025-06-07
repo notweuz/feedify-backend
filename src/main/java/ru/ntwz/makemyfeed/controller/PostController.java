@@ -28,7 +28,7 @@ public class PostController {
         return postService.create(user, postCreateDTO);
     }
 
-    @PostMapping("/{id}/comment")
+    @PostMapping("/{id}/comments")
     public PostDTO createComment(
             @RequestAttribute(AttributesConstants.USER) User user,
             @PathVariable Long id,
