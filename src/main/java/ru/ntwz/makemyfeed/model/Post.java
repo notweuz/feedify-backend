@@ -21,9 +21,6 @@ public class Post {
     @Length(max = 1024)
     private String content;
 
-    @Column
-    private Integer rating = 0;
-
     @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User author;
@@ -37,6 +34,22 @@ public class Post {
 
     @OneToMany(mappedBy = "parentPost", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> comments = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_post_likes",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> likedByUsers = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_post_dislikes",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> dislikedByUsers = new ArrayList<>();
 
     @Column
     private Boolean isDeleted = false;

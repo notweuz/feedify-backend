@@ -12,6 +12,7 @@ import ru.ntwz.makemyfeed.dto.response.CommentDTO;
 import ru.ntwz.makemyfeed.dto.response.PostDTO;
 import ru.ntwz.makemyfeed.model.User;
 import ru.ntwz.makemyfeed.service.PostService;
+import ru.ntwz.makemyfeed.service.VoteService;
 
 import java.util.List;
 
@@ -21,8 +22,12 @@ public class PostController {
 
     private final PostService postService;
 
-    public PostController(@Autowired PostService postService) {
+    private final VoteService voteService;
+
+    @Autowired
+    public PostController(PostService postService, VoteService voteService) {
         this.postService = postService;
+        this.voteService = voteService;
     }
 
     @PostMapping
@@ -72,5 +77,21 @@ public class PostController {
             @PathVariable long id
     ) {
         postService.delete(user, id);
+    }
+
+    @PostMapping("/{postId}/upvote")
+    public void upvote(
+            @RequestAttribute(AttributesConstants.USER) User user,
+            @PathVariable Long postId
+    ) {
+        voteService.upvote(postId, user);
+    }
+
+    @PostMapping("/{postId}/downvote")
+    public void downvote(
+            @RequestAttribute(AttributesConstants.USER) User user,
+            @PathVariable Long postId
+    ) {
+        voteService.downvote(postId, user);
     }
 }

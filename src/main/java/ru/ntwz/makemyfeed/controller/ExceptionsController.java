@@ -67,4 +67,18 @@ public class ExceptionsController {
         map.put("error", ex.getMessage());
         return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(UnknownRatingValueException.class)
+    public ResponseEntity<Map<String, String>> handleUnknownRatingValueException(UnknownRatingValueException ex) {
+        Map<String, String> map = new HashMap<>();
+        map.put("error", ex.getMessage());
+        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AlreadyVotedForPostException.class)
+    public ResponseEntity<Map<String, String>> handleAlreadyVotedForPostException(AlreadyVotedForPostException ex) {
+        Map<String, String> map = new HashMap<>();
+        map.put("error", ex.getMessage());
+        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    }
 }

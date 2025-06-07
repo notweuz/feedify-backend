@@ -14,7 +14,7 @@ public class PostMapper {
         CommentDTO commentDTO = new CommentDTO();
 
         commentDTO.setId(post.getId());
-        commentDTO.setRating(post.getRating());
+        commentDTO.setRating(post.getLikedByUsers().size() - post.getDislikedByUsers().size());
         commentDTO.setContent(post.getContent());
         commentDTO.setAuthor(UserMapper.toDTO(post.getAuthor()));
         commentDTO.setCreatedAt(post.getCreatedAt());
@@ -40,7 +40,7 @@ public class PostMapper {
         PostDTO postDTO = new PostDTO();
 
         postDTO.setId(post.getId());
-        postDTO.setRating(post.getRating());
+        postDTO.setRating(post.getLikedByUsers().size() - post.getDislikedByUsers().size());
         postDTO.setContent(post.getContent());
         postDTO.setAuthor(UserMapper.toDTO(post.getAuthor()));
         postDTO.setCreatedAt(post.getCreatedAt());
@@ -64,7 +64,6 @@ public class PostMapper {
         Post post = new Post();
         post.setContent(postDTO.getContent());
         post.setCreatedAt(Instant.now());
-        post.setRating(0);
 
         return post;
     }
