@@ -1,10 +1,12 @@
 package ru.ntwz.makemyfeed.service.implementation;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.ntwz.makemyfeed.dto.mapper.PostMapper;
 import ru.ntwz.makemyfeed.dto.request.PostCreateDTO;
 import ru.ntwz.makemyfeed.dto.response.PostDTO;
+import ru.ntwz.makemyfeed.exception.PostNotFoundException;
 import ru.ntwz.makemyfeed.model.Post;
 import ru.ntwz.makemyfeed.model.User;
 import ru.ntwz.makemyfeed.repository.PostRepository;
@@ -31,5 +33,14 @@ public class PostServiceImpl implements PostService {
         post.setAuthor(user);
 
         return PostMapper.toPostDTO(postRepository.save(post));
+    }
+
+    @Override
+    @Transactional
+    public PostDTO findById(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new PostNotFoundException("Post with id " + id + " not found"));
+
+        return PostMapper.toPostDTO(post);
     }
 }

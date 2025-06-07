@@ -4,10 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.ntwz.makemyfeed.exception.InvalidPasswordException;
-import ru.ntwz.makemyfeed.exception.NotAuthorizedException;
-import ru.ntwz.makemyfeed.exception.UserNotFoundException;
-import ru.ntwz.makemyfeed.exception.UserWithSameNameAlreadyExistsException;
+import ru.ntwz.makemyfeed.exception.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,5 +38,19 @@ public class ExceptionsController {
         Map<String, String> map = new HashMap<>();
         map.put("error", ex.getMessage());
         return new ResponseEntity<>(map, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(PostNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handlePostNotFoundException(PostNotFoundException ex) {
+        Map<String, String> map = new HashMap<>();
+        map.put("error", ex.getMessage());
+        return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(TokenNotProvidedException.class)
+    public ResponseEntity<Map<String, String>> handleTokenNotProvidedException(TokenNotProvidedException ex) {
+        Map<String, String> map = new HashMap<>();
+        map.put("error", ex.getMessage());
+        return new ResponseEntity<>(map, HttpStatus.UNAUTHORIZED);
     }
 }

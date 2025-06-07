@@ -24,6 +24,11 @@ public class PostController {
         return postService.create(user, postCreateDTO);
     }
 
+    @GetMapping("/{id}")
+    public PostDTO getById(@PathVariable long id) {
+        return postService.findById(id);
+    }
+
 //    @GetMapping
 //    public List<PostDTO> getAllPostsAvailableForUser(@RequestAttribute(AttributesConstants.USER) User user,
 //                                                     @RequestParam(value = "page", defaultValue = "0") int page,

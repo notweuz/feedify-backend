@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import ru.ntwz.makemyfeed.constant.AttributesConstants;
+import ru.ntwz.makemyfeed.exception.TokenNotProvidedException;
 import ru.ntwz.makemyfeed.model.User;
 import ru.ntwz.makemyfeed.service.AuthorizationService;
 
@@ -30,6 +31,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) {
         if (Objects.equals(request.getMethod(), HttpMethod.OPTIONS.name())) return true;
 
+        if (request.getHeader(HttpHeaders.AUTHORIZATION) == null) throw new TokenNotProvidedException("Authorization token not provided");
         String accessToken = request.getHeader(HttpHeaders.AUTHORIZATION).substring(7);
 
         User user = authorizationService.authUser(accessToken);

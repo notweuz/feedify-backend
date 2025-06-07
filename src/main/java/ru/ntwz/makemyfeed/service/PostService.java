@@ -6,4 +6,6 @@ import ru.ntwz.makemyfeed.model.User;
 
 public interface PostService {
     PostDTO create(User user, PostCreateDTO post);
+
+    PostDTO findById(Long id);
 }
