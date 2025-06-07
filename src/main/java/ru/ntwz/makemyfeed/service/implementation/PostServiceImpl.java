@@ -69,7 +69,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public List<CommentDTO> getComments(Long parentPostId, Pageable pageable) {
+    public List<CommentDTO> getComments(Long parentPostId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
         List<Post> comments = postRepository.findTopCommentsByParentPostId(parentPostId, pageable).getContent();
         return comments.stream()
                 .map(PostMapper::toCommentDTO)

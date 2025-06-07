@@ -53,8 +53,7 @@ public class PostController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size
     ) {
-        Pageable pageable = PageRequest.of(page, size);
-        return postService.getComments(id, pageable);
+        return postService.getComments(id, page, size);
     }
 
     @GetMapping("/{id}")

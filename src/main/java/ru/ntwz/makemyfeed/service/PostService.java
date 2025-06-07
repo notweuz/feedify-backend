@@ -16,7 +16,7 @@ public interface PostService {
 
     PostDTO createComment(User user, PostCreateDTO post, Long parentPostId);
 
-    List<CommentDTO> getComments(Long parentPostId, Pageable pageable);
+    List<CommentDTO> getComments(Long parentPostId, int page, int size);
 
     PostDTO update(User user, Long id, PostUpdateDTO postUpdateDTO);
 
