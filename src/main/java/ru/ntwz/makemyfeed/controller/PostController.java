@@ -1,5 +1,6 @@
 package ru.ntwz.makemyfeed.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.ntwz.makemyfeed.constant.AttributesConstants;
@@ -20,7 +21,7 @@ public class PostController {
 
     @PostMapping
     public PostDTO create(@RequestAttribute(AttributesConstants.USER) User user,
-                              @RequestBody PostCreateDTO postCreateDTO) {
+                              @RequestBody @Valid PostCreateDTO postCreateDTO) {
         return postService.create(user, postCreateDTO);
     }
 
