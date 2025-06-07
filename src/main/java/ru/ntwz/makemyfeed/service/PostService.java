@@ -1,9 +1,13 @@
 package ru.ntwz.makemyfeed.service;
 
+import org.springframework.data.domain.Pageable;
 import ru.ntwz.makemyfeed.dto.request.PostCreateDTO;
 import ru.ntwz.makemyfeed.dto.request.PostUpdateDTO;
+import ru.ntwz.makemyfeed.dto.response.CommentDTO;
 import ru.ntwz.makemyfeed.dto.response.PostDTO;
 import ru.ntwz.makemyfeed.model.User;
+
+import java.util.List;
 
 public interface PostService {
     PostDTO create(User user, PostCreateDTO post);
@@ -11,6 +15,8 @@ public interface PostService {
     PostDTO findById(Long id);
 
     PostDTO createComment(User user, PostCreateDTO post, Long parentPostId);
+
+    List<CommentDTO> getComments(Long parentPostId, Pageable pageable);
 
     PostDTO update(User user, Long id, PostUpdateDTO postUpdateDTO);
 

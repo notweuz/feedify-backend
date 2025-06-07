@@ -10,7 +10,7 @@ import java.time.Instant;
 import java.util.List;
 
 public class PostMapper {
-    public static CommentDTO toCommentDTO(Post post) {
+    private static CommentDTO toCommentDTO(Post post, int currentDepth, int maxDepth) {
         CommentDTO commentDTO = new CommentDTO();
 
         commentDTO.setId(post.getId());
@@ -21,7 +21,19 @@ public class PostMapper {
         commentDTO.setCommentsCount(post.getComments().size());
         commentDTO.setIsDeleted(post.getIsDeleted());
 
+        if (currentDepth < maxDepth) {
+            commentDTO.setComments(post.getComments().stream()
+                    .map(childPost -> toCommentDTO(childPost, currentDepth + 1, maxDepth))
+                    .toList());
+        } else {
+            commentDTO.setComments(List.of());
+        }
+
         return commentDTO;
+    }
+
+    public static CommentDTO toCommentDTO(Post post) {
+        return toCommentDTO(post, 0, 1);
     }
 
     public static PostDTO toPostDTO(@NotNull Post post) {
@@ -40,6 +52,7 @@ public class PostMapper {
 
         if (post.getParentPost() != null) {
             PostDTO parentPost = toPostDTO(post.getParentPost());
+            parentPost.setParentPost(null);
             parentPost.setComments(List.of());
             postDTO.setParentPost(parentPost);
         }

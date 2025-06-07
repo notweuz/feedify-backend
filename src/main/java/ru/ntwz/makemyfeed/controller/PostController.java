@@ -2,13 +2,18 @@ package ru.ntwz.makemyfeed.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import ru.ntwz.makemyfeed.constant.AttributesConstants;
 import ru.ntwz.makemyfeed.dto.request.PostCreateDTO;
 import ru.ntwz.makemyfeed.dto.request.PostUpdateDTO;
+import ru.ntwz.makemyfeed.dto.response.CommentDTO;
 import ru.ntwz.makemyfeed.dto.response.PostDTO;
 import ru.ntwz.makemyfeed.model.User;
 import ru.ntwz.makemyfeed.service.PostService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/posts")
@@ -35,6 +40,16 @@ public class PostController {
             @RequestBody @Valid PostCreateDTO postCreateDTO
     ) {
         return postService.createComment(user, postCreateDTO, id);
+    }
+
+    @GetMapping("/{id}/comments")
+    public List<CommentDTO> getComments(
+            @PathVariable long id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return postService.getComments(id, pageable);
     }
 
     @GetMapping("/{id}")

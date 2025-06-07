@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import ru.ntwz.makemyfeed.dto.mapper.PostMapper;
 import ru.ntwz.makemyfeed.dto.request.PostCreateDTO;
 import ru.ntwz.makemyfeed.dto.request.PostUpdateDTO;
+import ru.ntwz.makemyfeed.dto.response.CommentDTO;
 import ru.ntwz.makemyfeed.dto.response.PostDTO;
 import ru.ntwz.makemyfeed.exception.NotPostsOwnerException;
 import ru.ntwz.makemyfeed.exception.PostAlreadyDeletedException;
@@ -64,6 +65,15 @@ public class PostServiceImpl implements PostService {
         post.setAuthor(user);
 
         return PostMapper.toPostDTO(postRepository.save(post));
+    }
+
+    @Override
+    @Transactional
+    public List<CommentDTO> getComments(Long parentPostId, Pageable pageable) {
+        List<Post> comments = postRepository.findTopCommentsByParentPostId(parentPostId, pageable).getContent();
+        return comments.stream()
+                .map(PostMapper::toCommentDTO)
+                .toList();
     }
 
     @Override
