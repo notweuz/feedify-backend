@@ -18,6 +18,7 @@ import ru.ntwz.makemyfeed.model.Post;
 import ru.ntwz.makemyfeed.model.User;
 import ru.ntwz.makemyfeed.repository.PostRepository;
 import ru.ntwz.makemyfeed.service.PostService;
+import ru.ntwz.makemyfeed.service.UserService;
 
 import java.util.List;
 
@@ -26,9 +27,11 @@ import java.util.List;
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
+    private final UserService userService;
 
-    public PostServiceImpl(@Autowired PostRepository postRepository) {
+    public PostServiceImpl(@Autowired PostRepository postRepository, UserService userService) {
         this.postRepository = postRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -40,7 +43,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional
     public PostDTO findById(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new PostNotFoundException("Post with id " + id + " not found"));
@@ -56,7 +58,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional
+    public List<PostDTO> getPostsByUser(long userId, int page, int size) {
+        User user = userService.getById(userId);
+
+        Pageable pageable = PageRequest.of(page, size);
+        return postRepository.findByAuthor(user, pageable).getContent().stream().map(PostMapper::toPostDTO).toList();
+    }
+
+    @Override
     public PostDTO createComment(User user, PostCreateDTO createDTO, Long parentPostId) {
         Post parentPost = postRepository.findById(parentPostId).orElseThrow(() -> new PostNotFoundException("Post with id " + parentPostId + " not found"));
 
@@ -68,7 +77,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional
     public List<CommentDTO> getComments(Long parentPostId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         List<Post> comments = postRepository.findTopCommentsByParentPostId(parentPostId, pageable).getContent();
@@ -78,7 +86,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional
     public PostDTO update(User user, Long id, PostUpdateDTO postUpdateDTO) {
         Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("Post with id " + id + " not found"));
 
@@ -92,7 +99,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional
     public void delete(User user, Long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("Post with id " + id + " not found"));
 

@@ -20,7 +20,6 @@ public class VoteServiceImpl implements VoteService {
     }
     
     @Override
-    @Transactional
     public void upvote(Long postId, User user) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException("Post with id " + postId + " not found"));
@@ -35,7 +34,6 @@ public class VoteServiceImpl implements VoteService {
     }
 
     @Override
-    @Transactional
     public void downvote(Long postId, User user) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException("Post with id " + postId + " not found"));

@@ -14,6 +14,8 @@ public interface PostService {
 
     PostDTO findById(Long id);
 
+    List<PostDTO> getPostsByUser(long userId, int page, int size);
+
     PostDTO createComment(User user, PostCreateDTO post, Long parentPostId);
 
     List<CommentDTO> getComments(Long parentPostId, int page, int size);
