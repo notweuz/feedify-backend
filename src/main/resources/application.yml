@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: makemyfeed-backend
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: backend-app
+    password: password
+    url: jdbc:postgresql://localhost:5432/makemyfeed
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
+common:
+  version: 0.1
+  env: dev
+
+jwt:
+  secret:
