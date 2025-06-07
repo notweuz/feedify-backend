@@ -1,5 +1,6 @@
 package ru.ntwz.makemyfeed.service.implementation;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.ntwz.makemyfeed.exception.UserNotFoundException;
@@ -8,6 +9,7 @@ import ru.ntwz.makemyfeed.model.User;
 import ru.ntwz.makemyfeed.repository.UserRepository;
 import ru.ntwz.makemyfeed.service.UserService;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -21,17 +23,19 @@ public class UserServiceImpl implements UserService {
     public User create(User user) {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) throw new UserWithSameNameAlreadyExistsException("User with username '" + user.getUsername() + "' already exists");
 
+        log.info("Creating user: {}", user.getUsername());
+
         return userRepository.save(user);
     }
 
     @Override
-    public User findByUsername(String username) throws UserNotFoundException {
+    public User getByUsername(String username) throws UserNotFoundException {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User with username '" + username + "' not found"));
     }
 
     @Override
-    public User findById(Long id) throws UserNotFoundException {
+    public User getById(Long id) throws UserNotFoundException {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User with ID '" + id + "' not found"));
     }

@@ -6,7 +6,7 @@ import ru.ntwz.makemyfeed.model.User;
 public interface UserService {
     User create(User user);
 
-    User findByUsername(String username) throws UserNotFoundException;
+    User getByUsername(String username) throws UserNotFoundException;
 
-    User findById(Long id) throws UserNotFoundException;
+    User getById(Long id) throws UserNotFoundException;
 }

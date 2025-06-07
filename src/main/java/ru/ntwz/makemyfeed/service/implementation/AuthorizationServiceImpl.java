@@ -59,7 +59,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         String username = loginDTO.getUsername();
         String password = loginDTO.getPassword();
 
-        User user = userService.findByUsername(username);
+        User user = userService.getByUsername(username);
 
         if (bCryptService.verify(password, user.getPassword()))
             return new AccessTokenDTO(jwtService.generate(user.getId(), user.getPassword()));
@@ -76,7 +76,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         }
 
         try {
-            return userService.findById(userId);
+            return userService.getById(userId);
         } catch (UserNotFoundException ex) {
             throw new NotAuthorizedException("User not found for access token: " + accessToken);
         }
