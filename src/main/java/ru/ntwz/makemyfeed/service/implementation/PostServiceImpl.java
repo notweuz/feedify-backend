@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.ntwz.makemyfeed.dto.mapper.PostMapper;
 import ru.ntwz.makemyfeed.dto.request.PostCreateDTO;
+import ru.ntwz.makemyfeed.dto.request.PostUpdateDTO;
 import ru.ntwz.makemyfeed.dto.response.PostDTO;
+import ru.ntwz.makemyfeed.exception.NotPostsOwnerException;
 import ru.ntwz.makemyfeed.exception.PostNotFoundException;
 import ru.ntwz.makemyfeed.model.Post;
 import ru.ntwz.makemyfeed.model.User;
@@ -28,8 +30,6 @@ public class PostServiceImpl implements PostService {
         Post post = PostMapper.toPost(postCreateDTO);
         post.setAuthor(user);
 
-        log.info("Post created: {}", post);
-
         return PostMapper.toPostDTO(postRepository.save(post));
     }
 
@@ -38,8 +38,6 @@ public class PostServiceImpl implements PostService {
     public PostDTO findById(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new PostNotFoundException("Post with id " + id + " not found"));
-
-//        log.info("Post found: {}", post);
 
         return PostMapper.toPostDTO(post);
     }
@@ -53,7 +51,19 @@ public class PostServiceImpl implements PostService {
         post.setParentPost(parentPost);
         post.setAuthor(user);
 
-//        log.info("Post comment created: {}", post);
+        return PostMapper.toPostDTO(postRepository.save(post));
+    }
+
+    @Override
+    @Transactional
+    public PostDTO update(User user, Long id, PostUpdateDTO postUpdateDTO) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("Post with id " + id + " not found"));
+
+        if (!post.getAuthor().equals(user)) throw new NotPostsOwnerException("You are not the owner of this post");
+
+        if (postUpdateDTO.getContent() != null && !postUpdateDTO.getContent().isBlank()) {
+            post.setContent(postUpdateDTO.getContent());
+        }
 
         return PostMapper.toPostDTO(postRepository.save(post));
     }
