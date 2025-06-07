@@ -19,3 +19,4 @@ common:
 
 jwt:
   secret:
+  expiration: 2592000

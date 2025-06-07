@@ -9,4 +9,6 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties("jwt")
 public class JWTConfig {
     private String secret;
+
+    private long expiration;
 }
