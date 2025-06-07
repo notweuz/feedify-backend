@@ -10,4 +10,9 @@ import org.springframework.context.annotation.Configuration;
 public class CommonConfig {
     private String version;
     private String env;
+
+    @Data
+    public static class Content {
+        private String savePath;
+    }
 }
