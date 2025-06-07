@@ -9,6 +9,7 @@ import ru.ntwz.makemyfeed.dto.request.PostCreateDTO;
 import ru.ntwz.makemyfeed.dto.request.PostUpdateDTO;
 import ru.ntwz.makemyfeed.dto.response.PostDTO;
 import ru.ntwz.makemyfeed.exception.NotPostsOwnerException;
+import ru.ntwz.makemyfeed.exception.PostAlreadyDeletedException;
 import ru.ntwz.makemyfeed.exception.PostNotFoundException;
 import ru.ntwz.makemyfeed.model.Post;
 import ru.ntwz.makemyfeed.model.User;
@@ -66,5 +67,19 @@ public class PostServiceImpl implements PostService {
         }
 
         return PostMapper.toPostDTO(postRepository.save(post));
+    }
+
+    @Override
+    @Transactional
+    public void delete(User user, Long id) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("Post with id " + id + " not found"));
+
+        if (!post.getAuthor().equals(user)) throw new NotPostsOwnerException("You are not the owner of this post");
+        if (post.getIsDeleted()) throw new PostAlreadyDeletedException("Post with id " + id + " is already deleted");
+
+        post.setIsDeleted(true);
+        post.setContent(null);
+
+        postRepository.save(post);
     }
 }

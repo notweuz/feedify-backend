@@ -60,4 +60,11 @@ public class ExceptionsController {
         map.put("error", ex.getMessage());
         return new ResponseEntity<>(map, HttpStatus.FORBIDDEN);
     }
+
+    @ExceptionHandler(PostAlreadyDeletedException.class)
+    public ResponseEntity<Map<String, String>> handlePostAlreadyDeletedException(PostAlreadyDeletedException ex) {
+        Map<String, String> map = new HashMap<>();
+        map.put("error", ex.getMessage());
+        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    }
 }

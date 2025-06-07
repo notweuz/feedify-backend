@@ -13,4 +13,6 @@ public interface PostService {
     PostDTO createComment(User user, PostCreateDTO post, Long parentPostId);
 
     PostDTO update(User user, Long id, PostUpdateDTO postUpdateDTO);
+
+    void delete(User user, Long id);
 }

@@ -18,4 +18,5 @@ public class CommentDTO {
     private Instant createdAt;
     //    private List<AttachmentDTO> attachments;
     private Integer commentsCount;
+    private Boolean isDeleted;
 }

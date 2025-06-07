@@ -21,8 +21,10 @@ public class PostController {
     }
 
     @PostMapping
-    public PostDTO create(@RequestAttribute(AttributesConstants.USER) User user,
-                              @RequestBody @Valid PostCreateDTO postCreateDTO) {
+    public PostDTO create(
+            @RequestAttribute(AttributesConstants.USER) User user,
+            @RequestBody @Valid PostCreateDTO postCreateDTO
+    ) {
         return postService.create(user, postCreateDTO);
     }
 
@@ -30,7 +32,8 @@ public class PostController {
     public PostDTO createComment(
             @RequestAttribute(AttributesConstants.USER) User user,
             @PathVariable Long id,
-            @RequestBody @Valid PostCreateDTO postCreateDTO) {
+            @RequestBody @Valid PostCreateDTO postCreateDTO
+    ) {
         return postService.createComment(user, postCreateDTO, id);
     }
 
@@ -43,7 +46,16 @@ public class PostController {
     public PostDTO update(
             @RequestAttribute(AttributesConstants.USER) User user,
             @PathVariable long id,
-            @RequestBody @Valid PostUpdateDTO postUpdateDTO) {
+            @RequestBody @Valid PostUpdateDTO postUpdateDTO
+    ) {
         return postService.update(user, id, postUpdateDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(
+            @RequestAttribute(AttributesConstants.USER) User user,
+            @PathVariable long id
+    ) {
+        postService.delete(user, id);
     }
 }

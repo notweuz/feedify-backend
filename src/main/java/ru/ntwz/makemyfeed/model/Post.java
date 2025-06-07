@@ -18,7 +18,6 @@ public class Post {
     private Long id;
 
     @Column
-    @NotNull
     @Length(max = 1024)
     private String content;
 
@@ -38,4 +37,7 @@ public class Post {
 
     @OneToMany(mappedBy = "parentPost", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> comments = new ArrayList<>();
+
+    @Column
+    private Boolean isDeleted = false;
 }

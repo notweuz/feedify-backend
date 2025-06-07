@@ -17,6 +17,7 @@ public class PostMapper {
         commentDTO.setAuthor(UserMapper.toDTO(post.getAuthor()));
         commentDTO.setCreatedAt(post.getCreatedAt());
         commentDTO.setCommentsCount(post.getComments().size());
+        commentDTO.setIsDeleted(post.getIsDeleted());
 
         return commentDTO;
     }
@@ -32,6 +33,7 @@ public class PostMapper {
                 .map(PostMapper::toCommentDTO)
                 .toList());
         postDTO.setCommentsCount(post.getComments().size());
+        postDTO.setIsDeleted(post.getIsDeleted());
 
         return postDTO;
     }
