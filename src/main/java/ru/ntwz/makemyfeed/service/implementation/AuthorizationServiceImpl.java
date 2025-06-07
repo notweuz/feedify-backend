@@ -4,8 +4,11 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.ntwz.makemyfeed.config.CommonConfig;
+import ru.ntwz.makemyfeed.dto.request.LoginDTO;
 import ru.ntwz.makemyfeed.dto.request.SignUpDTO;
 import ru.ntwz.makemyfeed.dto.response.AccessTokenDTO;
+import ru.ntwz.makemyfeed.exception.InvalidPasswordException;
+import ru.ntwz.makemyfeed.exception.NotAuthorizedException;
 import ru.ntwz.makemyfeed.model.User;
 import ru.ntwz.makemyfeed.service.AuthorizationService;
 import ru.ntwz.makemyfeed.service.BCryptService;
@@ -48,5 +51,35 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         userService.create(user);
 
         return new AccessTokenDTO(jwtService.generate(user.getId(), passwordHash));
+    }
+
+    @Override
+    public AccessTokenDTO login(LoginDTO loginDTO) throws InvalidPasswordException {
+        String username = loginDTO.getUsername();
+        String password = loginDTO.getPassword();
+
+        User user = userService.findByUsername(username);
+
+        if (bCryptService.verify(password, user.getPassword()))
+            return new AccessTokenDTO(jwtService.generate(user.getId(), user.getPassword()));
+        else
+            throw new InvalidPasswordException("Invalid password for user: " + username);
+    }
+
+    @Override
+    public User authUser(String accessToken) throws NotAuthorizedException {
+        Long userId = jwtService.validate(accessToken);
+
+        if (userId == null) {
+            throw new NotAuthorizedException("Invalid access token");
+        }
+
+        User user = userService.findByUsername(String.valueOf(userId));
+
+        if (user == null) {
+            throw new NotAuthorizedException("User not found for ID: " + userId);
+        }
+
+        return user;
     }
 }

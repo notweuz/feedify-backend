@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.ntwz.makemyfeed.dto.request.LoginDTO;
 import ru.ntwz.makemyfeed.dto.request.SignUpDTO;
 import ru.ntwz.makemyfeed.dto.response.AccessTokenDTO;
 import ru.ntwz.makemyfeed.service.AuthorizationService;
@@ -23,5 +24,10 @@ public class AuthorizationController {
     @PostMapping("/signup")
     public AccessTokenDTO signUp(@RequestBody @Valid SignUpDTO signUpDTO) {
         return authorizationService.signUp(signUpDTO);
+    }
+
+    @PostMapping("/login")
+    public AccessTokenDTO login(@RequestBody @Valid LoginDTO loginDTO) {
+        return authorizationService.login(loginDTO);
     }
 }
