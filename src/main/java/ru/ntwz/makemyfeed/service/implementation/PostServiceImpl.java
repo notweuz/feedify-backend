@@ -25,12 +25,6 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDTO create(User user, PostCreateDTO postCreateDTO) {
-        String content = postCreateDTO.getContent();
-        if (postCreateDTO.getTitle() == null || postCreateDTO.getTitle().isEmpty()) {
-            String title = content != null && content.length() > 20 ? content.substring(0, 20) : content;
-            postCreateDTO.setTitle(title);
-        }
-
         Post post = PostMapper.toPost(postCreateDTO);
         post.setAuthor(user);
 
@@ -45,8 +39,22 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new PostNotFoundException("Post with id " + id + " not found"));
 
-        log.info("Post found: {}", post);
+//        log.info("Post found: {}", post);
 
         return PostMapper.toPostDTO(post);
+    }
+
+    @Override
+    @Transactional
+    public PostDTO createComment(User user, PostCreateDTO createDTO, Long parentPostId) {
+        Post parentPost = postRepository.findById(parentPostId).orElseThrow(() -> new PostNotFoundException("Post with id " + parentPostId + " not found"));
+
+        Post post = PostMapper.toPost(createDTO);
+        post.setParentPost(parentPost);
+        post.setAuthor(user);
+
+//        log.info("Post comment created: {}", post);
+
+        return PostMapper.toPostDTO(postRepository.save(post));
     }
 }

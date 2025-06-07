@@ -6,6 +6,8 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Table(name = "posts")
@@ -14,9 +16,6 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column
-    private String title;
 
     @Column
     @NotNull
@@ -32,4 +31,11 @@ public class Post {
 
     @Column
     private Instant createdAt = Instant.now();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_post_id")
+    private Post parentPost;
+
+    @OneToMany(mappedBy = "parentPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Post> comments = new ArrayList<>();
 }

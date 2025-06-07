@@ -25,11 +25,18 @@ public class PostController {
         return postService.create(user, postCreateDTO);
     }
 
+    @PostMapping("/{id}/comment")
+    public PostDTO createComment(
+            @RequestAttribute(AttributesConstants.USER) User user,
+            @PathVariable Long id,
+            @RequestBody @Valid PostCreateDTO postCreateDTO) {
+        return postService.createComment(user, postCreateDTO, id);
+    }
+
     @GetMapping("/{id}")
     public PostDTO getById(@PathVariable long id) {
         return postService.findById(id);
     }
-
 //    @GetMapping
 //    public List<PostDTO> getAllPostsAvailableForUser(@RequestAttribute(AttributesConstants.USER) User user,
 //                                                     @RequestParam(value = "page", defaultValue = "0") int page,

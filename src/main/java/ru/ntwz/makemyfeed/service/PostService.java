@@ -8,4 +8,6 @@ public interface PostService {
     PostDTO create(User user, PostCreateDTO post);
 
     PostDTO findById(Long id);
+
+    PostDTO createComment(User user, PostCreateDTO post, Long parentPostId);
 }

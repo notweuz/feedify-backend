@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostCreateDTO {
-    private String title;
-
     @NotNull
     @NotBlank
     private String content;
