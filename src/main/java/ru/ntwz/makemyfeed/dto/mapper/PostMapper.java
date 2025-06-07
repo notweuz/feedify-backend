@@ -7,10 +7,12 @@ import ru.ntwz.makemyfeed.dto.response.PostDTO;
 import ru.ntwz.makemyfeed.model.Post;
 
 import java.time.Instant;
+import java.util.List;
 
 public class PostMapper {
     public static CommentDTO toCommentDTO(Post post) {
         CommentDTO commentDTO = new CommentDTO();
+
         commentDTO.setId(post.getId());
         commentDTO.setRating(post.getRating());
         commentDTO.setContent(post.getContent());
@@ -24,6 +26,7 @@ public class PostMapper {
 
     public static PostDTO toPostDTO(@NotNull Post post) {
         PostDTO postDTO = new PostDTO();
+
         postDTO.setId(post.getId());
         postDTO.setRating(post.getRating());
         postDTO.setContent(post.getContent());
@@ -34,6 +37,12 @@ public class PostMapper {
                 .toList());
         postDTO.setCommentsCount(post.getComments().size());
         postDTO.setIsDeleted(post.getIsDeleted());
+
+        if (post.getParentPost() != null) {
+            PostDTO parentPost = toPostDTO(post.getParentPost());
+            parentPost.setComments(List.of());
+            postDTO.setParentPost(parentPost);
+        }
 
         return postDTO;
     }

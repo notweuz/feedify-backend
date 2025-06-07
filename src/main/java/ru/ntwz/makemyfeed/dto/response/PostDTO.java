@@ -18,6 +18,7 @@ public class PostDTO {
     private Instant createdAt;
     //    private List<AttachmentDTO> attachments;
     private List<CommentDTO> comments;
+    private PostDTO parentPost;
     private Boolean isDeleted;
     private Integer commentsCount;
 }
