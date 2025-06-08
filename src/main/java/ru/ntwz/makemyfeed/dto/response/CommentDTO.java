@@ -13,7 +13,7 @@ import java.util.List;
 public class CommentDTO {
     private Long id;
     private String content;
-    private Integer rating;
+    private Long rating;
     private UserDTO author;
     private Instant createdAt;
     //    private List<AttachmentDTO> attachments;

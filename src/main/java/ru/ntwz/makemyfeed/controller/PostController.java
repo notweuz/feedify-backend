@@ -78,19 +78,12 @@ public class PostController {
         postService.delete(user, id);
     }
 
-    @PostMapping("/{postId}/upvote")
+    @PostMapping("/{postId}/vote")
     public void upvote(
             @RequestAttribute(AttributesConstants.USER) User user,
-            @PathVariable Long postId
+            @PathVariable Long postId,
+            @RequestParam(defaultValue = "true") boolean upvote
     ) {
-        voteService.upvote(postId, user);
-    }
-
-    @PostMapping("/{postId}/downvote")
-    public void downvote(
-            @RequestAttribute(AttributesConstants.USER) User user,
-            @PathVariable Long postId
-    ) {
-        voteService.downvote(postId, user);
+        voteService.vote(postId, user, upvote);
     }
 }

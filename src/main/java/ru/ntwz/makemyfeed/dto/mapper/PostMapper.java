@@ -5,6 +5,7 @@ import ru.ntwz.makemyfeed.dto.request.PostCreateDTO;
 import ru.ntwz.makemyfeed.dto.response.CommentDTO;
 import ru.ntwz.makemyfeed.dto.response.PostDTO;
 import ru.ntwz.makemyfeed.model.Post;
+import ru.ntwz.makemyfeed.model.VoteType;
 
 import java.time.Instant;
 import java.util.List;
@@ -14,7 +15,8 @@ public class PostMapper {
         CommentDTO commentDTO = new CommentDTO();
 
         commentDTO.setId(post.getId());
-        commentDTO.setRating(post.getLikedByUsers().size() - post.getDislikedByUsers().size());
+        commentDTO.setRating(post.getVotes().stream().filter(v -> v.getVoteType().equals(VoteType.UPVOTE)).count() -
+                             post.getVotes().stream().filter(v -> v.getVoteType().equals(VoteType.DOWNVOTE)).count());
         commentDTO.setContent(post.getContent());
         commentDTO.setAuthor(UserMapper.toDTO(post.getAuthor()));
         commentDTO.setCreatedAt(post.getCreatedAt());
@@ -40,7 +42,8 @@ public class PostMapper {
         PostDTO postDTO = new PostDTO();
 
         postDTO.setId(post.getId());
-        postDTO.setRating(post.getLikedByUsers().size() - post.getDislikedByUsers().size());
+        postDTO.setRating(post.getVotes().stream().filter(v -> v.getVoteType().equals(VoteType.UPVOTE)).count() -
+                post.getVotes().stream().filter(v -> v.getVoteType().equals(VoteType.DOWNVOTE)).count());
         postDTO.setContent(post.getContent());
         postDTO.setAuthor(UserMapper.toDTO(post.getAuthor()));
         postDTO.setCreatedAt(post.getCreatedAt());

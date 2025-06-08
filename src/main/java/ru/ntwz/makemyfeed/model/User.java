@@ -36,6 +36,9 @@ public class User {
     @Column
     private Instant registrationDate = Instant.now();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Vote> votes = new ArrayList<>();
+
     public User(String displayName, String username, String password) {
         this.displayName = displayName;
         this.username = username;
