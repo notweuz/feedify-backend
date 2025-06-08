@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 import ru.ntwz.makemyfeed.model.Post;
 import ru.ntwz.makemyfeed.model.User;
 
+import java.util.Optional;
+
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
 
@@ -20,4 +22,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("SELECT p FROM Post p WHERE p.author = :user AND p.isDeleted = false ORDER BY p.createdAt DESC")
     Page<Post> findByAuthor(User user, Pageable pageable);
+
+    Optional<Post> findByUniqueLink(String uniqueLink);
 }

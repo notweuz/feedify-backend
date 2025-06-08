@@ -15,6 +15,7 @@ public class CommentDTO {
     private String content;
     private Long rating;
     private UserDTO author;
+    private String uniqueLink;
     private Instant createdAt;
     //    private List<AttachmentDTO> attachments;
     private List<CommentDTO> comments;

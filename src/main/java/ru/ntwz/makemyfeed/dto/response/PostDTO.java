@@ -16,6 +16,7 @@ public class PostDTO {
     private Long rating;
     private UserDTO author;
     private Instant createdAt;
+    private String uniqueLink;
     //    private List<AttachmentDTO> attachments;
     private List<CommentDTO> comments;
     private PostDTO parentPost;

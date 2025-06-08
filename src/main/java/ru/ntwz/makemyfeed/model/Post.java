@@ -4,10 +4,12 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
+import ru.ntwz.makemyfeed.util.PostsUtil;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Table(name = "posts")
@@ -27,6 +29,9 @@ public class Post {
 
     @Column
     private Instant createdAt = Instant.now();
+
+    @Column
+    private String uniqueLink = PostsUtil.generateUniqueLink();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "parent_post_id")

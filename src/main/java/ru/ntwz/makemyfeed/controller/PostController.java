@@ -61,6 +61,11 @@ public class PostController {
         return postService.findById(id);
     }
 
+    @GetMapping("/unique/{uniqueLink}")
+    public PostDTO getByUniqueLink(@PathVariable String uniqueLink) {
+        return postService.findByUniqueLink(uniqueLink);
+    }
+
     @PatchMapping("/{id}")
     public PostDTO update(
             @RequestAttribute(AttributesConstants.USER) User user,

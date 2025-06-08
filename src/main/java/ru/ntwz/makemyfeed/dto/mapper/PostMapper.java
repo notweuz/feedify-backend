@@ -22,6 +22,7 @@ public class PostMapper {
         commentDTO.setCreatedAt(post.getCreatedAt());
         commentDTO.setCommentsCount(post.getComments().size());
         commentDTO.setIsDeleted(post.getIsDeleted());
+        commentDTO.setUniqueLink(post.getUniqueLink());
 
         if (currentDepth < maxDepth) {
             commentDTO.setComments(post.getComments().stream()
@@ -52,6 +53,7 @@ public class PostMapper {
                 .toList());
         postDTO.setCommentsCount(post.getComments().size());
         postDTO.setIsDeleted(post.getIsDeleted());
+        postDTO.setUniqueLink(post.getUniqueLink());
 
         if (post.getParentPost() != null) {
             PostDTO parentPost = toPostDTO(post.getParentPost());

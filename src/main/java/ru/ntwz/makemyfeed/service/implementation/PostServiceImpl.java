@@ -77,6 +77,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public PostDTO findByUniqueLink(String uniqueLink) {
+        Post post = postRepository.findByUniqueLink(uniqueLink)
+                .orElseThrow(() -> new PostNotFoundException("Post with unique link '" + uniqueLink + "' not found"));
+
+        return PostMapper.toPostDTO(post);
+    }
+
+    @Override
     public List<CommentDTO> getComments(Long parentPostId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         List<Post> comments = postRepository.findTopCommentsByParentPostId(parentPostId, pageable).getContent();

@@ -18,6 +18,8 @@ public interface PostService {
 
     PostDTO createComment(User user, PostCreateDTO post, Long parentPostId);
 
+    PostDTO findByUniqueLink(String uniqueLink);
+
     List<CommentDTO> getComments(Long parentPostId, int page, int size);
 
     PostDTO update(User user, Long id, PostUpdateDTO postUpdateDTO);
