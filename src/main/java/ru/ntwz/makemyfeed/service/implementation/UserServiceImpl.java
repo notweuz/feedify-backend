@@ -3,6 +3,8 @@ package ru.ntwz.makemyfeed.service.implementation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.ntwz.makemyfeed.dto.mapper.UserMapper;
+import ru.ntwz.makemyfeed.dto.response.UserDTO;
 import ru.ntwz.makemyfeed.exception.UserNotFoundException;
 import ru.ntwz.makemyfeed.exception.UserWithSameNameAlreadyExistsException;
 import ru.ntwz.makemyfeed.model.User;
@@ -26,6 +28,13 @@ public class UserServiceImpl implements UserService {
         log.info("Creating user: {}", user.getUsername());
 
         return userRepository.save(user);
+    }
+
+    @Override
+    public UserDTO findByUsername(String username) throws UserNotFoundException {
+        User user = getByUsername(username);
+
+        return UserMapper.toDTO(user);
     }
 
     @Override
