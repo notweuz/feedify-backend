@@ -1,6 +1,5 @@
 package ru.ntwz.makemyfeed.service.implementation;
 
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.ntwz.makemyfeed.exception.PostNotFoundException;
@@ -22,7 +21,7 @@ public class VoteServiceImpl implements VoteService {
         this.postRepository = postRepository;
         this.voteRepository = voteRepository;
     }
-    
+
     @Override
     public void vote(Long postId, User user, boolean isUpvote) {
         Post post = postRepository.findById(postId)

@@ -2,8 +2,10 @@ package ru.ntwz.makemyfeed.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.ntwz.makemyfeed.constant.AttributesConstants;
 import ru.ntwz.makemyfeed.dto.response.PostDTO;
 import ru.ntwz.makemyfeed.dto.response.UserDTO;
+import ru.ntwz.makemyfeed.model.User;
 import ru.ntwz.makemyfeed.service.PostService;
 import ru.ntwz.makemyfeed.service.UserService;
 
@@ -35,4 +37,12 @@ public class UserController {
     public UserDTO getPostsByUser(@PathVariable String username) {
         return userService.findByUsername(username);
     }
+//
+//    @DeleteMapping
+//    public void deleteAccount(
+//            @RequestAttribute(AttributesConstants.USER) User user,
+//            @RequestParam(defaultValue = "confirmation") boolean confirmation
+//    ) {
+//        userService.deleteAccount(user, confirmation);
+//    }
 }
