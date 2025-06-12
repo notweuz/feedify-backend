@@ -4,7 +4,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import ru.ntwz.makemyfeed.dto.mapper.FollowingsMapper;
+import ru.ntwz.makemyfeed.dto.mapper.FollowingMapper;
 import ru.ntwz.makemyfeed.dto.mapper.UserMapper;
 import ru.ntwz.makemyfeed.dto.response.FollowingDTO;
 import ru.ntwz.makemyfeed.dto.response.UserDTO;
@@ -46,7 +46,7 @@ public class FollowingServiceImpl implements FollowingService {
         }
 
         Following follow = new Following(follower, following);
-        return FollowingsMapper.toDTO(followingRepository.save(follow));
+        return FollowingMapper.toDTO(followingRepository.save(follow));
     }
 
     @Override
