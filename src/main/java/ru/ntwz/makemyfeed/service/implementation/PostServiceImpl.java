@@ -20,6 +20,7 @@ import ru.ntwz.makemyfeed.service.PostService;
 import ru.ntwz.makemyfeed.service.UserService;
 
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -109,7 +110,7 @@ public class PostServiceImpl implements PostService {
     public PostDTO update(User user, Long id, PostUpdateDTO postUpdateDTO) {
         Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("Post with id " + id + " not found"));
 
-        if (!post.getAuthor().equals(user)) throw new NotPostsOwnerException("You are not the owner of this post");
+        if (!Objects.equals(post.getAuthor().getId(), user.getId())) throw new NotPostsOwnerException("You are not the owner of this post");
 
         if (postUpdateDTO.getContent() != null && !postUpdateDTO.getContent().isBlank()) {
             post.setContent(postUpdateDTO.getContent());
@@ -124,7 +125,7 @@ public class PostServiceImpl implements PostService {
     public void delete(User user, Long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("Post with id " + id + " not found"));
 
-        if (!post.getAuthor().equals(user)) throw new NotPostsOwnerException("You are not the owner of this post");
+        if (!Objects.equals(post.getAuthor().getId(), user.getId())) throw new NotPostsOwnerException("You are not the owner of this post");
         if (post.getIsDeleted()) throw new PostAlreadyDeletedException("Post with id " + id + " is already deleted");
 
         post.setIsDeleted(true);
