@@ -34,18 +34,28 @@ public class UserServiceImpl implements UserService {
     public UserDTO findByUsername(String username) throws UserNotFoundException {
         User user = getByUsername(username);
 
+        log.info("Found user: {}", user.getUsername());
+
         return UserMapper.toDTO(user);
     }
 
     @Override
     public User getByUsername(String username) throws UserNotFoundException {
-        return userRepository.findByUsername(username)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User with username '" + username + "' not found"));
+
+        log.info("Retrieved user by username: {}", username);
+
+        return user;
     }
 
     @Override
     public User getById(Long id) throws UserNotFoundException {
-        return userRepository.findById(id)
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User with ID '" + id + "' not found"));
+
+        log.info("Retrieved user by ID: {}", id);
+
+        return user;
     }
 }

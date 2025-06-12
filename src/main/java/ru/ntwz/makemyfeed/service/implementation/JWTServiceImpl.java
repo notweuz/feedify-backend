@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.ntwz.makemyfeed.config.JWTConfig;
@@ -15,6 +16,7 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 
 @Service
+@Slf4j
 public class JWTServiceImpl implements JWTService {
 
     private final JWTConfig jwtConfig;

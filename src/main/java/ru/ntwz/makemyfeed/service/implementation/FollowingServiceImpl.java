@@ -1,6 +1,7 @@
 package ru.ntwz.makemyfeed.service.implementation;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class FollowingServiceImpl implements FollowingService {
 
     private final FollowingRepository followingRepository;
@@ -46,6 +48,9 @@ public class FollowingServiceImpl implements FollowingService {
         }
 
         Following follow = new Following(follower, following);
+
+        log.info("User {} started following {}", follower.getUsername(), following.getUsername());
+
         return FollowingMapper.toDTO(followingRepository.save(follow));
     }
 
@@ -58,12 +63,16 @@ public class FollowingServiceImpl implements FollowingService {
             throw new NotFollowingException("Not followed to user: " + followingUsername);
         }
 
+        log.info("User {} stopped following {}", follower.getUsername(), following.getUsername());
+
         followingRepository.deleteByFollowerAndFollowing(follower, following);
     }
 
     @Override
     public List<UserDTO> getFollowers(String username, int page, int size) {
         User user = userService.getByUsername(username);
+
+        log.info("Retrieved followers for user: {}", user.getUsername());
 
         return followingRepository.findByFollowing(user, PageRequest.of(page, size))
                 .stream()
@@ -78,6 +87,8 @@ public class FollowingServiceImpl implements FollowingService {
     public List<UserDTO> getFollowing(String username, int page, int size) {
         User user = userService.getByUsername(username);
 
+        log.info("Retrieved following for user: {}", user.getUsername());
+
         return followingRepository.findByFollower(user, PageRequest.of(page, size))
                 .stream()
                 .map(follow -> {
@@ -91,6 +102,9 @@ public class FollowingServiceImpl implements FollowingService {
     public boolean isFollowing(User follower, String followingUsername) {
         try {
             User following = userService.getByUsername(followingUsername);
+
+            log.info("Checking if user {} is following user {}", follower.getUsername(), following.getUsername());
+
             return followingRepository.existsByFollowerAndFollowing(follower, following);
         } catch (UserNotFoundException e) {
             return false;

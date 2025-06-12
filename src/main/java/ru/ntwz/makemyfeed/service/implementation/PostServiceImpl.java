@@ -38,6 +38,8 @@ public class PostServiceImpl implements PostService {
         Post post = PostMapper.toPost(postCreateDTO);
         post.setAuthor(user);
 
+        log.info("Creating post: {}", post.getContent());
+
         return PostMapper.toPostDTO(postRepository.save(post));
     }
 
@@ -53,12 +55,16 @@ public class PostServiceImpl implements PostService {
                 .map(PostMapper::toCommentDTO)
                 .toList());
 
+        log.info("Found post: {}", postDTO.getContent());
+
         return postDTO;
     }
 
     @Override
     public List<PostDTO> getPostsByUser(long userId, int page, int size) {
         User user = userService.getById(userId);
+
+        log.info("Retrieved posts by user: {}", user.getUsername());
 
         Pageable pageable = PageRequest.of(page, size);
         return postRepository.findByAuthor(user, pageable).getContent().stream().map(PostMapper::toPostDTO).toList();
@@ -72,6 +78,8 @@ public class PostServiceImpl implements PostService {
         post.setParentPost(parentPost);
         post.setAuthor(user);
 
+        log.info("Creating comment on post {}: {}", parentPostId, post.getContent());
+
         return PostMapper.toPostDTO(postRepository.save(post));
     }
 
@@ -80,6 +88,8 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findByUniqueLink(uniqueLink)
                 .orElseThrow(() -> new PostNotFoundException("Post with unique link '" + uniqueLink + "' not found"));
 
+        log.info("Found post by unique link: {}", post.getContent());
+
         return PostMapper.toPostDTO(post);
     }
 
@@ -87,6 +97,9 @@ public class PostServiceImpl implements PostService {
     public List<CommentDTO> getComments(Long parentPostId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         List<Post> comments = postRepository.findTopCommentsByParentPostId(parentPostId, pageable).getContent();
+
+        log.info("Retrieved {} comments for post with id {}", comments.size(), parentPostId);
+
         return comments.stream()
                 .map(PostMapper::toCommentDTO)
                 .toList();
@@ -102,6 +115,8 @@ public class PostServiceImpl implements PostService {
             post.setContent(postUpdateDTO.getContent());
         }
 
+        log.info("Updating post: {}", post.getContent());
+
         return PostMapper.toPostDTO(postRepository.save(post));
     }
 
@@ -114,6 +129,8 @@ public class PostServiceImpl implements PostService {
 
         post.setIsDeleted(true);
         post.setContent(null);
+
+        log.info("Deleting post with id: {}", id);
 
         postRepository.save(post);
     }

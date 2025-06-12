@@ -1,6 +1,7 @@
 package ru.ntwz.makemyfeed.service.implementation;
 
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.ntwz.makemyfeed.config.CommonConfig;
@@ -17,6 +18,7 @@ import ru.ntwz.makemyfeed.service.JWTService;
 import ru.ntwz.makemyfeed.service.UserService;
 
 @Service
+@Slf4j
 public class AuthorizationServiceImpl implements AuthorizationService {
 
     private final UserService userService;
@@ -51,6 +53,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
         userService.create(user);
 
+        log.info("User {} created successfully", username);
+
         return new AccessTokenDTO(jwtService.generate(user.getId(), passwordHash));
     }
 
@@ -60,6 +64,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         String password = loginDTO.getPassword();
 
         User user = userService.getByUsername(username);
+
+        log.info("User {} attempting to log in", username);
 
         if (bCryptService.verify(password, user.getPassword()))
             return new AccessTokenDTO(jwtService.generate(user.getId(), user.getPassword()));

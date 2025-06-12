@@ -1,6 +1,7 @@
 package ru.ntwz.makemyfeed.service.implementation;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.ntwz.makemyfeed.dto.mapper.VoteMapper;
@@ -15,6 +16,7 @@ import ru.ntwz.makemyfeed.repository.VoteRepository;
 import ru.ntwz.makemyfeed.service.VoteService;
 
 @Service
+@Slf4j
 public class VoteServiceImpl implements VoteService {
 
     private final PostRepository postRepository;
@@ -51,6 +53,8 @@ public class VoteServiceImpl implements VoteService {
                 resultVote = voteRepository.save(existingVote);
             }
         }
+
+        log.info("User {} voted on post {}: {}", user.getUsername(), postId, voteType);
 
         return VoteMapper.toVoteDTO(post, resultVote);
     }
