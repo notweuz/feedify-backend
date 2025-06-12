@@ -1,7 +1,6 @@
 package ru.ntwz.makemyfeed.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import ru.ntwz.makemyfeed.util.PostsUtil;
@@ -9,7 +8,6 @@ import ru.ntwz.makemyfeed.util.PostsUtil;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @Table(name = "posts")

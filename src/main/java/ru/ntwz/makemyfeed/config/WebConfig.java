@@ -1,6 +1,5 @@
 package ru.ntwz.makemyfeed.config;
 
-import org.apache.catalina.filters.HttpHeaderSecurityFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
