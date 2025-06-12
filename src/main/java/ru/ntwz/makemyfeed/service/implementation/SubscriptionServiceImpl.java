@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.ntwz.makemyfeed.dto.mapper.SubscriptionMapper;
+import ru.ntwz.makemyfeed.dto.mapper.UserMapper;
 import ru.ntwz.makemyfeed.dto.response.SubscriptionDTO;
+import ru.ntwz.makemyfeed.dto.response.UserDTO;
 import ru.ntwz.makemyfeed.exception.AlreadySubscribedException;
 import ru.ntwz.makemyfeed.exception.NotSubscribedException;
 import ru.ntwz.makemyfeed.exception.SelfSubscriptionException;
@@ -34,15 +36,15 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Override
     public SubscriptionDTO subscribe(User follower, String followingUsername) {
         User following = userService.getByUsername(followingUsername);
-        
+
         if (follower.getId().equals(following.getId())) {
             throw new SelfSubscriptionException("User cannot subscribe to themselves");
         }
-        
+
         if (subscriptionRepository.existsByFollowerAndFollowing(follower, following)) {
             throw new AlreadySubscribedException("Already subscribed to user: " + followingUsername);
         }
-        
+
         Subscription subscription = new Subscription(follower, following);
         return SubscriptionMapper.toDTO(subscriptionRepository.save(subscription));
     }
@@ -51,29 +53,37 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Transactional
     public void unsubscribe(User follower, String followingUsername) {
         User following = userService.getByUsername(followingUsername);
-        
+
         if (!subscriptionRepository.existsByFollowerAndFollowing(follower, following)) {
             throw new NotSubscribedException("Not subscribed to user: " + followingUsername);
         }
-        
+
         subscriptionRepository.deleteByFollowerAndFollowing(follower, following);
     }
 
     @Override
-    public List<SubscriptionDTO> getFollowers(String username, int page, int size) {
+    public List<UserDTO> getFollowers(String username, int page, int size) {
         User user = userService.getByUsername(username);
+
         return subscriptionRepository.findByFollowing(user, PageRequest.of(page, size))
                 .stream()
-                .map(SubscriptionMapper::toDTO)
+                .map(subscription -> {
+                    User follower = subscription.getFollower();
+                    return UserMapper.toDTO(follower);
+                })
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<SubscriptionDTO> getFollowing(String username, int page, int size) {
+    public List<UserDTO> getFollowing(String username, int page, int size) {
         User user = userService.getByUsername(username);
+
         return subscriptionRepository.findByFollower(user, PageRequest.of(page, size))
                 .stream()
-                .map(SubscriptionMapper::toDTO)
+                .map(subscription -> {
+                    User following = subscription.getFollowing();
+                    return UserMapper.toDTO(following);
+                })
                 .collect(Collectors.toList());
     }
 

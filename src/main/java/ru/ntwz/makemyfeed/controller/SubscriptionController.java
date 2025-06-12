@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.ntwz.makemyfeed.constant.AttributesConstants;
 import ru.ntwz.makemyfeed.dto.response.SubscriptionDTO;
+import ru.ntwz.makemyfeed.dto.response.UserDTO;
 import ru.ntwz.makemyfeed.model.User;
 import ru.ntwz.makemyfeed.service.SubscriptionService;
 
@@ -37,7 +38,7 @@ public class SubscriptionController {
     }
 
     @GetMapping("/followers/{username}")
-    public List<SubscriptionDTO> getFollowers(
+    public List<UserDTO> getFollowers(
             @PathVariable String username,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
@@ -46,7 +47,7 @@ public class SubscriptionController {
     }
 
     @GetMapping("/following/{username}")
-    public List<SubscriptionDTO> getFollowing(
+    public List<UserDTO> getFollowing(
             @PathVariable String username,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
