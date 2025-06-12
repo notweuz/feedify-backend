@@ -14,4 +14,6 @@ public class UserDTO {
     private String displayName;
     private String username;
     private Instant registrationDate;
+    private Integer followersCount;
+    private Integer followingCount;
 }
