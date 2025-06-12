@@ -3,30 +3,30 @@ package ru.ntwz.makemyfeed.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.ntwz.makemyfeed.constant.AttributesConstants;
-import ru.ntwz.makemyfeed.dto.response.SubscriptionDTO;
+import ru.ntwz.makemyfeed.dto.response.FollowingDTO;
 import ru.ntwz.makemyfeed.dto.response.UserDTO;
 import ru.ntwz.makemyfeed.model.User;
-import ru.ntwz.makemyfeed.service.SubscriptionService;
+import ru.ntwz.makemyfeed.service.FollowingService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/subscriptions")
-public class SubscriptionController {
+@RequestMapping("/followings/")
+public class FollowingController {
 
-    private final SubscriptionService subscriptionService;
+    private final FollowingService followingService;
 
     @Autowired
-    public SubscriptionController(SubscriptionService subscriptionService) {
-        this.subscriptionService = subscriptionService;
+    public FollowingController(FollowingService followingService) {
+        this.followingService = followingService;
     }
 
     @PostMapping("/{username}")
-    public SubscriptionDTO subscribe(
+    public FollowingDTO subscribe(
             @RequestAttribute(AttributesConstants.USER) User user,
             @PathVariable String username
     ) {
-        return subscriptionService.subscribe(user, username);
+        return followingService.follow(user, username);
     }
 
     @DeleteMapping("/{username}")
@@ -34,7 +34,7 @@ public class SubscriptionController {
             @RequestAttribute(AttributesConstants.USER) User user,
             @PathVariable String username
     ) {
-        subscriptionService.unsubscribe(user, username);
+        followingService.unfollow(user, username);
     }
 
     @GetMapping("/followers/{username}")
@@ -43,7 +43,7 @@ public class SubscriptionController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
-        return subscriptionService.getFollowers(username, page, size);
+        return followingService.getFollowers(username, page, size);
     }
 
     @GetMapping("/following/{username}")
@@ -52,7 +52,7 @@ public class SubscriptionController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
-        return subscriptionService.getFollowing(username, page, size);
+        return followingService.getFollowing(username, page, size);
     }
 
     @GetMapping("/check/{username}")
@@ -60,6 +60,6 @@ public class SubscriptionController {
             @RequestAttribute(AttributesConstants.USER) User user,
             @PathVariable String username
     ) {
-        return subscriptionService.isFollowing(user, username);
+        return followingService.isFollowing(user, username);
     }
 } 

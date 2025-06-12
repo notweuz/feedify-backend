@@ -8,9 +8,9 @@ import java.time.Instant;
 
 @Data
 @Entity
-@Table(name = "subscriptions")
+@Table(name = "followings")
 @NoArgsConstructor
-public class Subscription {
+public class Following {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,7 +26,7 @@ public class Subscription {
     @Column(nullable = false)
     private Instant createdAt = Instant.now();
 
-    public Subscription(User follower, User following) {
+    public Following(User follower, User following) {
         this.follower = follower;
         this.following = following;
     }

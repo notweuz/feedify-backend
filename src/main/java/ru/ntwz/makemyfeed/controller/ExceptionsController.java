@@ -96,22 +96,22 @@ public class ExceptionsController {
         return new ResponseEntity<>(map, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(SelfSubscriptionException.class)
-    public ResponseEntity<Map<String, String>> handleSelfSubscriptionException(SelfSubscriptionException ex) {
+    @ExceptionHandler(SelfFollowingException.class)
+    public ResponseEntity<Map<String, String>> handleSelfSubscriptionException(SelfFollowingException ex) {
         Map<String, String> map = new HashMap<>();
         map.put("error", ex.getMessage());
         return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(AlreadySubscribedException.class)
-    public ResponseEntity<Map<String, String>> handleAlreadySubscribedException(AlreadySubscribedException ex) {
+    @ExceptionHandler(AlreadyFollowingException.class)
+    public ResponseEntity<Map<String, String>> handleAlreadySubscribedException(AlreadyFollowingException ex) {
         Map<String, String> map = new HashMap<>();
         map.put("error", ex.getMessage());
         return new ResponseEntity<>(map, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(NotSubscribedException.class)
-    public ResponseEntity<Map<String, String>> handleNotSubscribedException(NotSubscribedException ex) {
+    @ExceptionHandler(NotFollowingException.class)
+    public ResponseEntity<Map<String, String>> handleNotSubscribedException(NotFollowingException ex) {
         Map<String, String> map = new HashMap<>();
         map.put("error", ex.getMessage());
         return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);

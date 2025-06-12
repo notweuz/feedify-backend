@@ -9,7 +9,7 @@ import java.time.Instant;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SubscriptionDTO {
+public class FollowingDTO {
     private Long id;
     private UserDTO follower;
     private UserDTO following;

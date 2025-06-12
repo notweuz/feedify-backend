@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.lang.reflect.Array;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,10 +39,10 @@ public class User {
     private List<Vote> votes = new ArrayList<>();
 
     @OneToMany(mappedBy = "follower", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Subscription> following = new ArrayList<>();
+    private List<Following> following = new ArrayList<>();
 
     @OneToMany(mappedBy = "following", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Subscription> followers = new ArrayList<>();
+    private List<Following> followers = new ArrayList<>();
 
     public User(String displayName, String username, String password) {
         this.displayName = displayName;
