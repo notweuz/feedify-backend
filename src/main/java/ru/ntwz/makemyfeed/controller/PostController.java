@@ -10,6 +10,7 @@ import ru.ntwz.makemyfeed.dto.request.PostCreateDTO;
 import ru.ntwz.makemyfeed.dto.request.PostUpdateDTO;
 import ru.ntwz.makemyfeed.dto.response.CommentDTO;
 import ru.ntwz.makemyfeed.dto.response.PostDTO;
+import ru.ntwz.makemyfeed.dto.response.VoteDTO;
 import ru.ntwz.makemyfeed.model.User;
 import ru.ntwz.makemyfeed.service.PostService;
 import ru.ntwz.makemyfeed.service.VoteService;
@@ -84,11 +85,11 @@ public class PostController {
     }
 
     @PostMapping("/{postId}/vote")
-    public void upvote(
+    public VoteDTO vote(
             @RequestAttribute(AttributesConstants.USER) User user,
             @PathVariable Long postId,
             @RequestParam(defaultValue = "true") boolean upvote
     ) {
-        voteService.vote(postId, user, upvote);
+        return voteService.vote(postId, user, upvote);
     }
 }

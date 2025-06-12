@@ -1,7 +1,10 @@
 package ru.ntwz.makemyfeed.service.implementation;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.ntwz.makemyfeed.dto.mapper.VoteMapper;
+import ru.ntwz.makemyfeed.dto.response.VoteDTO;
 import ru.ntwz.makemyfeed.exception.PostNotFoundException;
 import ru.ntwz.makemyfeed.model.Post;
 import ru.ntwz.makemyfeed.model.User;
@@ -23,26 +26,32 @@ public class VoteServiceImpl implements VoteService {
     }
 
     @Override
-    public void vote(Long postId, User user, boolean isUpvote) {
+    @Transactional
+    public VoteDTO vote(Long postId, User user, boolean isUpvote) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException("Post with id " + postId + " not found"));
 
         VoteType voteType = isUpvote ? VoteType.UPVOTE : VoteType.DOWNVOTE;
         Vote existingVote = voteRepository.findByUserAndPost(user, post).orElse(null);
+        Vote resultVote = null;
 
         if (existingVote == null) {
             Vote vote = new Vote();
             vote.setUser(user);
             vote.setPost(post);
             vote.setVoteType(voteType);
-            voteRepository.save(vote);
+            resultVote = voteRepository.save(vote);
+            post.getVotes().add(resultVote);
         } else {
             if (existingVote.getVoteType() == voteType) {
+                post.getVotes().remove(existingVote);
                 voteRepository.delete(existingVote);
             } else {
                 existingVote.setVoteType(voteType);
-                voteRepository.save(existingVote);
+                resultVote = voteRepository.save(existingVote);
             }
         }
+
+        return VoteMapper.toVoteDTO(post, resultVote);
     }
 }
