@@ -1,6 +1,10 @@
 package ru.ntwz.makemyfeed.dto.mapper;
 
 import jakarta.validation.constraints.NotNull;
+import org.hibernate.annotations.Cache;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import ru.ntwz.makemyfeed.config.CommonConfig;
 import ru.ntwz.makemyfeed.dto.response.UserDTO;
 import ru.ntwz.makemyfeed.model.User;
 
@@ -13,15 +17,7 @@ public class UserMapper {
         userDTO.setRegistrationDate(user.getRegistrationDate());
         userDTO.setFollowersCount(user.getFollowers().size());
         userDTO.setFollowingCount(user.getFollowing().size());
+        userDTO.setAvatarUrl(user.getAvatarUrl());
         return userDTO;
-    }
-
-    public static User toUser(@NotNull UserDTO userDTO) {
-        User user = new User();
-        user.setId(userDTO.getId());
-        user.setDisplayName(userDTO.getDisplayName());
-        user.setUsername(userDTO.getUsername());
-        user.setRegistrationDate(userDTO.getRegistrationDate());
-        return user;
     }
 }

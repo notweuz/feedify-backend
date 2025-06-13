@@ -2,7 +2,7 @@ package ru.ntwz.makemyfeed.util;
 
 import java.util.Random;
 
-public class PostsUtil {
+public class RandUtils {
     private static final String CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int LINK_LENGTH = 16;
 

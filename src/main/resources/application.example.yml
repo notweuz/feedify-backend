@@ -16,8 +16,10 @@ spring:
 common:
   version: 0.1
   env: dev
+  public-domain: https://example.com
   content:
     storage:
+    max-size: 83886080
 
 jwt:
   secret:

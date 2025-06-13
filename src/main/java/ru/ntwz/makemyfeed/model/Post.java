@@ -3,7 +3,7 @@ package ru.ntwz.makemyfeed.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-import ru.ntwz.makemyfeed.util.PostsUtil;
+import ru.ntwz.makemyfeed.util.RandUtils;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class Post {
     private Instant createdAt = Instant.now();
 
     @Column
-    private String uniqueLink = PostsUtil.generateUniqueLink();
+    private String uniqueLink = RandUtils.generateUniqueLink();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "parent_post_id")

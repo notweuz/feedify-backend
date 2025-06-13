@@ -116,4 +116,32 @@ public class ExceptionsController {
         map.put("error", ex.getMessage());
         return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(FileNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleFileNotFoundException(FileNotFoundException ex) {
+        Map<String, String> map = new HashMap<>();
+        map.put("error", ex.getMessage());
+        return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(FileReadingException.class)
+    public ResponseEntity<Map<String, String>> handleFileReadingException(FileReadingException ex) {
+        Map<String, String> map = new HashMap<>();
+        map.put("error", ex.getMessage());
+        return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(FileIsEmptyException.class)
+    public ResponseEntity<Map<String, String>> handleFileIsEmptyException(FileIsEmptyException ex) {
+        Map<String, String> map = new HashMap<>();
+        map.put("error", ex.getMessage());
+        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(FileIsTooLargeException.class)
+    public ResponseEntity<Map<String, String>> handleFileIsTooLargeException(FileIsTooLargeException ex) {
+        Map<String, String> map = new HashMap<>();
+        map.put("error", ex.getMessage());
+        return new ResponseEntity<>(map, HttpStatus.PAYLOAD_TOO_LARGE);
+    }
 }

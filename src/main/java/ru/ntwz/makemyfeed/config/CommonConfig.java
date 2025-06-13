@@ -10,9 +10,12 @@ import org.springframework.context.annotation.Configuration;
 public class CommonConfig {
     private String version;
     private String env;
+    private String publicDomain;
+    private Content content;
 
     @Data
     public static class Content {
         private String storage;
+        private long maxSize;
     }
 }
