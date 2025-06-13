@@ -17,7 +17,7 @@ common:
   version: 0.1
   env: dev
   content:
-    save-path:
+    storage:
 
 jwt:
   secret:

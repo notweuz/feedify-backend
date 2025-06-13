@@ -13,6 +13,6 @@ public class CommonConfig {
 
     @Data
     public static class Content {
-        private String savePath;
+        private String storage;
     }
 }
