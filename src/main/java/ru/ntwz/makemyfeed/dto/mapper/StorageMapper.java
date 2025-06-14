@@ -1,6 +1,7 @@
 package ru.ntwz.makemyfeed.dto.mapper;
 
 import ru.ntwz.makemyfeed.dto.response.FileDTO;
+import ru.ntwz.makemyfeed.dto.response.PostAttachmentDTO;
 import ru.ntwz.makemyfeed.dto.response.StorageEntryDTO;
 import ru.ntwz.makemyfeed.model.StorageEntry;
 
@@ -19,6 +20,14 @@ public class StorageMapper {
         dto.setData(content);
         dto.setName(fileName);
         dto.setContentType(contentType);
+        return dto;
+    }
+
+    public static PostAttachmentDTO toPostAttachmentDTO(StorageEntry storageEntry, String fileUrl) {
+        PostAttachmentDTO dto = new PostAttachmentDTO();
+        dto.setId(storageEntry.getId());
+        dto.setContentType(storageEntry.getContentType());
+        dto.setFileUrl(fileUrl);
         return dto;
     }
 }

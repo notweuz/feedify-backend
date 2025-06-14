@@ -12,6 +12,10 @@ spring:
     open-in-view: false
   jackson:
     property-naming-strategy: SNAKE_CASE
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
 
 common:
   version: 0.1
@@ -20,6 +24,7 @@ common:
   content:
     storage:
     max-size: 83886080
+    max-attachments: 10
 
 jwt:
   secret:

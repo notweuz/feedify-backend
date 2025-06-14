@@ -17,5 +17,6 @@ public class CommonConfig {
     public static class Content {
         private String storage;
         private long maxSize;
+        private int maxAttachments;
     }
 }

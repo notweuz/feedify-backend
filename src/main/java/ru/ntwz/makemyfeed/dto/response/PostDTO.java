@@ -17,8 +17,8 @@ public class PostDTO {
     private UserDTO author;
     private Instant createdAt;
     private String uniqueLink;
-    //    private List<AttachmentDTO> attachments;
     private List<CommentDTO> comments;
+    private List<PostAttachmentDTO> attachments;
     private PostDTO parentPost;
     private Boolean isDeleted;
     private Integer commentsCount;

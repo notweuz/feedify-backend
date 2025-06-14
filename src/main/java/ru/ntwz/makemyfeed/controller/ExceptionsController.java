@@ -144,4 +144,25 @@ public class ExceptionsController {
         map.put("error", ex.getMessage());
         return new ResponseEntity<>(map, HttpStatus.PAYLOAD_TOO_LARGE);
     }
+
+    @ExceptionHandler(TooManyAttachmentsException.class)
+    public ResponseEntity<Map<String, String>> handleTooManyAttachmentsException(TooManyAttachmentsException ex) {
+        Map<String, String> map = new HashMap<>();
+        map.put("error", ex.getMessage());
+        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AttachmentNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleAttachmentNotFoundException(AttachmentNotFoundException ex) {
+        Map<String, String> map = new HashMap<>();
+        map.put("error", ex.getMessage());
+        return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(PostHasNoContentAtAllException.class)
+    public ResponseEntity<Map<String, String>> handlePostHasNoContentAtAllException(PostHasNoContentAtAllException ex) {
+        Map<String, String> map = new HashMap<>();
+        map.put("error", ex.getMessage());
+        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    }
 }

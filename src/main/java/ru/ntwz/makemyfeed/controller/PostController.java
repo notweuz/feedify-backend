@@ -3,6 +3,7 @@ package ru.ntwz.makemyfeed.controller;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.ntwz.makemyfeed.constant.AttributesConstants;
 import ru.ntwz.makemyfeed.dto.request.PostCreateDTO;
 import ru.ntwz.makemyfeed.dto.request.PostUpdateDTO;
@@ -89,5 +90,23 @@ public class PostController {
             @RequestParam(defaultValue = "true") boolean upvote
     ) {
         return voteService.vote(postId, user, upvote);
+    }
+
+    @PostMapping("/{postId}/attachments")
+    public PostDTO addAttachments(
+            @RequestAttribute(AttributesConstants.USER) User user,
+            @PathVariable Long postId,
+            @RequestPart("attachments") List<MultipartFile> attachments
+    ) {
+        return postService.addAttachments(user, postId, attachments);
+    }
+
+    @DeleteMapping("/{postId}/attachments/{id}")
+    public void deleteAttachment(
+            @RequestAttribute(AttributesConstants.USER) User user,
+            @PathVariable Long postId,
+            @PathVariable Long id
+    ) {
+        postService.deleteAttachment(user, postId, id);
     }
 }

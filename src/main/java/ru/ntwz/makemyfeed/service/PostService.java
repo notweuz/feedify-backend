@@ -1,5 +1,6 @@
 package ru.ntwz.makemyfeed.service;
 
+import org.springframework.web.multipart.MultipartFile;
 import ru.ntwz.makemyfeed.dto.request.PostCreateDTO;
 import ru.ntwz.makemyfeed.dto.request.PostUpdateDTO;
 import ru.ntwz.makemyfeed.dto.response.CommentDTO;
@@ -24,4 +25,8 @@ public interface PostService {
     PostDTO update(User user, Long id, PostUpdateDTO postUpdateDTO);
 
     void delete(User user, Long id);
+
+    PostDTO addAttachments(User user, Long postId, List<MultipartFile> attachments);
+
+    void deleteAttachment(User user, Long postId, Long attachmentId);
 }

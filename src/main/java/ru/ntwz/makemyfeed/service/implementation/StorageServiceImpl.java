@@ -74,6 +74,36 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    public StorageEntry uploadFile(MultipartFile file, User user) {
+        if (file.isEmpty()) {
+            throw new FileIsEmptyException("File is empty");
+        }
+
+        if (file.getSize() > commonConfig.getContent().getMaxSize()) {
+            throw new FileIsTooLargeException("File size exceeds the maximum allowed size, " + file.getSize() + " > " + commonConfig.getContent().getMaxSize() + " bytes");
+        }
+
+        String fileExtension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+        String uniqueName = RandUtils.generateUniqueLink() + fileExtension;
+        String filePath = getSavePath(uniqueName);
+
+        try {
+            Files.write(Paths.get(filePath), file.getBytes());
+        } catch (Exception e) {
+            throw new FileReadingException("Error saving file: " + filePath);
+        }
+
+        StorageEntry storageEntry = new StorageEntry();
+        storageEntry.setUniqueName(uniqueName);
+        storageEntry.setFilePath(filePath);
+        storageEntry.setContentType(file.getContentType());
+        storageEntry.setSize(file.getSize());
+        storageEntry.setAuthor(user);
+
+        return storageRepository.save(storageEntry);
+    }
+
+    @Override
     public StorageEntryDTO uploadAvatar(MultipartFile file, User user) {
         if (file.isEmpty()) {
             throw new FileIsEmptyException("File is empty");
@@ -136,5 +166,18 @@ public class StorageServiceImpl implements StorageService {
         storageRepository.delete(storageEntry);
         user.setAvatarUrl(null);
         userRepository.save(user);
+    }
+
+    @Override
+    public void deleteFile(StorageEntry storageEntry) {
+        Path filePath = Paths.get(storageEntry.getFilePath());
+        try {
+            Files.deleteIfExists(filePath);
+            log.info("File deleted successfully: uniqueName={}, filePath={}", storageEntry.getUniqueName(), storageEntry.getFilePath());
+        } catch (Exception e) {
+            throw new FileReadingException("Error deleting file: " + filePath);
+        }
+
+        storageRepository.delete(storageEntry);
     }
 }
