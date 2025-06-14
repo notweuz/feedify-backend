@@ -29,4 +29,10 @@ public interface PostService {
     PostDTO addAttachments(User user, Long postId, List<MultipartFile> attachments);
 
     void deleteAttachment(User user, Long postId, Long attachmentId);
+
+    List<PostDTO> findUserRecommendations(User user, int page, int size);
+
+    List<PostDTO> findAllRecentPosts(int page, int size);
+
+    List<PostDTO> findAllMonthlyPopularPosts(int page, int size);
 }

@@ -109,4 +109,29 @@ public class PostController {
     ) {
         postService.deleteAttachment(user, postId, id);
     }
+
+    @GetMapping("/feed/recommendations")
+    public List<PostDTO> findUserRecommendations(
+            @RequestAttribute(AttributesConstants.USER) User user,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return postService.findUserRecommendations(user, page, size);
+    }
+
+    @GetMapping("/feed/recent")
+    public List<PostDTO> findRecentPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return postService.findAllRecentPosts(page, size);
+    }
+
+    @GetMapping("/feed/popular")
+    public List<PostDTO> findMonthlyPopularPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return postService.findAllMonthlyPopularPosts(page, size);
+    }
 }

@@ -2,6 +2,7 @@ package ru.ntwz.makemyfeed.service.implementation;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,6 @@ import ru.ntwz.makemyfeed.dto.response.CommentDTO;
 import ru.ntwz.makemyfeed.dto.response.PostDTO;
 import ru.ntwz.makemyfeed.exception.NotPostsOwnerException;
 import ru.ntwz.makemyfeed.exception.PostAlreadyDeletedException;
-import ru.ntwz.makemyfeed.exception.PostHasNoContentAtAllException;
 import ru.ntwz.makemyfeed.exception.PostNotFoundException;
 import ru.ntwz.makemyfeed.exception.AttachmentNotFoundException;
 import ru.ntwz.makemyfeed.exception.TooManyAttachmentsException;
@@ -26,9 +26,7 @@ import ru.ntwz.makemyfeed.service.PostService;
 import ru.ntwz.makemyfeed.service.StorageService;
 import ru.ntwz.makemyfeed.service.UserService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -213,5 +211,52 @@ public class PostServiceImpl implements PostService {
         post.getAttachments().remove(attachment);
         postRepository.save(post);
         storageService.deleteFile(attachment);
+    }
+
+    @Override
+    public List<PostDTO> findUserRecommendations(User user, int page, int size) {
+        log.info("Finding user recommendations for user: {}, page: {}, size: {}", user.getUsername(), page, size);
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Post> followingAndTheirFollowings = postRepository.findPostsByFollowingAndTheirFollowings(user, pageable);
+        Page<Post> topPostsByRatingAndCommentsMonthly = postRepository.findTopPostsByRatingAndCommentsMonthly(pageable);
+        Page<Post> postsLikedByFollowings = postRepository.findPostsLikedByFollowedUsers(user, pageable);
+
+        Set<Post> recommendedPosts = new HashSet<>(followingAndTheirFollowings.getContent());
+        recommendedPosts.addAll(new HashSet<>(topPostsByRatingAndCommentsMonthly.getContent()));
+        recommendedPosts.addAll(new HashSet<>(postsLikedByFollowings.getContent()));
+
+        List<PostDTO> result = recommendedPosts.stream()
+                .sorted(Comparator.comparing(Post::getCreatedAt).reversed())
+                .filter(post -> !post.getAuthor().getId().equals(user.getId()))
+                .map(PostMapper::toPostDTO)
+                .toList();
+
+        log.info("Found {} recommended posts for user: {}", result.size(), user.getUsername());
+        return result;
+    }
+
+    @Override
+    public List<PostDTO> findAllRecentPosts(int page, int size) {
+        log.info("Finding all recent posts, page: {}, size: {}", page, size);
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Post> allRecentPosts = postRepository.findAllActivePosts(pageable);
+        List<PostDTO> result = allRecentPosts.getContent().stream().map(PostMapper::toPostDTO).toList();
+
+        log.info("Found {} recent posts", result.size());
+        return result;
+    }
+
+    @Override
+    public List<PostDTO> findAllMonthlyPopularPosts(int page, int size) {
+        log.info("Finding all monthly popular posts, page: {}, size: {}", page, size);
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Post> allPopularMonthlyPosts = postRepository.findTopPostsByRatingAndCommentsMonthly(pageable);
+        List<PostDTO> result = allPopularMonthlyPosts.getContent().stream().map(PostMapper::toPostDTO).toList();
+
+        log.info("Found {} monthly popular posts", result.size());
+        return result;
     }
 }
