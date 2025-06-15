@@ -1,6 +1,5 @@
 package ru.ntwz.makemyfeed.service;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 import ru.ntwz.makemyfeed.dto.response.FileDTO;
 import ru.ntwz.makemyfeed.dto.response.StorageEntryDTO;

@@ -60,8 +60,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDTO findById(Long id) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new PostNotFoundException("Post with id " + id + " not found"));
+        Post post = getPostById(id);
 
         List<Post> comments = postRepository.findTop10CommentsByParentPostId(id, Pageable.ofSize(4)).getContent();
 
@@ -87,7 +86,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDTO createComment(User user, PostCreateDTO createDTO, Long parentPostId) {
-        Post parentPost = postRepository.findById(parentPostId).orElseThrow(() -> new PostNotFoundException("Post with id " + parentPostId + " not found"));
+        Post parentPost = getPostById(parentPostId);
 
         Post post = PostMapper.toPost(createDTO);
         post.setParentPost(parentPost);
@@ -122,9 +121,10 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDTO update(User user, Long id, PostUpdateDTO postUpdateDTO) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("Post with id " + id + " not found"));
+        Post post = getPostById(id);
 
-        if (!Objects.equals(post.getAuthor().getId(), user.getId())) throw new NotPostsOwnerException("You are not the owner of this post");
+        if (!Objects.equals(post.getAuthor().getId(), user.getId()))
+            throw new NotPostsOwnerException("You are not the owner of this post");
 
         if (postUpdateDTO.getContent() != null && !postUpdateDTO.getContent().isBlank()) {
             post.setContent(postUpdateDTO.getContent());
@@ -137,19 +137,20 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void delete(User user, Long id) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("Post with id " + id + " not found"));
+        Post post = getPostById(id);
 
-        if (!Objects.equals(post.getAuthor().getId(), user.getId())) throw new NotPostsOwnerException("You are not the owner of this post");
+        if (!Objects.equals(post.getAuthor().getId(), user.getId()))
+            throw new NotPostsOwnerException("You are not the owner of this post");
         if (post.getIsDeleted()) throw new PostAlreadyDeletedException("Post with id " + id + " is already deleted");
 
         post.setIsDeleted(true);
         post.setContent(null);
-        
+
         List<StorageEntry> attachmentsToDelete = new ArrayList<>(post.getAttachments());
-        
+
         post.getAttachments().clear();
         postRepository.save(post);
-        
+
         attachmentsToDelete.forEach(attachment -> {
             storageService.deleteFile(attachment);
             log.info("Deleted attachment with id: {}", attachment.getId());
@@ -160,8 +161,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDTO addAttachments(User user, Long postId, List<MultipartFile> attachments) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new PostNotFoundException("Post with id " + postId + " not found"));
+        Post post = getPostById(postId);
 
         if (!Objects.equals(post.getAuthor().getId(), user.getId())) {
             throw new NotPostsOwnerException("You are not the owner of this post");
@@ -173,7 +173,7 @@ public class PostServiceImpl implements PostService {
 
         int maxAttachments = commonConfig.getContent().getMaxAttachments();
         if (post.getAttachments().size() + attachments.size() > maxAttachments) {
-            throw new TooManyAttachmentsException("Too many attachments. Current: " + post.getAttachments().size() + 
+            throw new TooManyAttachmentsException("Too many attachments. Current: " + post.getAttachments().size() +
                     ", trying to add: " + attachments.size() + ", maximum allowed: " + maxAttachments);
         }
 
@@ -190,8 +190,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deleteAttachment(User user, Long postId, Long attachmentId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new PostNotFoundException("Post with id " + postId + " not found"));
+        Post post = getPostById(postId);
 
         if (!Objects.equals(post.getAuthor().getId(), user.getId())) {
             throw new NotPostsOwnerException("You are not the owner of this post");
@@ -258,5 +257,10 @@ public class PostServiceImpl implements PostService {
 
         log.info("Found {} monthly popular posts", result.size());
         return result;
+    }
+
+    private Post getPostById(Long postId) {
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException("Post with id " + postId + " not found"));
     }
 }
