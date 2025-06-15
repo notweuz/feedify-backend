@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.ntwz.makemyfeed.config.CommonConfig;
 import ru.ntwz.makemyfeed.dto.mapper.InfoMapper;
-import ru.ntwz.makemyfeed.dto.response.InfoStatusDTO;
+import ru.ntwz.makemyfeed.dto.response.InfoHealthDTO;
 import ru.ntwz.makemyfeed.service.InfoService;
 
 @Service
@@ -18,7 +18,7 @@ public class InfoServiceImpl implements InfoService {
     }
 
     @Override
-    public InfoStatusDTO status() {
-        return InfoMapper.toInfoStatusDTO("Service is up!", commonConfig.getVersion());
+    public InfoHealthDTO health() {
+        return InfoMapper.toInfoHealthDTO("Service is up!", commonConfig.getVersion());
     }
 }

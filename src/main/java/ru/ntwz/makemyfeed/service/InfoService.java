@@ -1,7 +1,7 @@
 package ru.ntwz.makemyfeed.service;
 
-import ru.ntwz.makemyfeed.dto.response.InfoStatusDTO;
+import ru.ntwz.makemyfeed.dto.response.InfoHealthDTO;
 
 public interface InfoService {
-    InfoStatusDTO status();
+    InfoHealthDTO health();
 }

@@ -1,12 +1,12 @@
 package ru.ntwz.makemyfeed.dto.mapper;
 
-import ru.ntwz.makemyfeed.dto.response.InfoStatusDTO;
+import ru.ntwz.makemyfeed.dto.response.InfoHealthDTO;
 
 public class InfoMapper {
-    public static InfoStatusDTO toInfoStatusDTO(String status, String version) {
-        InfoStatusDTO infoStatusDTO = new InfoStatusDTO();
-        infoStatusDTO.setStatus(status);
-        infoStatusDTO.setVersion(version);
-        return infoStatusDTO;
+    public static InfoHealthDTO toInfoHealthDTO(String status, String version) {
+        InfoHealthDTO infoHealthDTO = new InfoHealthDTO();
+        infoHealthDTO.setStatus(status);
+        infoHealthDTO.setVersion(version);
+        return infoHealthDTO;
     }
 }

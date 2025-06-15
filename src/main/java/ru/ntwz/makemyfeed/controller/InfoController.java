@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.ntwz.makemyfeed.dto.response.InfoStatusDTO;
+import ru.ntwz.makemyfeed.dto.response.InfoHealthDTO;
 import ru.ntwz.makemyfeed.service.InfoService;
 
 @RestController
@@ -18,8 +18,8 @@ public class InfoController {
         this.infoService = infoService;
     }
 
-    @GetMapping("/status")
-    public InfoStatusDTO status() {
-        return infoService.status();
+    @GetMapping("/health")
+    public InfoHealthDTO health() {
+        return infoService.health();
     }
 }

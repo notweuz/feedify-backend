@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class InfoStatusDTO {
+public class InfoHealthDTO {
     private String status;
     private String version;
     private LocalDateTime serverTime = LocalDateTime.now();
