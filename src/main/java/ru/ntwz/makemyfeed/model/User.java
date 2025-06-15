@@ -30,9 +30,6 @@ public class User {
     private String username;
 
     @Column
-    private String avatarUrl;
-
-    @Column
     @NotNull
     private String password;
 
@@ -47,6 +44,10 @@ public class User {
 
     @OneToMany(mappedBy = "following", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Following> followers = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "avatar_id")
+    private StorageEntry avatar;
 
     public User(String displayName, String username, String password) {
         this.displayName = displayName;

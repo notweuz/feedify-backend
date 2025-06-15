@@ -2,9 +2,6 @@ package ru.ntwz.makemyfeed.service.implementation;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.ntwz.makemyfeed.config.CommonConfig;
@@ -47,6 +44,17 @@ public class StorageServiceImpl implements StorageService {
         return commonConfig.getContent().getStorage() + "/" + uniqueName;
     }
 
+    private void validateFile(MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new FileIsEmptyException("File is empty");
+        }
+
+        if (file.getSize() > commonConfig.getContent().getMaxSize()) {
+            throw new FileIsTooLargeException("File size exceeds the maximum allowed size, " + file.getSize() + " > " + commonConfig.getContent().getMaxSize() + " bytes");
+        }
+
+    }
+
     @Override
     public FileDTO getFileByUniqueName(String uniqueName) {
         StorageEntry storageEntry = storageRepository.findByUniqueName(uniqueName)
@@ -75,13 +83,7 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     public StorageEntry uploadFile(MultipartFile file, User user) {
-        if (file.isEmpty()) {
-            throw new FileIsEmptyException("File is empty");
-        }
-
-        if (file.getSize() > commonConfig.getContent().getMaxSize()) {
-            throw new FileIsTooLargeException("File size exceeds the maximum allowed size, " + file.getSize() + " > " + commonConfig.getContent().getMaxSize() + " bytes");
-        }
+        validateFile(file);
 
         String fileExtension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
         String uniqueName = RandUtils.generateUniqueLink() + fileExtension;
@@ -105,16 +107,10 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     public StorageEntryDTO uploadAvatar(MultipartFile file, User user) {
-        if (file.isEmpty()) {
-            throw new FileIsEmptyException("File is empty");
-        }
+        validateFile(file);
 
         if (!file.getContentType().startsWith("image/") && !file.getContentType().equals("image/gif")) {
             throw new FileReadingException("File is not an image or GIF: " + file.getContentType());
-        }
-
-        if (file.getSize() > commonConfig.getContent().getMaxSize()) {
-            throw new FileIsTooLargeException("File size exceeds the maximum allowed size, " + file.getSize() + " > " + commonConfig.getContent().getMaxSize() + " bytes");
         }
 
         String fileExtension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
@@ -133,12 +129,12 @@ public class StorageServiceImpl implements StorageService {
         storageEntry.setContentType(file.getContentType());
         storageEntry.setSize(file.getSize());
         storageEntry.setAuthor(user);
-        storageRepository.save(storageEntry);
+        StorageEntry avatar = storageRepository.save(storageEntry);
 
         log.info("File uploaded successfully: uniqueName={}, filePath={}, contentType={}, size={}",
                 storageEntry.getUniqueName(), storageEntry.getFilePath(), storageEntry.getContentType(), storageEntry.getSize());
 
-        user.setAvatarUrl(commonConfig.getPublicDomain() + "/storage/" + storageEntry.getUniqueName());
+        user.setAvatar(avatar);
         userRepository.save(user);
 
         return StorageMapper.toDTO(storageEntry);
@@ -146,25 +142,23 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     public void deleteAvatar(User user) {
-        if (user.getAvatarUrl() == null || user.getAvatarUrl().isEmpty()) {
+        if (user.getAvatar() == null) {
             log.warn("User {} has no avatar to delete", user.getUsername());
             return;
         }
 
-        String uniqueName = user.getAvatarUrl().substring(user.getAvatarUrl().lastIndexOf("/") + 1);
-        StorageEntry storageEntry = storageRepository.findByUniqueName(uniqueName)
-                .orElseThrow(() -> new FileNotFoundException("File with unique name '" + uniqueName + "' not found"));
+        StorageEntry storageEntry = user.getAvatar();
 
         Path filePath = Paths.get(storageEntry.getFilePath());
         try {
             Files.deleteIfExists(filePath);
-            log.info("File deleted successfully: uniqueName={}, filePath={}", uniqueName, storageEntry.getFilePath());
+            log.info("File deleted successfully: uniqueName={}, filePath={}", storageEntry.getUniqueName(), storageEntry.getFilePath());
         } catch (Exception e) {
             throw new FileReadingException("Error deleting file: " + filePath);
         }
 
         storageRepository.delete(storageEntry);
-        user.setAvatarUrl(null);
+        user.setAvatar(null);
         userRepository.save(user);
     }
 
