@@ -275,7 +275,7 @@ public class StorageServiceImpl implements StorageService {
     @Override
     public void attachFilesToPost(List<StorageEntry> files, Long postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("Post not found with id: " + postId));
+                .orElseThrow(() -> new PostNotFoundException("Post not found with id: " + postId));
 
         for (StorageEntry file : files) {
             file.setPost(post);
