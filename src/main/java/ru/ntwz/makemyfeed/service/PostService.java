@@ -26,8 +26,6 @@ public interface PostService {
 
     void delete(User user, Long id);
 
-    PostDTO addAttachments(User user, Long postId, List<MultipartFile> attachments);
-
     void deleteAttachment(User user, Long postId, Long attachmentId);
 
     List<PostDTO> findUserRecommendations(User user, int page, int size);

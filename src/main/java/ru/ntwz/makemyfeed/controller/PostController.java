@@ -92,15 +92,6 @@ public class PostController {
         return voteService.vote(postId, user, upvote);
     }
 
-    @PostMapping("/{postId}/attachments")
-    public PostDTO addAttachments(
-            @RequestAttribute(AttributesConstants.USER) User user,
-            @PathVariable Long postId,
-            @RequestPart("attachments") List<MultipartFile> attachments
-    ) {
-        return postService.addAttachments(user, postId, attachments);
-    }
-
     @DeleteMapping("/{postId}/attachments/{id}")
     public void deleteAttachment(
             @RequestAttribute(AttributesConstants.USER) User user,

@@ -48,14 +48,54 @@ public class PostServiceImpl implements PostService {
         this.commonConfig = commonConfig;
     }
 
+    private List<StorageEntry> validateTempFiles(User user, PostCreateDTO postCreateDTO) {
+        List<StorageEntry> temporaryFiles = new ArrayList<>();
+
+        if (postCreateDTO.getAttachments() != null && !postCreateDTO.getAttachments().isEmpty()) {
+            log.info("Validating {} attachments for post", postCreateDTO.getAttachments().size());
+
+            temporaryFiles = storageService.getTemporaryFilesByIds(postCreateDTO.getAttachments(), user);
+
+            log.info("Validated {} attachments for post", temporaryFiles.size());
+
+            int maxAttachments = commonConfig.getContent().getMaxAttachments();
+            if (temporaryFiles.size() > maxAttachments) {
+                throw new TooManyAttachmentsException("Too many attachments. Trying to add: " + temporaryFiles.size() +
+                        ", maximum allowed: " + maxAttachments);
+            }
+        }
+
+        return temporaryFiles;
+    }
+
     @Override
     public PostDTO create(User user, PostCreateDTO postCreateDTO) {
-        Post post = PostMapper.toPost(postCreateDTO);
-        post.setAuthor(user);
+        List<StorageEntry> temporaryFiles = new ArrayList<>();
+        
+        try {
+            temporaryFiles = validateTempFiles(user, postCreateDTO);
 
-        log.info("Creating post: {}", post.getContent());
+            Post post = PostMapper.toPost(postCreateDTO);
+            post.setAuthor(user);
+            
+            Post savedPost = postRepository.save(post);
 
-        return PostMapper.toPostDTO(postRepository.save(post));
+            if (!temporaryFiles.isEmpty()) {
+                storageService.attachFilesToPost(temporaryFiles, savedPost.getId());
+                savedPost = postRepository.findById(savedPost.getId()).orElse(savedPost);
+            }
+
+            log.info("Created post with {} attachments: {}", temporaryFiles.size(), savedPost.getContent());
+
+            return PostMapper.toPostDTO(savedPost);
+            
+        } catch (Exception e) {
+            if (!temporaryFiles.isEmpty()) {
+                storageService.deleteTemporaryFiles(temporaryFiles);
+                log.warn("Deleted temporary files due to error: {}", e.getMessage());
+            }
+            throw e;
+        }
     }
 
     @Override
@@ -87,14 +127,34 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostDTO createComment(User user, PostCreateDTO createDTO, Long parentPostId) {
         Post parentPost = getPostById(parentPostId);
+        List<StorageEntry> temporaryFiles = new ArrayList<>();
+        
+        try {
+            temporaryFiles = validateTempFiles(user, createDTO);
 
-        Post post = PostMapper.toPost(createDTO);
-        post.setParentPost(parentPost);
-        post.setAuthor(user);
+            Post post = PostMapper.toPost(createDTO);
+            post.setParentPost(parentPost);
+            post.setAuthor(user);
+            
+            Post savedPost = postRepository.save(post);
 
-        log.info("Creating comment on post {}: {}", parentPostId, post.getContent());
+            if (!temporaryFiles.isEmpty()) {
+                storageService.attachFilesToPost(temporaryFiles, savedPost.getId());
+                savedPost = postRepository.findById(savedPost.getId()).orElse(savedPost);
+            }
 
-        return PostMapper.toPostDTO(postRepository.save(post));
+            log.info("Created comment with {} attachments on post {}: {}", 
+                    temporaryFiles.size(), parentPostId, savedPost.getContent());
+
+            return PostMapper.toPostDTO(savedPost);
+            
+        } catch (Exception e) {
+            if (!temporaryFiles.isEmpty()) {
+                storageService.deleteTemporaryFiles(temporaryFiles);
+                log.warn("Deleted temporary files due to error: {}", e.getMessage());
+            }
+            throw e;
+        }
     }
 
     @Override
@@ -157,35 +217,6 @@ public class PostServiceImpl implements PostService {
         });
 
         log.info("Deleting post with id: {}", id);
-    }
-
-    @Override
-    public PostDTO addAttachments(User user, Long postId, List<MultipartFile> attachments) {
-        Post post = getPostById(postId);
-
-        if (!Objects.equals(post.getAuthor().getId(), user.getId())) {
-            throw new NotPostsOwnerException("You are not the owner of this post");
-        }
-
-        if (post.getIsDeleted()) {
-            throw new PostAlreadyDeletedException("Post with id " + postId + " is deleted");
-        }
-
-        int maxAttachments = commonConfig.getContent().getMaxAttachments();
-        if (post.getAttachments().size() + attachments.size() > maxAttachments) {
-            throw new TooManyAttachmentsException("Too many attachments. Current: " + post.getAttachments().size() +
-                    ", trying to add: " + attachments.size() + ", maximum allowed: " + maxAttachments);
-        }
-
-        log.info("Adding {} attachments to post: {}", attachments.size(), postId);
-
-        for (MultipartFile attachment : attachments) {
-            StorageEntry storageEntry = storageService.uploadFile(attachment, user);
-            storageEntry.setPost(post);
-            post.getAttachments().add(storageEntry);
-        }
-
-        return PostMapper.toPostDTO(postRepository.save(post));
     }
 
     @Override
