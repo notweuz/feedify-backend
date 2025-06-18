@@ -40,6 +40,14 @@ public class JWTServiceImpl implements JWTService {
 
     @Override
     public Long validate(String token) throws NotAuthorizedException {
+        if (token == null || token.trim().isEmpty()) {
+            throw new NotAuthorizedException("Token is null or empty");
+        }
+
+        if (token.chars().filter(ch -> ch == '.').count() != 2) {
+            throw new NotAuthorizedException("Invalid token format: Token must contain exactly two periods");
+        }
+
         Jws<Claims> claimsJws = Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()
