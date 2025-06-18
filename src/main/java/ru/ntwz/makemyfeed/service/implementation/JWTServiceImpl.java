@@ -40,6 +40,10 @@ public class JWTServiceImpl implements JWTService {
 
     @Override
     public Long validate(String token) throws NotAuthorizedException {
+        if (token == null || token.trim().isEmpty()) {
+            throw new NotAuthorizedException("Token is null or empty");
+        }
+
         Jws<Claims> claimsJws = Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()
