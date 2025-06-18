@@ -12,4 +12,6 @@ public interface UserService {
     User getByUsername(String username) throws UserNotFoundException;
 
     User getById(Long id) throws UserNotFoundException;
+
+    UserDTO getUserInfo(User user);
 }

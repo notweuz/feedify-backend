@@ -2,8 +2,10 @@ package ru.ntwz.makemyfeed.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.ntwz.makemyfeed.constant.AttributesConstants;
 import ru.ntwz.makemyfeed.dto.response.PostDTO;
 import ru.ntwz.makemyfeed.dto.response.UserDTO;
+import ru.ntwz.makemyfeed.model.User;
 import ru.ntwz.makemyfeed.service.PostService;
 import ru.ntwz.makemyfeed.service.UserService;
 
@@ -29,6 +31,13 @@ public class UserController {
             @RequestParam(defaultValue = "5") int size
     ) {
         return postService.getPostsByUser(userId, page, size);
+    }
+
+    @GetMapping("/me")
+    public UserDTO getSelfInfo(
+            @RequestAttribute(AttributesConstants.USER) User user
+    ) {
+        return userService.getUserInfo(user);
     }
 
     @GetMapping("/usernames/{username}")
