@@ -8,6 +8,7 @@ import ru.ntwz.makemyfeed.config.CommonConfig;
 import ru.ntwz.makemyfeed.dto.request.LoginDTO;
 import ru.ntwz.makemyfeed.dto.request.SignUpDTO;
 import ru.ntwz.makemyfeed.dto.response.AccessTokenDTO;
+import ru.ntwz.makemyfeed.dto.response.AccessTokenStatusDTO;
 import ru.ntwz.makemyfeed.exception.InvalidPasswordException;
 import ru.ntwz.makemyfeed.exception.NotAuthorizedException;
 import ru.ntwz.makemyfeed.exception.UserNotFoundException;
@@ -55,7 +56,10 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
         log.info("User {} created successfully", username);
 
-        return new AccessTokenDTO(jwtService.generate(user.getId(), passwordHash));
+        String token = jwtService.generate(user.getId(), passwordHash);
+        log.debug("Generated token for user {}: {}", username, token.substring(0, Math.min(20, token.length())) + "...");
+        
+        return new AccessTokenDTO(token);
     }
 
     @Override
@@ -67,10 +71,37 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
         log.info("User {} attempting to log in", username);
 
-        if (bCryptService.verify(password, user.getPassword()))
-            return new AccessTokenDTO(jwtService.generate(user.getId(), user.getPassword()));
-        else
+        if (bCryptService.verify(password, user.getPassword())) {
+            String token = jwtService.generate(user.getId(), user.getPassword());
+            log.debug("Generated token for user {}: {}", username, token.substring(0, Math.min(20, token.length())) + "...");
+            return new AccessTokenDTO(token);
+        } else {
             throw new InvalidPasswordException("Invalid password for user: " + username);
+        }
+    }
+
+    @Override
+    public AccessTokenStatusDTO validate(AccessTokenDTO accessTokenDTO) {
+        String accessToken = accessTokenDTO.getAccessToken();
+        
+        if (accessToken == null || accessToken.isBlank()) {
+            log.info("Token is null or blank");
+            return new AccessTokenStatusDTO(false);
+        }
+        
+        log.info("Validating token: {}", accessToken.substring(0, Math.min(20, accessToken.length())) + "...");
+        
+        try {
+            Long userId = jwtService.validate(accessToken);
+            log.info("Token validation successful, userId: {}", userId);
+            return new AccessTokenStatusDTO(userId != null);
+        } catch (NotAuthorizedException e) {
+            log.info("Token validation failed - NotAuthorizedException: {}", e.getMessage());
+            return new AccessTokenStatusDTO(false);
+        } catch (Exception e) {
+            log.info("Token validation failed - unexpected exception: {} - {}", e.getClass().getSimpleName(), e.getMessage());
+            return new AccessTokenStatusDTO(false);
+        }
     }
 
     @Override

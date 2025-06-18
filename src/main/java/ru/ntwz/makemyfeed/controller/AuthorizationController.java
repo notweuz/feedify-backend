@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.ntwz.makemyfeed.dto.request.LoginDTO;
 import ru.ntwz.makemyfeed.dto.request.SignUpDTO;
 import ru.ntwz.makemyfeed.dto.response.AccessTokenDTO;
+import ru.ntwz.makemyfeed.dto.response.AccessTokenStatusDTO;
 import ru.ntwz.makemyfeed.service.AuthorizationService;
 
 @RestController
@@ -29,5 +30,10 @@ public class AuthorizationController {
     @PostMapping("/login")
     public AccessTokenDTO login(@RequestBody @Valid LoginDTO loginDTO) {
         return authorizationService.login(loginDTO);
+    }
+
+    @PostMapping("/validate")
+    public AccessTokenStatusDTO validate(@RequestBody @Valid AccessTokenDTO accessTokenDTO) {
+        return authorizationService.validate(accessTokenDTO);
     }
 }
