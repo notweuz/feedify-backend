@@ -24,6 +24,7 @@ public class UserMapper {
         userDTO.setUsername(user.getUsername());
         userDTO.setDescription(user.getDescription() != null ? user.getDescription() : "");
         userDTO.setRegistrationDate(user.getRegistrationDate());
+        userDTO.setPostsCount(user.getPosts().size());
         userDTO.setFollowersCount(user.getFollowers().size());
         userDTO.setFollowingCount(user.getFollowing().size());
         userDTO.setAvatarUrl(user.getAvatar() != null ? commonConfig.getPublicDomain() + "/storage/" + user.getAvatar().getUniqueName() : null);

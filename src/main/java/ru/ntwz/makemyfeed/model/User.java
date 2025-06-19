@@ -57,6 +57,9 @@ public class User {
     @JoinColumn(name = "banner_id")
     private StorageEntry banner;
 
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Post> posts = new ArrayList<>();
+
     public User(String displayName, String username, String password) {
         this.displayName = displayName;
         this.username = username;

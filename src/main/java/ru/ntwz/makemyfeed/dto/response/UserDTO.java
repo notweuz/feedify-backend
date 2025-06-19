@@ -17,6 +17,7 @@ public class UserDTO {
     private String avatarUrl;
     private String bannerUrl;
     private Instant registrationDate;
+    private Integer postsCount;
     private Integer followersCount;
     private Integer followingCount;
 }
