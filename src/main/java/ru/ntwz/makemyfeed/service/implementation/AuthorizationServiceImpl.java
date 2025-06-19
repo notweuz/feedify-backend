@@ -46,10 +46,6 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
         String passwordHash = bCryptService.getHash(password);
 
-        if (displayName == null || displayName.isBlank()) {
-            displayName = username;
-        }
-
         User user = new User(displayName, username, passwordHash);
 
         userService.create(user);

@@ -27,6 +27,7 @@ public class UserMapper {
         userDTO.setFollowersCount(user.getFollowers().size());
         userDTO.setFollowingCount(user.getFollowing().size());
         userDTO.setAvatarUrl(user.getAvatar() != null ? commonConfig.getPublicDomain() + "/storage/" + user.getAvatar().getUniqueName() : null);
+        userDTO.setBannerUrl(user.getBanner() != null ? commonConfig.getPublicDomain() + "/storage/" + user.getBanner().getUniqueName() : null);
         return userDTO;
     }
 }

@@ -53,6 +53,10 @@ public class User {
     @JoinColumn(name = "avatar_id")
     private StorageEntry avatar;
 
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "banner_id")
+    private StorageEntry banner;
+
     public User(String displayName, String username, String password) {
         this.displayName = displayName;
         this.username = username;
