@@ -41,6 +41,21 @@ public class StorageController {
         storageService.deleteAvatar(user);
     }
 
+    @PostMapping("/banner")
+    public StorageEntryDTO uploadBanner(
+            @RequestParam("file") MultipartFile file,
+            @RequestAttribute(AttributesConstants.USER) User user
+    ) {
+        return storageService.uploadBanner(file, user);
+    }
+
+    @DeleteMapping("/banner")
+    public void deleteBanner(
+            @RequestAttribute(AttributesConstants.USER) User user
+    ) {
+        storageService.deleteBanner(user);
+    }
+
     @GetMapping("/{uniqueName}")
     public ResponseEntity<byte[]> getFileByUniqueName(
             @PathVariable String uniqueName

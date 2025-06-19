@@ -28,4 +28,8 @@ public interface StorageService {
     void deleteTemporaryFilesByIds(List<Long> fileIds, User user);
 
     void attachFilesToPost(List<StorageEntry> files, Long postId);
+
+    StorageEntryDTO uploadBanner(MultipartFile file, User user);
+
+    void deleteBanner(User user);
 }

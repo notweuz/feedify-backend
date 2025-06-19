@@ -57,7 +57,12 @@ public class StorageServiceImpl implements StorageService {
         if (file.getSize() > commonConfig.getContent().getMaxSize()) {
             throw new FileIsTooLargeException("File size exceeds the maximum allowed size, " + file.getSize() + " > " + commonConfig.getContent().getMaxSize() + " bytes");
         }
+    }
 
+    private void validateFileType(MultipartFile file) {
+        if (!file.getContentType().startsWith("image/") && !file.getContentType().equals("image/gif")) {
+            throw new FileReadingException("File is not an image or GIF: " + file.getContentType());
+        }
     }
 
     @Override
@@ -114,12 +119,11 @@ public class StorageServiceImpl implements StorageService {
     @Override
     public StorageEntryDTO uploadAvatar(MultipartFile file, User user) {
         validateFile(file);
-        if (!file.getContentType().startsWith("image/") && !file.getContentType().equals("image/gif")) {
-            throw new FileReadingException("File is not an image or GIF: " + file.getContentType());
-        }
+        validateFileType(file);
+
         StorageEntry storageEntry = saveFileToStorage(file, user);
         StorageEntry avatar = storageRepository.save(storageEntry);
-        log.info("File uploaded successfully: uniqueName={}, filePath={}, contentType={}, size={}",
+        log.info("Avatar uploaded successfully: uniqueName={}, filePath={}, contentType={}, size={}",
                 storageEntry.getUniqueName(), storageEntry.getFilePath(), storageEntry.getContentType(), storageEntry.getSize());
         user.setAvatar(avatar);
         userRepository.save(user);
@@ -135,17 +139,56 @@ public class StorageServiceImpl implements StorageService {
 
         StorageEntry storageEntry = user.getAvatar();
 
+        user.setAvatar(null);
+        userRepository.save(user);
+
         Path filePath = Paths.get(storageEntry.getFilePath());
         try {
             Files.deleteIfExists(filePath);
-            log.info("File deleted successfully: uniqueName={}, filePath={}", storageEntry.getUniqueName(), storageEntry.getFilePath());
+            log.info("Avatar deleted successfully: uniqueName={}, filePath={}", storageEntry.getUniqueName(), storageEntry.getFilePath());
         } catch (Exception e) {
             throw new FileReadingException("Error deleting file: " + filePath);
         }
 
         storageRepository.delete(storageEntry);
-        user.setAvatar(null);
         userRepository.save(user);
+    }
+
+    @Override
+    public StorageEntryDTO uploadBanner(MultipartFile file, User user) {
+        validateFile(file);
+        validateFileType(file);
+
+        StorageEntry storageEntry = saveFileToStorage(file, user);
+        StorageEntry banner = storageRepository.save(storageEntry);
+        log.info("Banner uploaded successfully: uniqueName={}, filePath={}, contentType={}, size={}",
+                storageEntry.getUniqueName(), storageEntry.getFilePath(), storageEntry.getContentType(), storageEntry.getSize());
+        user.setBanner(banner);
+        userRepository.save(user);
+        return StorageMapper.toDTO(storageEntry);
+    }
+
+    @Override
+    public void deleteBanner(User user) {
+        if (user.getBanner() == null) {
+            log.warn("User {} has no banner to delete", user.getUsername());
+            return;
+        }
+
+        StorageEntry storageEntry = user.getBanner();
+
+        user.setBanner(null);
+        userRepository.save(user);
+
+        Path filePath = Paths.get(storageEntry.getFilePath());
+        try {
+            Files.deleteIfExists(filePath);
+            log.info("Banner deleted successfully: uniqueName={}, filePath={}", storageEntry.getUniqueName(), storageEntry.getFilePath());
+        } catch (Exception e) {
+            throw new FileReadingException("Error deleting file: " + filePath);
+        }
+
+        storageRepository.delete(storageEntry);
     }
 
     @Override
