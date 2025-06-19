@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.ntwz.makemyfeed.dto.mapper.UserMapper;
+import ru.ntwz.makemyfeed.dto.request.UserUpdateDTO;
 import ru.ntwz.makemyfeed.dto.response.UserDTO;
 import ru.ntwz.makemyfeed.exception.UserNotFoundException;
 import ru.ntwz.makemyfeed.exception.UserWithSameNameAlreadyExistsException;
@@ -23,7 +24,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(User user) {
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) throw new UserWithSameNameAlreadyExistsException("User with username '" + user.getUsername() + "' already exists");
+        if (userRepository.findByUsername(user.getUsername()).isPresent())
+            throw new UserWithSameNameAlreadyExistsException("User with username '" + user.getUsername() + "' already exists");
 
         log.info("Creating user: {}", user.getUsername());
 
@@ -61,11 +63,27 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO getUserInfo(User user) {
-        userRepository.findById(user.getId())
-                .orElseThrow(() -> new UserNotFoundException("User with ID '" + user.getId() + "' not found"));
+        getById(user.getId());
 
         log.info("Retrieved user info for user: {}", user.getUsername());
 
         return UserMapper.toDTO(user);
+    }
+
+    @Override
+    public UserDTO updateUser(User user, UserUpdateDTO userUpdateDTO) {
+        if (userUpdateDTO.getDisplayName() != null) {
+            user.setDisplayName(userUpdateDTO.getDisplayName());
+        }
+        if (userUpdateDTO.getUsername() != null) {
+            user.setUsername(userUpdateDTO.getUsername());
+        }
+        if (userUpdateDTO.getDescription() != null) {
+            user.setDescription(userUpdateDTO.getDescription());
+        }
+
+        log.info("Updated user info for user: {}", user.getUsername());
+
+        return UserMapper.toDTO(userRepository.save(user));
     }
 }

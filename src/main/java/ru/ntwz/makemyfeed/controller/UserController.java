@@ -1,8 +1,10 @@
 package ru.ntwz.makemyfeed.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.ntwz.makemyfeed.constant.AttributesConstants;
+import ru.ntwz.makemyfeed.dto.request.UserUpdateDTO;
 import ru.ntwz.makemyfeed.dto.response.PostDTO;
 import ru.ntwz.makemyfeed.dto.response.UserDTO;
 import ru.ntwz.makemyfeed.model.User;
@@ -43,5 +45,13 @@ public class UserController {
     @GetMapping("/usernames/{username}")
     public UserDTO getPostsByUser(@PathVariable String username) {
         return userService.findByUsername(username);
+    }
+
+    @PatchMapping("/me")
+    public UserDTO update(
+            @RequestAttribute(AttributesConstants.USER) User user,
+            @RequestBody @Valid UserUpdateDTO userUpdateDTO
+    ) {
+        return userService.updateUser(user, userUpdateDTO);
     }
 }
