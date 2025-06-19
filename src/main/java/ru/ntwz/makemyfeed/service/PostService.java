@@ -1,6 +1,5 @@
 package ru.ntwz.makemyfeed.service;
 
-import org.springframework.web.multipart.MultipartFile;
 import ru.ntwz.makemyfeed.dto.request.PostCreateDTO;
 import ru.ntwz.makemyfeed.dto.request.PostUpdateDTO;
 import ru.ntwz.makemyfeed.dto.response.CommentDTO;

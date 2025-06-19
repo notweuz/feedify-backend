@@ -8,10 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.ntwz.makemyfeed.constant.AttributesConstants;
-import ru.ntwz.makemyfeed.dto.mapper.StorageMapper;
 import ru.ntwz.makemyfeed.dto.response.FileDTO;
 import ru.ntwz.makemyfeed.dto.response.StorageEntryDTO;
-import ru.ntwz.makemyfeed.model.StorageEntry;
 import ru.ntwz.makemyfeed.model.User;
 import ru.ntwz.makemyfeed.service.StorageService;
 

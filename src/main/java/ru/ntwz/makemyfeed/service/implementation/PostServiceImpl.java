@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import ru.ntwz.makemyfeed.config.CommonConfig;
 import ru.ntwz.makemyfeed.dto.mapper.PostMapper;
 import ru.ntwz.makemyfeed.dto.request.PostCreateDTO;

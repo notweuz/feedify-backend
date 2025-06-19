@@ -86,62 +86,43 @@ public class StorageServiceImpl implements StorageService {
         }
     }
 
-    @Override
-    public StorageEntry uploadFile(MultipartFile file, User user) {
+    private StorageEntry saveFileToStorage(MultipartFile file, User user) {
         validateFile(file);
-
         String fileExtension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
         String uniqueName = RandUtils.generateUniqueLink() + fileExtension;
         String filePath = getSavePath(uniqueName);
-
         try {
             Files.write(Paths.get(filePath), file.getBytes());
         } catch (Exception e) {
             throw new FileReadingException("Error saving file: " + filePath);
         }
-
         StorageEntry storageEntry = new StorageEntry();
         storageEntry.setUniqueName(uniqueName);
         storageEntry.setFilePath(filePath);
         storageEntry.setContentType(file.getContentType());
         storageEntry.setSize(file.getSize());
         storageEntry.setAuthor(user);
+        return storageEntry;
+    }
 
+    @Override
+    public StorageEntry uploadFile(MultipartFile file, User user) {
+        StorageEntry storageEntry = saveFileToStorage(file, user);
         return storageRepository.save(storageEntry);
     }
 
     @Override
     public StorageEntryDTO uploadAvatar(MultipartFile file, User user) {
         validateFile(file);
-
         if (!file.getContentType().startsWith("image/") && !file.getContentType().equals("image/gif")) {
             throw new FileReadingException("File is not an image or GIF: " + file.getContentType());
         }
-
-        String fileExtension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-        String uniqueName = RandUtils.generateUniqueLink() + fileExtension;
-        String filePath = getSavePath(uniqueName);
-
-        try {
-            Files.write(Paths.get(filePath), file.getBytes());
-        } catch (Exception e) {
-            throw new FileReadingException("Error saving file: " + filePath);
-        }
-
-        StorageEntry storageEntry = new StorageEntry();
-        storageEntry.setUniqueName(uniqueName);
-        storageEntry.setFilePath(filePath);
-        storageEntry.setContentType(file.getContentType());
-        storageEntry.setSize(file.getSize());
-        storageEntry.setAuthor(user);
+        StorageEntry storageEntry = saveFileToStorage(file, user);
         StorageEntry avatar = storageRepository.save(storageEntry);
-
         log.info("File uploaded successfully: uniqueName={}, filePath={}, contentType={}, size={}",
                 storageEntry.getUniqueName(), storageEntry.getFilePath(), storageEntry.getContentType(), storageEntry.getSize());
-
         user.setAvatar(avatar);
         userRepository.save(user);
-
         return StorageMapper.toDTO(storageEntry);
     }
 
@@ -185,40 +166,18 @@ public class StorageServiceImpl implements StorageService {
         if (files == null || files.isEmpty()) {
             throw new FilesCannotBeEmptyException("Files list cannot be null or empty");
         }
-
         if (files.size() > commonConfig.getContent().getMaxAttachments()) {
             throw new TooManyAttachmentsException("Too many attachments. Trying to add: " + files.size() +
                     ", maximum allowed: " + commonConfig.getContent().getMaxAttachments());
         }
-
         List<StorageEntryDTO> uploadedFiles = new ArrayList<>();
-        
         for (MultipartFile file : files) {
             try {
-                validateFile(file);
-
-                String fileExtension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-                String uniqueName = RandUtils.generateUniqueLink() + fileExtension;
-                String filePath = getSavePath(uniqueName);
-
-                try {
-                    Files.write(Paths.get(filePath), file.getBytes());
-                } catch (Exception e) {
-                    throw new FileReadingException("Error saving file: " + filePath);
-                }
-
-                StorageEntry storageEntry = new StorageEntry();
-                storageEntry.setUniqueName(uniqueName);
-                storageEntry.setFilePath(filePath);
-                storageEntry.setContentType(file.getContentType());
-                storageEntry.setSize(file.getSize());
-                storageEntry.setAuthor(user);
+                StorageEntry storageEntry = saveFileToStorage(file, user);
                 storageEntry.setPost(null);
-
                 StorageEntry savedEntry = storageRepository.save(storageEntry);
                 log.info("Temporary file uploaded successfully: id={}, uniqueName={}, filePath={}, contentType={}, size={}",
                         savedEntry.getId(), storageEntry.getUniqueName(), storageEntry.getFilePath(), storageEntry.getContentType(), storageEntry.getSize());
-
                 uploadedFiles.add(StorageMapper.toDTO(savedEntry));
             } catch (Exception e) {
                 if (!uploadedFiles.isEmpty()) {
@@ -230,7 +189,6 @@ public class StorageServiceImpl implements StorageService {
                 throw e;
             }
         }
-        
         log.info("Uploaded {} temporary files for user: {}", uploadedFiles.size(), user.getUsername());
         return uploadedFiles;
     }
