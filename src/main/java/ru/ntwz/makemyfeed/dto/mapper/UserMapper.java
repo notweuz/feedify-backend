@@ -22,6 +22,7 @@ public class UserMapper {
         userDTO.setId(user.getId());
         userDTO.setDisplayName(user.getDisplayName());
         userDTO.setUsername(user.getUsername());
+        userDTO.setDescription(user.getDescription() != null ? user.getDescription() : "");
         userDTO.setRegistrationDate(user.getRegistrationDate());
         userDTO.setFollowersCount(user.getFollowers().size());
         userDTO.setFollowingCount(user.getFollowing().size());

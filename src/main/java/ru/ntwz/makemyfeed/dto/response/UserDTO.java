@@ -13,6 +13,7 @@ public class UserDTO {
     private Long id;
     private String displayName;
     private String username;
+    private String description;
     private String avatarUrl;
     private Instant registrationDate;
     private Integer followersCount;

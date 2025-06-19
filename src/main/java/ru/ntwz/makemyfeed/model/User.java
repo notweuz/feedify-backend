@@ -29,6 +29,9 @@ public class User {
     private String username;
 
     @Column
+    private String description;
+
+    @Column
     @NotNull
     private String password;
 
