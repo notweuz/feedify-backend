@@ -124,4 +124,12 @@ public class PostController {
     ) {
         return postService.findAllMonthlyPopularPosts(page, size);
     }
+
+    @GetMapping("/{postId}/vote")
+    public VoteDTO getUserVote(
+            @RequestAttribute(AttributesConstants.USER) User user,
+            @PathVariable Long postId
+    ) {
+        return voteService.getUserVote(postId, user);
+    }
 }

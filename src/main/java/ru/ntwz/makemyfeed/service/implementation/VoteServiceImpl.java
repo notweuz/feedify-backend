@@ -58,4 +58,12 @@ public class VoteServiceImpl implements VoteService {
 
         return VoteMapper.toVoteDTO(post, resultVote);
     }
+
+    @Override
+    public VoteDTO getUserVote(Long postId, User user) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException("Post with id " + postId + " not found"));
+        Vote vote = voteRepository.findByUserAndPost(user, post).orElse(null);
+        return VoteMapper.toVoteDTO(post, vote);
+    }
 }

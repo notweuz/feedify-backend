@@ -6,4 +6,6 @@ import ru.ntwz.makemyfeed.model.User;
 public interface VoteService {
 
     VoteDTO vote(Long postId, User user, boolean isUpvote);
+
+    VoteDTO getUserVote(Long postId, User user);
 }
