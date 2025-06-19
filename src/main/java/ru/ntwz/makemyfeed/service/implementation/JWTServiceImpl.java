@@ -63,4 +63,13 @@ public class JWTServiceImpl implements JWTService {
     public SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtConfig.getSecret()));
     }
+
+    @Override
+    public String extractPasswordHash(String token) {
+        Jws<Claims> claimsJws = Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token);
+        return claimsJws.getPayload().getSubject();
+    }
 }

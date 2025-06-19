@@ -11,15 +11,23 @@ import ru.ntwz.makemyfeed.exception.UserWithSameNameAlreadyExistsException;
 import ru.ntwz.makemyfeed.model.User;
 import ru.ntwz.makemyfeed.repository.UserRepository;
 import ru.ntwz.makemyfeed.service.UserService;
+import ru.ntwz.makemyfeed.service.BCryptService;
+import ru.ntwz.makemyfeed.service.JWTService;
+import ru.ntwz.makemyfeed.exception.InvalidPasswordException;
+import ru.ntwz.makemyfeed.dto.response.AccessTokenDTO;
 
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final BCryptService bCryptService;
+    private final JWTService jwtService;
 
-    public UserServiceImpl(@Autowired UserRepository userRepository) {
+    public UserServiceImpl(@Autowired UserRepository userRepository, @Autowired BCryptService bCryptService, @Autowired JWTService jwtService) {
         this.userRepository = userRepository;
+        this.bCryptService = bCryptService;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -85,5 +93,17 @@ public class UserServiceImpl implements UserService {
         log.info("Updated user info for user: {}", user.getUsername());
 
         return UserMapper.toDTO(userRepository.save(user));
+    }
+
+    @Override
+    public AccessTokenDTO changePassword(User user, String oldPassword, String newPassword) {
+        if (!bCryptService.verify(oldPassword, user.getPassword())) {
+            throw new InvalidPasswordException("Wrong old password provided");
+        }
+        user.setPassword(bCryptService.getHash(newPassword));
+        userRepository.save(user);
+        String newToken = jwtService.generate(user.getId(), user.getPassword());
+        log.info("User {} changed his password", user.getUsername());
+        return new AccessTokenDTO(newToken);
     }
 }

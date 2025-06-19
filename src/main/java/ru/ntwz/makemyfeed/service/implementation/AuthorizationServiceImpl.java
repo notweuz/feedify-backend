@@ -113,7 +113,12 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         }
 
         try {
-            return userService.getById(userId);
+            User user = userService.getById(userId);
+            String tokenPasswordHash = jwtService.extractPasswordHash(accessToken);
+            if (!user.getPassword().equals(tokenPasswordHash)) {
+                throw new NotAuthorizedException("Token is outdated due to password change");
+            }
+            return user;
         } catch (UserNotFoundException ex) {
             throw new NotAuthorizedException("User not found for access token: " + accessToken);
         }

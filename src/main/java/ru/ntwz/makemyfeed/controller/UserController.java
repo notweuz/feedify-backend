@@ -4,7 +4,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.ntwz.makemyfeed.constant.AttributesConstants;
+import ru.ntwz.makemyfeed.dto.request.ChangePasswordDTO;
 import ru.ntwz.makemyfeed.dto.request.UserUpdateDTO;
+import ru.ntwz.makemyfeed.dto.response.AccessTokenDTO;
 import ru.ntwz.makemyfeed.dto.response.PostDTO;
 import ru.ntwz.makemyfeed.dto.response.UserDTO;
 import ru.ntwz.makemyfeed.model.User;
@@ -53,5 +55,13 @@ public class UserController {
             @RequestBody @Valid UserUpdateDTO userUpdateDTO
     ) {
         return userService.updateUser(user, userUpdateDTO);
+    }
+
+    @PostMapping("/me/change-password")
+    public AccessTokenDTO changePassword(
+            @RequestAttribute(AttributesConstants.USER) User user,
+            @RequestBody @Valid ChangePasswordDTO changePasswordDTO
+    ) {
+        return userService.changePassword(user, changePasswordDTO.getOldPassword(), changePasswordDTO.getNewPassword());
     }
 }

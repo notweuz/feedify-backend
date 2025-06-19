@@ -4,6 +4,7 @@ import ru.ntwz.makemyfeed.dto.request.UserUpdateDTO;
 import ru.ntwz.makemyfeed.dto.response.UserDTO;
 import ru.ntwz.makemyfeed.exception.UserNotFoundException;
 import ru.ntwz.makemyfeed.model.User;
+import ru.ntwz.makemyfeed.dto.response.AccessTokenDTO;
 
 public interface UserService {
     User create(User user);
@@ -17,4 +18,6 @@ public interface UserService {
     UserDTO getUserInfo(User user);
 
     UserDTO updateUser(User user, UserUpdateDTO userUpdateDTO);
+
+    AccessTokenDTO changePassword(User user, String oldPassword, String newPassword);
 }

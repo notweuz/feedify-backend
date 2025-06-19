@@ -8,4 +8,6 @@ public interface JWTService {
     Long validate(String token);
 
     SecretKey getSigningKey();
+
+    String extractPasswordHash(String token);
 }
