@@ -54,7 +54,7 @@ public class PostMapper {
         return toCommentDTO(post, 0, 1);
     }
 
-    public static PostDTO toPostDTO(@NotNull Post post) {
+    private static PostDTO mapPostToDTO(Post post, boolean includeParent, boolean includeComments) {
         PostDTO postDTO = new PostDTO();
 
         postDTO.setId(post.getId());
@@ -63,9 +63,6 @@ public class PostMapper {
         postDTO.setContent(post.getContent());
         postDTO.setAuthor(UserMapper.toDTO(post.getAuthor()));
         postDTO.setCreatedAt(post.getCreatedAt());
-        postDTO.setComments(post.getComments().stream()
-                .map(PostMapper::toCommentDTO)
-                .toList());
         postDTO.setCommentsCount(post.getComments().size());
         postDTO.setIsDeleted(post.getIsDeleted());
         postDTO.setUniqueLink(post.getUniqueLink());
@@ -73,11 +70,26 @@ public class PostMapper {
                 .map(attachment -> StorageMapper.toPostAttachmentDTO(attachment, commonConfig.getPublicDomain() + "/storage/" + attachment.getUniqueName()))
                 .toList());
 
-        if (post.getParentPost() != null) {
-            PostDTO parentPost = toPostDTO(post.getParentPost());
-            parentPost.setParentPost(null);
-            parentPost.setComments(List.of());
-            postDTO.setParentPost(parentPost);
+        if (includeComments) {
+            postDTO.setComments(post.getComments().stream()
+                    .map(PostMapper::toCommentDTO)
+                    .toList());
+        } else {
+            postDTO.setComments(List.of());
+        }
+
+        if (includeParent && post.getParentPost() != null) {
+            postDTO.setParentPost(mapPostToDTO(post.getParentPost(), false, false));
+        }
+
+        return postDTO;
+    }
+
+    public static PostDTO toPostDTO(@NotNull Post post) {
+        PostDTO postDTO = mapPostToDTO(post, true, true);
+
+        if (post.getParentPost() != null && post.getParentPost().getParentPost() != null) {
+            postDTO.getParentPost().setParentPost(mapPostToDTO(post.getParentPost().getParentPost(), false, false));
         }
 
         return postDTO;
