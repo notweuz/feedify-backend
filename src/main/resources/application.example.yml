@@ -22,7 +22,7 @@ common:
   env: dev
   public-domain: https://example.com
   content:
-    storage:
+    storage: /home/example/path/
     max-size: 83886080
     max-attachments: 10
 
