@@ -20,11 +20,11 @@ Feedify — это серверная часть приложения для у�
 
 1. Клонируйте репозиторий:
    ```
-   git clone https://github.com/notweuz/makemyfeed-backend.git
+   git clone https://github.com/notweuz/feedify-backend.git
    ```
 2. Перейдите в папку проекта:
    ```
-   cd makemyfeed-backend
+   cd feedify-backend
    ```
 3. Соберите и запустите проект:
    ```
@@ -59,11 +59,11 @@ Feedify is a backend application for managing a news feed, users, posts, and fil
 
 1. Clone the repository:
    ```
-   git clone https://github.com/notweuz/makemyfeed-backend.git
+   git clone https://github.com/notweuz/feedify-backend.git
    ```
 2. Go to the project directory:
    ```
-   cd makemyfeed-backend
+   cd feedify-backend
    ```
 3. Build and run the project:
    ```
