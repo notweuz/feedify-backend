@@ -1,11 +1,11 @@
 spring:
   application:
-    name: makemyfeed-backend
+    name: feedify-backend
   datasource:
     driver-class-name: org.postgresql.Driver
-    username: backend-app
+    username: feedify-backend
     password: password
-    url: jdbc:postgresql://localhost:5432/makemyfeed
+    url: jdbc:postgresql://localhost:5432/feedify
   jpa:
     hibernate:
       ddl-auto: update
