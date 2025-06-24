@@ -49,6 +49,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             """)
     Page<Post> findPostsByFollowingAndTheirFollowings(@Param("user") User user, Pageable pageable);
 
+    // TODO: implement better feed algorithms
+
     @Query("""
         SELECT p FROM Post p
         WHERE p.id IN (
