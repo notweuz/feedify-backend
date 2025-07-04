@@ -51,7 +51,7 @@ Feedify is a backend application for managing a news feed, users, posts, and fil
 
 ## Technologies
 
-- Java 17+
+- Java 21+
 - Spring Boot
 - Gradle
 
