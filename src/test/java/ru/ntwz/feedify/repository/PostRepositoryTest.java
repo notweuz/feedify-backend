@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.ActiveProfiles;
 import ru.ntwz.feedify.model.Post;
 import ru.ntwz.feedify.model.StorageEntry;
 import ru.ntwz.feedify.model.User;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 @DataJpaTest
+@ActiveProfiles("test")
 public class PostRepositoryTest {
     @Autowired
     private PostRepository postRepository;

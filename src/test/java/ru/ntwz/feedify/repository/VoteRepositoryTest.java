@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
 import ru.ntwz.feedify.model.Post;
 import ru.ntwz.feedify.model.User;
 import ru.ntwz.feedify.model.Vote;
@@ -14,6 +15,7 @@ import java.util.Optional;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
+@ActiveProfiles("test")
 public class VoteRepositoryTest {
     @Autowired
     private VoteRepository voteRepository;
