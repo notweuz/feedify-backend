@@ -52,16 +52,16 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     // TODO: implement better feed algorithms
 
     @Query("""
-        SELECT p FROM Post p
-        WHERE p.id IN (
-            SELECT v.post.id FROM Vote v
-            WHERE v.user IN (
-                SELECT f.following FROM Following f WHERE f.follower = :user
-            )
-        )
-        AND p.isDeleted = false
-        ORDER BY p.createdAt DESC
-    """)
+                SELECT p FROM Post p
+                WHERE p.id IN (
+                    SELECT v.post.id FROM Vote v
+                    WHERE v.user IN (
+                        SELECT f.following FROM Following f WHERE f.follower = :user
+                    )
+                )
+                AND p.isDeleted = false
+                ORDER BY p.createdAt DESC
+            """)
     Page<Post> findPostsLikedByFollowedUsers(@Param("user") User user, Pageable pageable);
 
     Optional<Post> findByUniqueLink(String uniqueLink);

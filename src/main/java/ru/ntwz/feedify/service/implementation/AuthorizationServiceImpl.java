@@ -54,7 +54,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
         String token = jwtService.generate(user.getId(), passwordHash);
         log.debug("Generated token for user {}: {}", username, token.substring(0, Math.min(20, token.length())) + "...");
-        
+
         return new AccessTokenDTO(token);
     }
 
@@ -79,14 +79,14 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     @Override
     public AccessTokenStatusDTO validate(AccessTokenDTO accessTokenDTO) {
         String accessToken = accessTokenDTO.getAccessToken();
-        
+
         if (accessToken == null || accessToken.isBlank()) {
             log.info("Token is null or blank");
             return new AccessTokenStatusDTO(false);
         }
-        
+
         log.info("Validating token: {}", accessToken.substring(0, Math.min(20, accessToken.length())) + "...");
-        
+
         try {
             Long userId = jwtService.validate(accessToken);
             log.info("Token validation successful, userId: {}", userId);

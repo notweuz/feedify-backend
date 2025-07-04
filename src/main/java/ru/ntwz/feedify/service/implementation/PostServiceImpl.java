@@ -12,11 +12,7 @@ import ru.ntwz.feedify.dto.request.PostCreateDTO;
 import ru.ntwz.feedify.dto.request.PostUpdateDTO;
 import ru.ntwz.feedify.dto.response.CommentDTO;
 import ru.ntwz.feedify.dto.response.PostDTO;
-import ru.ntwz.feedify.exception.NotPostsOwnerException;
-import ru.ntwz.feedify.exception.PostAlreadyDeletedException;
-import ru.ntwz.feedify.exception.PostNotFoundException;
-import ru.ntwz.feedify.exception.AttachmentNotFoundException;
-import ru.ntwz.feedify.exception.TooManyAttachmentsException;
+import ru.ntwz.feedify.exception.*;
 import ru.ntwz.feedify.model.Post;
 import ru.ntwz.feedify.model.StorageEntry;
 import ru.ntwz.feedify.model.User;
@@ -70,13 +66,13 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostDTO create(User user, PostCreateDTO postCreateDTO) {
         List<StorageEntry> temporaryFiles = new ArrayList<>();
-        
+
         try {
             temporaryFiles = validateTempFiles(user, postCreateDTO);
 
             Post post = PostMapper.toPost(postCreateDTO);
             post.setAuthor(user);
-            
+
             Post savedPost = postRepository.save(post);
 
             if (!temporaryFiles.isEmpty()) {
@@ -87,7 +83,7 @@ public class PostServiceImpl implements PostService {
             log.info("Created post with {} attachments: {}", temporaryFiles.size(), savedPost.getContent());
 
             return PostMapper.toPostDTO(savedPost);
-            
+
         } catch (Exception e) {
             if (!temporaryFiles.isEmpty()) {
                 storageService.deleteTemporaryFiles(temporaryFiles);
@@ -127,14 +123,14 @@ public class PostServiceImpl implements PostService {
     public PostDTO createComment(User user, PostCreateDTO createDTO, Long parentPostId) {
         Post parentPost = getPostById(parentPostId);
         List<StorageEntry> temporaryFiles = new ArrayList<>();
-        
+
         try {
             temporaryFiles = validateTempFiles(user, createDTO);
 
             Post post = PostMapper.toPost(createDTO);
             post.setParentPost(parentPost);
             post.setAuthor(user);
-            
+
             Post savedPost = postRepository.save(post);
 
             if (!temporaryFiles.isEmpty()) {
@@ -142,11 +138,11 @@ public class PostServiceImpl implements PostService {
                 savedPost = postRepository.findById(savedPost.getId()).orElse(savedPost);
             }
 
-            log.info("Created comment with {} attachments on post {}: {}", 
+            log.info("Created comment with {} attachments on post {}: {}",
                     temporaryFiles.size(), parentPostId, savedPost.getContent());
 
             return PostMapper.toPostDTO(savedPost);
-            
+
         } catch (Exception e) {
             if (!temporaryFiles.isEmpty()) {
                 storageService.deleteTemporaryFiles(temporaryFiles);

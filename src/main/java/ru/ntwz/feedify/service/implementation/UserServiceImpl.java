@@ -5,16 +5,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.ntwz.feedify.dto.mapper.UserMapper;
 import ru.ntwz.feedify.dto.request.UserUpdateDTO;
+import ru.ntwz.feedify.dto.response.AccessTokenDTO;
 import ru.ntwz.feedify.dto.response.UserDTO;
+import ru.ntwz.feedify.exception.InvalidPasswordException;
 import ru.ntwz.feedify.exception.UserNotFoundException;
 import ru.ntwz.feedify.exception.UserWithSameNameAlreadyExistsException;
 import ru.ntwz.feedify.model.User;
 import ru.ntwz.feedify.repository.UserRepository;
-import ru.ntwz.feedify.service.UserService;
 import ru.ntwz.feedify.service.BCryptService;
 import ru.ntwz.feedify.service.JWTService;
-import ru.ntwz.feedify.exception.InvalidPasswordException;
-import ru.ntwz.feedify.dto.response.AccessTokenDTO;
+import ru.ntwz.feedify.service.UserService;
 
 @Slf4j
 @Service

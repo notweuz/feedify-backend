@@ -12,7 +12,7 @@ public class VoteMapper {
         voteDTO.setRating(post.getVotes().stream()
                 .filter(v -> v.getVoteType().equals(VoteType.UPVOTE)).count() -
                 post.getVotes().stream()
-                .filter(v -> v.getVoteType().equals(VoteType.DOWNVOTE)).count());
+                        .filter(v -> v.getVoteType().equals(VoteType.DOWNVOTE)).count());
         voteDTO.setVoteType(vote != null ? vote.getVoteType() : VoteType.UNVOTED);
         return voteDTO;
     }

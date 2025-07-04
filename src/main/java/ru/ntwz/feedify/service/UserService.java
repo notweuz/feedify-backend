@@ -1,10 +1,10 @@
 package ru.ntwz.feedify.service;
 
 import ru.ntwz.feedify.dto.request.UserUpdateDTO;
+import ru.ntwz.feedify.dto.response.AccessTokenDTO;
 import ru.ntwz.feedify.dto.response.UserDTO;
 import ru.ntwz.feedify.exception.UserNotFoundException;
 import ru.ntwz.feedify.model.User;
-import ru.ntwz.feedify.dto.response.AccessTokenDTO;
 
 public interface UserService {
     User create(User user);

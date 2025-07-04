@@ -239,7 +239,7 @@ public class StorageServiceImpl implements StorageService {
     @Override
     public List<StorageEntry> getTemporaryFilesByIds(List<Long> attachmentIds, User user) {
         List<StorageEntry> files = storageRepository.findAllById(attachmentIds);
-        
+
         List<StorageEntry> userTemporaryFiles = files.stream()
                 .filter(file -> file.getAuthor().getId().equals(user.getId()) && file.getPost() == null)
                 .collect(Collectors.toList());
@@ -259,7 +259,7 @@ public class StorageServiceImpl implements StorageService {
                 Path filePath = Paths.get(file.getFilePath());
                 Files.deleteIfExists(filePath);
                 storageRepository.delete(file);
-                log.info("Temporary file deleted successfully: id={}, uniqueName={}, filePath={}", 
+                log.info("Temporary file deleted successfully: id={}, uniqueName={}, filePath={}",
                         file.getId(), file.getUniqueName(), file.getFilePath());
             } catch (Exception e) {
                 log.error("Error deleting temporary file: id={}, filePath={}", file.getId(), file.getFilePath(), e);

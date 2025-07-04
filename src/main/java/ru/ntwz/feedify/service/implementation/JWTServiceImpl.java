@@ -54,7 +54,8 @@ public class JWTServiceImpl implements JWTService {
                 .parseSignedClaims(token);
 
         if (claimsJws.getPayload().getId() == null) throw new NotAuthorizedException("Invalid token: no user ID found");
-        if (claimsJws.getPayload().getSubject() == null) throw new NotAuthorizedException("Invalid token: no password hash found");
+        if (claimsJws.getPayload().getSubject() == null)
+            throw new NotAuthorizedException("Invalid token: no password hash found");
 
         return Long.parseLong(claimsJws.getPayload().getId());
     }

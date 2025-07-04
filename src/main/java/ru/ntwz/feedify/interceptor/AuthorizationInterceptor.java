@@ -30,11 +30,15 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) {
         if (Objects.equals(request.getMethod(), HttpMethod.OPTIONS.name())) return true;
-        if (Objects.equals(request.getMethod(), HttpMethod.GET.name()) && request.getRequestURI().matches("^/posts/\\d+$")) return true; // разрешить доступ к просмотру постов без авторизации
-        if (Objects.equals(request.getMethod(), HttpMethod.GET.name()) && request.getRequestURI().matches("^/posts/unique/[^/]+$")) return true; // разрешить доступ к просмотру постов по уникальной ссылке без авторизации
-        if (Objects.equals(request.getMethod(), HttpMethod.GET.name()) && request.getRequestURI().matches("^/storage/[^/]+$")) return true; // разрешить доступ к файлам без авторизации
+        if (Objects.equals(request.getMethod(), HttpMethod.GET.name()) && request.getRequestURI().matches("^/posts/\\d+$"))
+            return true; // разрешить доступ к просмотру постов без авторизации
+        if (Objects.equals(request.getMethod(), HttpMethod.GET.name()) && request.getRequestURI().matches("^/posts/unique/[^/]+$"))
+            return true; // разрешить доступ к просмотру постов по уникальной ссылке без авторизации
+        if (Objects.equals(request.getMethod(), HttpMethod.GET.name()) && request.getRequestURI().matches("^/storage/[^/]+$"))
+            return true; // разрешить доступ к файлам без авторизации
 
-        if (request.getHeader(HttpHeaders.AUTHORIZATION) == null) throw new TokenNotProvidedException("Authorization token not provided");
+        if (request.getHeader(HttpHeaders.AUTHORIZATION) == null)
+            throw new TokenNotProvidedException("Authorization token not provided");
         String accessToken = request.getHeader(HttpHeaders.AUTHORIZATION).substring(7);
 
         User user = authorizationService.authUser(accessToken);
