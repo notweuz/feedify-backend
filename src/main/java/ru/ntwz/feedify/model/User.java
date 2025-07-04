@@ -11,7 +11,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Setter
+@Getter
 @Entity
 @Table(name = "users")
 @NoArgsConstructor

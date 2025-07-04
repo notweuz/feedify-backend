@@ -9,7 +9,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Setter
+@Getter
 @Table(name = "posts")
 @Entity
 public class Post {

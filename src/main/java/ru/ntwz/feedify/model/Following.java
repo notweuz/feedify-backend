@@ -6,7 +6,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
-@Data
+@Setter
+@Getter
 @Entity
 @Table(name = "followings")
 @NoArgsConstructor

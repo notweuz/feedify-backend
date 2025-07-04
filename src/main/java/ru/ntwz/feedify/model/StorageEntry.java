@@ -5,7 +5,8 @@ import lombok.Data;
 
 @Table(name = "storage")
 @Entity
-@Data
+@Setter
+@Getter
 public class StorageEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
