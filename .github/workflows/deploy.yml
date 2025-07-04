@@ -19,7 +19,7 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-          cache: gradle
+          cache: maven
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
