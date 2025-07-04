@@ -7,7 +7,7 @@ on:
       - dev
 
 jobs:
-  build:
+  checkstyle:
     runs-on: ubuntu-latest
 
     steps:
