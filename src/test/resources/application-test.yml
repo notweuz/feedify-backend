@@ -22,6 +22,17 @@ spring:
       max-file-size: 100MB
       max-request-size: 100MB
 
+logging:
+  level:
+    ru.ntwz.feedify: DEBUG
+    org.springframework: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.test: DEBUG
+    org.springframework.boot.test: DEBUG
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
 common:
   version: 0.1
   env: test

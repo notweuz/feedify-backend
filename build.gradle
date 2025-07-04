@@ -56,4 +56,25 @@ tasks.named('test') {
     useJUnitPlatform()
     systemProperty 'spring.profiles.active', 'test'
     environment 'SPRING_PROFILES_ACTIVE', 'test'
+    
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+        showExceptions true
+        showCauses true
+        showStackTraces true
+        
+        info {
+            events "started", "passed", "skipped", "failed", "standardOut", "standardError"
+            displayGranularity 2
+            showExceptions true
+            showCauses true
+            showStackTraces true
+        }
+        
+        showStandardStreams = true
+    }
+    
+    systemProperty 'logging.level.ru.ntwz.feedify', 'DEBUG'
+    systemProperty 'logging.level.org.springframework', 'INFO'
+    systemProperty 'logging.level.org.hibernate', 'INFO'
 }
