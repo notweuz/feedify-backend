@@ -3,7 +3,6 @@ package ru.ntwz.feedify.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.ActiveProfiles;
 import ru.ntwz.feedify.model.User;
 
 import java.util.Optional;
@@ -11,7 +10,6 @@ import java.util.Optional;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
-@ActiveProfiles("test")
 public class UserRepositoryTest {
     @Autowired
     private UserRepository userRepository;
