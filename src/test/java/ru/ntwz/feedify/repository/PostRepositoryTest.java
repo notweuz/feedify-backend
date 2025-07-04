@@ -10,6 +10,7 @@ import ru.ntwz.feedify.model.Post;
 import ru.ntwz.feedify.model.StorageEntry;
 import ru.ntwz.feedify.model.User;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -84,6 +85,27 @@ public class PostRepositoryTest {
         List<Post> posts = postRepository.findAllActivePosts(Pageable.ofSize(10)).getContent();
 
         assertThat(posts).isEmpty();
+    }
+
+    @Test
+    void findTopPostsByRatingAndCommentsMonthly_shouldNotReturnPostsThatAreOlderThan30Days() {
+        Post post = new Post();
+        post.setContent("This is a test post.");
+        post.setAuthor(user);
+        post.setCreatedAt(Instant.now().minusSeconds(60 * 60 * 24 * 32));
+        postRepository.save(post);
+
+        Post post1 = new Post();
+        post1.setContent("This is another test post.");
+        post1.setAuthor(user);
+        post1.setCreatedAt(Instant.now().minusSeconds(60 * 60 * 24 * 15));
+        postRepository.save(post1);
+
+        List<Post> posts = postRepository.findTopPostsByRatingAndCommentsMonthly(Instant.now().minusSeconds(60 * 60 * 24 * 30), Pageable.ofSize(10)).getContent();
+
+        assertThat(posts).isNotEmpty();
+        assertThat(posts).hasSize(1);
+        assertThat(posts.getFirst().getContent()).isEqualTo(post1.getContent());
     }
 
     @Test
