@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import ru.ntwz.feedify.model.Post;
 import ru.ntwz.feedify.model.User;
 
+import java.time.Instant;
 import java.util.Optional;
 
 @Repository
@@ -32,8 +33,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p WHERE p.isDeleted = false AND SIZE(p.attachments) > 0 ORDER BY p.createdAt DESC")
     Page<Post> findAllPostsWithAttachments(Pageable pageable);
 
-    @Query(value = "SELECT p.* FROM posts p WHERE p.is_deleted = false AND p.created_at >= CURRENT_DATE - INTERVAL '31 days' ORDER BY (SELECT COUNT(v.id) FROM votes v WHERE v.post_id = p.id AND v.vote_type = 'UPVOTE') DESC, (SELECT COUNT(c.id) FROM posts c WHERE c.parent_post_id = p.id) DESC", nativeQuery = true)
-    Page<Post> findTopPostsByRatingAndCommentsMonthly(Pageable pageable);
+    @Query("SELECT p FROM Post p WHERE p.isDeleted = false AND p.createdAt >= :daysLimit ORDER BY p.createdAt DESC")
+    Page<Post> findTopPostsByRatingAndCommentsMonthly(Instant daysLimit, Pageable pageable);
 
     @Query("""
                 SELECT p FROM Post p

@@ -21,6 +21,8 @@ import ru.ntwz.feedify.service.PostService;
 import ru.ntwz.feedify.service.StorageService;
 import ru.ntwz.feedify.service.UserService;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 
 @Slf4j
@@ -244,7 +246,8 @@ public class PostServiceImpl implements PostService {
         Pageable pageable = PageRequest.of(page, size);
 
         Page<Post> followingAndTheirFollowings = postRepository.findPostsByFollowingAndTheirFollowings(user, pageable);
-        Page<Post> topPostsByRatingAndCommentsMonthly = postRepository.findTopPostsByRatingAndCommentsMonthly(pageable);
+        Page<Post> topPostsByRatingAndCommentsMonthly = postRepository.findTopPostsByRatingAndCommentsMonthly(
+                getThirtyOneDaysAgo(), pageable);
         Page<Post> postsLikedByFollowings = postRepository.findPostsLikedByFollowedUsers(user, pageable);
 
         Set<Post> recommendedPosts = new HashSet<>(followingAndTheirFollowings.getContent());
@@ -278,7 +281,8 @@ public class PostServiceImpl implements PostService {
         log.info("Finding all monthly popular posts, page: {}, size: {}", page, size);
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<Post> allPopularMonthlyPosts = postRepository.findTopPostsByRatingAndCommentsMonthly(pageable);
+        Page<Post> allPopularMonthlyPosts = postRepository.findTopPostsByRatingAndCommentsMonthly(
+                getThirtyOneDaysAgo(), pageable);
         List<PostDTO> result = allPopularMonthlyPosts.getContent().stream().map(PostMapper::toPostDTO).toList();
 
         log.info("Found {} monthly popular posts", result.size());
@@ -288,5 +292,9 @@ public class PostServiceImpl implements PostService {
     private Post getPostById(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException("Post with id " + postId + " not found"));
+    }
+
+    private Instant getThirtyOneDaysAgo() {
+        return Instant.now().minus(Duration.ofDays(31));
     }
 }
