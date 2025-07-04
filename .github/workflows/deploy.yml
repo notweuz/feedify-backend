@@ -28,4 +28,13 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run checkstyle tests
-        run: ./gradlew checkstyleMain
+        run: ./gradlew checkstyleMain checkstyleTest
+
+      - name: Upload checkstyle report
+        uses: actions/upload-artifact@v4
+        with:
+          name: checkstyle-report
+          path: build/reports/checkstyle/
+
+      - name: Run unit tests
+        run: ./gradlew test
