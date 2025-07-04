@@ -56,4 +56,10 @@ tasks.named('test') {
     useJUnitPlatform()
     systemProperty 'spring.profiles.active', 'test'
     environment 'SPRING_PROFILES_ACTIVE', 'test'
+
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true
+        exceptionFormat = 'full'
+    }
 }
