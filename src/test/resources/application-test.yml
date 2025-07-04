@@ -7,3 +7,23 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+    open-in-view: false
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+common:
+  version: 0.1
+  env: test
+  public-domain: https://test.example.com
+  content:
+    storage: /tmp/test-storage/
+    max-size: 83886080
+    max-attachments: 10
+
+jwt:
+  secret: test-secret-key-for-testing-purposes-only
+  expiration: 3600
