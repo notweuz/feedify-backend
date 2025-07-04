@@ -1,7 +1,8 @@
 package ru.ntwz.feedify.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import ru.ntwz.feedify.util.RandUtils;
 
