@@ -62,4 +62,4 @@ public class FollowingController {
     ) {
         return followingService.isFollowing(user, username);
     }
-} 
+}

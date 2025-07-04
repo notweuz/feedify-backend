@@ -16,4 +16,4 @@ public interface FollowingService {
     List<UserDTO> getFollowing(String username, int page, int size);
 
     boolean isFollowing(User follower, String followingUsername);
-} 
+}

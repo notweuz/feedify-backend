@@ -14,4 +14,4 @@ public class FollowingDTO {
     private UserDTO follower;
     private UserDTO following;
     private Instant createdAt;
-} 
+}

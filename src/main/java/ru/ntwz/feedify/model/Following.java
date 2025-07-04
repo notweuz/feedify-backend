@@ -32,4 +32,4 @@ public class Following {
         this.follower = follower;
         this.following = following;
     }
-} 
+}

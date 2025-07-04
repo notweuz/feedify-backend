@@ -12,4 +12,4 @@ public class FollowingMapper {
                 subscription.getCreatedAt()
         );
     }
-} 
+}

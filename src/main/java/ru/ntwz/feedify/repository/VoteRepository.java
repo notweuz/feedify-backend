@@ -13,4 +13,4 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
     Optional<Vote> findByUserAndPost(User user, Post post);
 
     void delete(Vote vote);
-} 
+}
