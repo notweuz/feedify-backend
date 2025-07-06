@@ -8,6 +8,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 import ru.ntwz.feedify.config.CommonConfig;
 import ru.ntwz.feedify.dto.response.StorageEntryDTO;
@@ -29,6 +31,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class StorageServiceTest {
+    private static final Logger log = LoggerFactory.getLogger(StorageServiceTest.class);
     @Mock
     private StorageRepository storageRepository;
 
@@ -256,11 +259,38 @@ public class StorageServiceTest {
             throw new RuntimeException(e);
         }
 
-        when(storageRepository.save(Mockito.any(StorageEntry.class))).thenReturn(storageEntry);
-
         List<StorageEntryDTO> result = storageService.uploadTemporaryFiles(List.of(mockFile, mockFile2), user);
 
         assertThat(result).isNotNull();
-        Mockito.verify(storageRepository, Mockito.times(2)).save(Mockito.any(StorageEntry.class));
+        Mockito.verify(storageRepository).saveAll(Mockito.anyList());
+    }
+
+    @Test
+    void uploadTemporaryFiles_shouldDeleteAllFilesIfSomeFileIsEmpty() {
+        when(commonConfig.getContent()).thenReturn(content);
+
+        MultipartFile mockFile = Mockito.mock(MultipartFile.class);
+        MultipartFile mockFile2 = Mockito.mock(MultipartFile.class);
+
+        when(mockFile.getOriginalFilename()).thenReturn("file1.jpg");
+        when(mockFile.getContentType()).thenReturn("image/jpeg");
+        when(mockFile.getSize()).thenReturn(1024L);
+        when(mockFile.isEmpty()).thenReturn(false);
+        try {
+            when(mockFile.getBytes()).thenReturn(new byte[1024]);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        when(mockFile2.isEmpty()).thenReturn(true);
+
+        try {
+            storageService.uploadTemporaryFiles(List.of(mockFile, mockFile2), user);
+        } catch (FileIsEmptyException e) {
+            assertThat(e.getMessage()).isEqualTo("File is empty");
+        }
+
+        Mockito.verify(storageRepository, Mockito.never()).saveAll(Mockito.anyList());
+        Mockito.verify(storageRepository, Mockito.times(1)).deleteAll(Mockito.anyList());
     }
 }
