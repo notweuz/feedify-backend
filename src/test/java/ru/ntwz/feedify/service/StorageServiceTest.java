@@ -15,12 +15,14 @@ import ru.ntwz.feedify.exception.FileIsEmptyException;
 import ru.ntwz.feedify.exception.FileReadingException;
 import ru.ntwz.feedify.model.StorageEntry;
 import ru.ntwz.feedify.model.User;
+import ru.ntwz.feedify.repository.PostRepository;
 import ru.ntwz.feedify.repository.StorageRepository;
 import ru.ntwz.feedify.repository.UserRepository;
 import ru.ntwz.feedify.service.implementation.StorageServiceImpl;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -32,6 +34,9 @@ public class StorageServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private PostRepository postRepository;
 
     @Mock
     private CommonConfig commonConfig;
@@ -221,5 +226,41 @@ public class StorageServiceTest {
 
         Mockito.verify(storageRepository).delete(banner);
         assertThat(user.getBanner()).isNull();
+    }
+
+    @Test
+    void attachFilesToPost_shouldAttachFilesToPostSuccessfully() {
+        when(commonConfig.getContent()).thenReturn(content);
+
+        MultipartFile mockFile = Mockito.mock(MultipartFile.class);
+        StorageEntry storageEntry = new StorageEntry();
+        storageEntry.setId(1L);
+
+        MultipartFile mockFile2 = Mockito.mock(MultipartFile.class);
+        StorageEntry storageEntry2 = new StorageEntry();
+        storageEntry2.setId(2L);
+
+        when(mockFile2.getOriginalFilename()).thenReturn("post_image2.jpg");
+        when(mockFile2.getContentType()).thenReturn("image/jpeg");
+        when(mockFile2.getSize()).thenReturn(2048L);
+        when(mockFile2.isEmpty()).thenReturn(false);
+
+        when(mockFile.getOriginalFilename()).thenReturn("post_image.jpg");
+        when(mockFile.getContentType()).thenReturn("image/jpeg");
+        when(mockFile.getSize()).thenReturn(2048L);
+        when(mockFile.isEmpty()).thenReturn(false);
+        try {
+            when(mockFile.getBytes()).thenReturn(new byte[2048]);
+            when(mockFile2.getBytes()).thenReturn(new byte[2048]);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        when(storageRepository.save(Mockito.any(StorageEntry.class))).thenReturn(storageEntry);
+
+        List<StorageEntryDTO> result = storageService.uploadTemporaryFiles(List.of(mockFile, mockFile2), user);
+
+        assertThat(result).isNotNull();
+        Mockito.verify(storageRepository, Mockito.times(2)).save(Mockito.any(StorageEntry.class));
     }
 }
