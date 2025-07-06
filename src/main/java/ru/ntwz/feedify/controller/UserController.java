@@ -57,7 +57,7 @@ public class UserController {
         return userService.updateUser(user, userUpdateDTO);
     }
 
-    @PostMapping("/me/change-password")
+    @PostMapping("/me/password")
     public AccessTokenDTO changePassword(
             @RequestAttribute(AttributesConstants.USER) User user,
             @RequestBody @Valid ChangePasswordDTO changePasswordDTO
