@@ -297,8 +297,9 @@ public class StorageServiceImpl implements StorageService {
 
         for (StorageEntry file : files) {
             file.setPost(post);
-            storageRepository.save(file);
-            log.info("File attached to post: fileId={}, postId={}", file.getId(), postId);
         }
+
+        List<StorageEntry> updatedFiles = storageRepository.saveAll(files);
+        log.info("Attached {} files to post: postId={}", updatedFiles.size(), postId);
     }
 }
