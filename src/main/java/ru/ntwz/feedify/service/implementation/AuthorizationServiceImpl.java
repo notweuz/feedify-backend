@@ -53,7 +53,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         log.info("User {} created successfully", username);
 
         String token = jwtService.generate(user.getId(), passwordHash);
-        log.debug("Generated token for user {}: {}", username, token.substring(0, Math.min(20, token.length())) + "...");
+        log.debug("Generated token for user {} after registration: {}", username, token.substring(0, Math.min(20, token.length())) + "...");
 
         return new AccessTokenDTO(token);
     }
@@ -69,7 +69,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
         if (bCryptService.verify(password, user.getPassword())) {
             String token = jwtService.generate(user.getId(), user.getPassword());
-            log.debug("Generated token for user {}: {}", username, token.substring(0, Math.min(20, token.length())) + "...");
+            log.debug("Generated token for user {} after login: {}", username, token.substring(0, Math.min(20, token.length())) + "...");
             return new AccessTokenDTO(token);
         } else {
             throw new InvalidPasswordException("Invalid password for user: " + username);
