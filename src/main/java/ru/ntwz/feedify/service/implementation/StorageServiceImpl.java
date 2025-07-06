@@ -205,6 +205,23 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    public void deleteFiles(List<StorageEntry> storageEntries) {
+        if (storageEntries == null || storageEntries.isEmpty()) {
+            log.warn("No files to delete");
+            return;
+        }
+
+        for (StorageEntry storageEntry : storageEntries) {
+            try {
+                deleteFile(storageEntry);
+            } catch (Exception e) {
+                log.error("Error deleting file: uniqueName={}, filePath={}", storageEntry.getUniqueName(), storageEntry.getFilePath(), e);
+            }
+        }
+        log.info("Deleted {} files", storageEntries.size());
+    }
+
+    @Override
     public List<StorageEntryDTO> uploadTemporaryFiles(List<MultipartFile> files, User user) {
         if (files == null || files.isEmpty()) {
             throw new FilesCannotBeEmptyException("Files list cannot be null or empty");

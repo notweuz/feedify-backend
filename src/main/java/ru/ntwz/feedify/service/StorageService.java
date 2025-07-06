@@ -19,6 +19,8 @@ public interface StorageService {
 
     void deleteFile(StorageEntry storageEntry);
 
+    void deleteFiles(List<StorageEntry> storageEntries);
+
     List<StorageEntryDTO> uploadTemporaryFiles(List<MultipartFile> files, User user);
 
     List<StorageEntry> getTemporaryFilesByIds(List<Long> attachmentIds, User user);

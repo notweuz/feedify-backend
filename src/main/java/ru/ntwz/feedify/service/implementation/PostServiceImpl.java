@@ -208,10 +208,7 @@ public class PostServiceImpl implements PostService {
         post.getAttachments().clear();
         postRepository.save(post);
 
-        attachmentsToDelete.forEach(attachment -> {
-            storageService.deleteFile(attachment);
-            log.info("Deleted attachment with id: {}", attachment.getId());
-        });
+        storageService.deleteFiles(attachmentsToDelete);
 
         log.info("Deleting post with id: {}", id);
     }
