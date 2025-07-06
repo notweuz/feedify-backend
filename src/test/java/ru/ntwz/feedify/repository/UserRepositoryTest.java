@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import ru.ntwz.feedify.model.StorageEntry;
 import ru.ntwz.feedify.model.User;
 
-import java.awt.*;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
