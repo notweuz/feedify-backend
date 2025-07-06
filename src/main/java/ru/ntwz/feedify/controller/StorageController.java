@@ -7,7 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.ntwz.feedify.constant.AttributesConstants;
+import ru.ntwz.feedify.constant.AttributesConstant;
 import ru.ntwz.feedify.dto.response.FileDTO;
 import ru.ntwz.feedify.dto.response.StorageEntryDTO;
 import ru.ntwz.feedify.model.User;
@@ -29,14 +29,14 @@ public class StorageController {
     @PostMapping("/avatar")
     public StorageEntryDTO uploadAvatar(
             @RequestParam("file") MultipartFile file,
-            @RequestAttribute(AttributesConstants.USER) User user
+            @RequestAttribute(AttributesConstant.USER) User user
     ) {
         return storageService.uploadAvatar(file, user);
     }
 
     @DeleteMapping("/avatar")
     public void deleteAvatar(
-            @RequestAttribute(AttributesConstants.USER) User user
+            @RequestAttribute(AttributesConstant.USER) User user
     ) {
         storageService.deleteAvatar(user);
     }
@@ -44,14 +44,14 @@ public class StorageController {
     @PostMapping("/banner")
     public StorageEntryDTO uploadBanner(
             @RequestParam("file") MultipartFile file,
-            @RequestAttribute(AttributesConstants.USER) User user
+            @RequestAttribute(AttributesConstant.USER) User user
     ) {
         return storageService.uploadBanner(file, user);
     }
 
     @DeleteMapping("/banner")
     public void deleteBanner(
-            @RequestAttribute(AttributesConstants.USER) User user
+            @RequestAttribute(AttributesConstant.USER) User user
     ) {
         storageService.deleteBanner(user);
     }
@@ -78,14 +78,14 @@ public class StorageController {
     @PostMapping("/temporary")
     public Object uploadTemporaryFiles(
             @RequestParam("files") List<MultipartFile> files,
-            @RequestAttribute(AttributesConstants.USER) User user
+            @RequestAttribute(AttributesConstant.USER) User user
     ) {
         return storageService.uploadTemporaryFiles(files, user);
     }
 
     @DeleteMapping("/temporary")
     public void deleteTemporaryFiles(
-            @RequestAttribute(AttributesConstants.USER) User user,
+            @RequestAttribute(AttributesConstant.USER) User user,
             @RequestBody List<Long> fileIds
     ) {
         storageService.deleteTemporaryFilesByIds(fileIds, user);

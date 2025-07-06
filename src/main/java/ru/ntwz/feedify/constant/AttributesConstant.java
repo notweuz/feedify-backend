@@ -1,5 +1,5 @@
 package ru.ntwz.feedify.constant;
 
-public class AttributesConstants {
+public class AttributesConstant {
     public static final String USER = "USER";
 }

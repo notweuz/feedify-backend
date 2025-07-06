@@ -2,7 +2,7 @@ package ru.ntwz.feedify.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.ntwz.feedify.constant.AttributesConstants;
+import ru.ntwz.feedify.constant.AttributesConstant;
 import ru.ntwz.feedify.dto.response.FollowingDTO;
 import ru.ntwz.feedify.dto.response.UserDTO;
 import ru.ntwz.feedify.model.User;
@@ -23,7 +23,7 @@ public class FollowingController {
 
     @PostMapping("/{username}")
     public FollowingDTO subscribe(
-            @RequestAttribute(AttributesConstants.USER) User user,
+            @RequestAttribute(AttributesConstant.USER) User user,
             @PathVariable String username
     ) {
         return followingService.follow(user, username);
@@ -31,7 +31,7 @@ public class FollowingController {
 
     @DeleteMapping("/{username}")
     public void unsubscribe(
-            @RequestAttribute(AttributesConstants.USER) User user,
+            @RequestAttribute(AttributesConstant.USER) User user,
             @PathVariable String username
     ) {
         followingService.unfollow(user, username);
@@ -57,7 +57,7 @@ public class FollowingController {
 
     @GetMapping("/check/{username}")
     public boolean isFollowing(
-            @RequestAttribute(AttributesConstants.USER) User user,
+            @RequestAttribute(AttributesConstant.USER) User user,
             @PathVariable String username
     ) {
         return followingService.isFollowing(user, username);

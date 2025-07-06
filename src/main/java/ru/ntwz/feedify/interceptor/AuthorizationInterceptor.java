@@ -9,7 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import ru.ntwz.feedify.constant.AttributesConstants;
+import ru.ntwz.feedify.constant.AttributesConstant;
 import ru.ntwz.feedify.exception.TokenNotProvidedException;
 import ru.ntwz.feedify.model.User;
 import ru.ntwz.feedify.service.AuthorizationService;
@@ -43,7 +43,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
         User user = authorizationService.authUser(accessToken);
 
-        request.setAttribute(AttributesConstants.USER, user);
+        request.setAttribute(AttributesConstant.USER, user);
         return true;
     }
 }

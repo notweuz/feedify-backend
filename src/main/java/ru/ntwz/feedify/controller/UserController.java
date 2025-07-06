@@ -3,7 +3,7 @@ package ru.ntwz.feedify.controller;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.ntwz.feedify.constant.AttributesConstants;
+import ru.ntwz.feedify.constant.AttributesConstant;
 import ru.ntwz.feedify.dto.request.ChangePasswordDTO;
 import ru.ntwz.feedify.dto.request.UserUpdateDTO;
 import ru.ntwz.feedify.dto.response.AccessTokenDTO;
@@ -39,7 +39,7 @@ public class UserController {
 
     @GetMapping("/me")
     public UserDTO getSelfInfo(
-            @RequestAttribute(AttributesConstants.USER) User user
+            @RequestAttribute(AttributesConstant.USER) User user
     ) {
         return userService.getUserInfo(user);
     }
@@ -51,7 +51,7 @@ public class UserController {
 
     @PatchMapping("/me")
     public UserDTO update(
-            @RequestAttribute(AttributesConstants.USER) User user,
+            @RequestAttribute(AttributesConstant.USER) User user,
             @RequestBody @Valid UserUpdateDTO userUpdateDTO
     ) {
         return userService.updateUser(user, userUpdateDTO);
@@ -59,7 +59,7 @@ public class UserController {
 
     @PostMapping("/me/password")
     public AccessTokenDTO changePassword(
-            @RequestAttribute(AttributesConstants.USER) User user,
+            @RequestAttribute(AttributesConstant.USER) User user,
             @RequestBody @Valid ChangePasswordDTO changePasswordDTO
     ) {
         return userService.changePassword(user, changePasswordDTO.getOldPassword(), changePasswordDTO.getNewPassword());

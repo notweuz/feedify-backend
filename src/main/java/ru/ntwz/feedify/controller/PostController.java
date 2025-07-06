@@ -3,7 +3,7 @@ package ru.ntwz.feedify.controller;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.ntwz.feedify.constant.AttributesConstants;
+import ru.ntwz.feedify.constant.AttributesConstant;
 import ru.ntwz.feedify.dto.request.PostCreateDTO;
 import ru.ntwz.feedify.dto.request.PostUpdateDTO;
 import ru.ntwz.feedify.dto.response.CommentDTO;
@@ -31,7 +31,7 @@ public class PostController {
 
     @PostMapping
     public PostDTO create(
-            @RequestAttribute(AttributesConstants.USER) User user,
+            @RequestAttribute(AttributesConstant.USER) User user,
             @RequestBody @Valid PostCreateDTO postCreateDTO
     ) {
         return postService.create(user, postCreateDTO);
@@ -39,7 +39,7 @@ public class PostController {
 
     @PostMapping("/{id}/comments")
     public PostDTO createComment(
-            @RequestAttribute(AttributesConstants.USER) User user,
+            @RequestAttribute(AttributesConstant.USER) User user,
             @PathVariable Long id,
             @RequestBody @Valid PostCreateDTO postCreateDTO
     ) {
@@ -67,7 +67,7 @@ public class PostController {
 
     @PatchMapping("/{id}")
     public PostDTO update(
-            @RequestAttribute(AttributesConstants.USER) User user,
+            @RequestAttribute(AttributesConstant.USER) User user,
             @PathVariable long id,
             @RequestBody @Valid PostUpdateDTO postUpdateDTO
     ) {
@@ -76,7 +76,7 @@ public class PostController {
 
     @DeleteMapping("/{id}")
     public void delete(
-            @RequestAttribute(AttributesConstants.USER) User user,
+            @RequestAttribute(AttributesConstant.USER) User user,
             @PathVariable long id
     ) {
         postService.delete(user, id);
@@ -84,7 +84,7 @@ public class PostController {
 
     @PostMapping("/{postId}/vote")
     public VoteDTO vote(
-            @RequestAttribute(AttributesConstants.USER) User user,
+            @RequestAttribute(AttributesConstant.USER) User user,
             @PathVariable Long postId,
             @RequestParam(defaultValue = "true") boolean upvote
     ) {
@@ -93,7 +93,7 @@ public class PostController {
 
     @DeleteMapping("/{postId}/attachments/{id}")
     public void deleteAttachment(
-            @RequestAttribute(AttributesConstants.USER) User user,
+            @RequestAttribute(AttributesConstant.USER) User user,
             @PathVariable Long postId,
             @PathVariable Long id
     ) {
@@ -102,7 +102,7 @@ public class PostController {
 
     @GetMapping("/feed/recommendations")
     public List<PostDTO> findUserRecommendations(
-            @RequestAttribute(AttributesConstants.USER) User user,
+            @RequestAttribute(AttributesConstant.USER) User user,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
@@ -127,7 +127,7 @@ public class PostController {
 
     @GetMapping("/{postId}/vote")
     public VoteDTO getUserVote(
-            @RequestAttribute(AttributesConstants.USER) User user,
+            @RequestAttribute(AttributesConstant.USER) User user,
             @PathVariable Long postId
     ) {
         return voteService.getUserVote(postId, user);
