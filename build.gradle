@@ -25,6 +25,10 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    mockitoAgent
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -48,15 +52,18 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'com.h2database:h2'
-    testImplementation 'org.mockito:mockito-core:5.18.0'
     testImplementation 'org.mockito:mockito-junit-jupiter:5.2.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.mockito:mockito-core:5.18.0'
+    mockitoAgent 'org.mockito:mockito-core:5.18.0', { transitive = false }
 }
 
 tasks.named('test') {
     useJUnitPlatform()
     systemProperty 'spring.profiles.active', 'test'
     environment 'SPRING_PROFILES_ACTIVE', 'test'
+
+    jvmArgs += "-javaagent:${configurations.mockitoAgent.asPath}"
 
     testLogging {
         events "passed", "skipped", "failed"
