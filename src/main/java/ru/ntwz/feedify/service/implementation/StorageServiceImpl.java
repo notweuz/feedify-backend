@@ -230,27 +230,23 @@ public class StorageServiceImpl implements StorageService {
             throw new TooManyAttachmentsException("Too many attachments. Trying to add: " + files.size() +
                     ", maximum allowed: " + commonConfig.getContent().getMaxAttachments());
         }
-        List<StorageEntryDTO> uploadedFiles = new ArrayList<>();
-        for (MultipartFile file : files) {
-            try {
+
+        List<StorageEntry> storageEntries = new ArrayList<>();
+        try {
+            for (MultipartFile file : files) {
                 StorageEntry storageEntry = saveFileToStorage(file, user);
                 storageEntry.setPost(null);
-                StorageEntry savedEntry = storageRepository.save(storageEntry);
-                log.info("Temporary file uploaded successfully: id={}, uniqueName={}, filePath={}, contentType={}, size={}",
-                        savedEntry.getId(), storageEntry.getUniqueName(), storageEntry.getFilePath(), storageEntry.getContentType(), storageEntry.getSize());
-                uploadedFiles.add(StorageMapper.toDTO(savedEntry));
-            } catch (Exception e) {
-                if (!uploadedFiles.isEmpty()) {
-                    List<Long> uploadedIds = uploadedFiles.stream()
-                            .map(StorageEntryDTO::getId)
-                            .collect(Collectors.toList());
-                    deleteTemporaryFilesByIds(uploadedIds, user);
-                }
-                throw e;
+                storageEntries.add(storageEntry);
             }
+            List<StorageEntry> savedEntries = storageRepository.saveAll(storageEntries);
+            log.info("Uploaded {} temporary files for user: {}", savedEntries.size(), user.getUsername());
+            return savedEntries.stream()
+                    .map(StorageMapper::toDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            deleteTemporaryFiles(storageEntries);
+            throw e;
         }
-        log.info("Uploaded {} temporary files for user: {}", uploadedFiles.size(), user.getUsername());
-        return uploadedFiles;
     }
 
     @Override
@@ -271,17 +267,19 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     public void deleteTemporaryFiles(List<StorageEntry> temporaryFiles) {
-        for (StorageEntry file : temporaryFiles) {
+        if (temporaryFiles == null || temporaryFiles.isEmpty()) {
+            return;
+        }
+        temporaryFiles.forEach(file -> {
             try {
-                Path filePath = Paths.get(file.getFilePath());
-                Files.deleteIfExists(filePath);
-                storageRepository.delete(file);
+                Files.deleteIfExists(Paths.get(file.getFilePath()));
                 log.info("Temporary file deleted successfully: id={}, uniqueName={}, filePath={}",
                         file.getId(), file.getUniqueName(), file.getFilePath());
             } catch (Exception e) {
                 log.error("Error deleting temporary file: id={}, filePath={}", file.getId(), file.getFilePath(), e);
             }
-        }
+        });
+        storageRepository.deleteAll(temporaryFiles);
     }
 
     @Override
