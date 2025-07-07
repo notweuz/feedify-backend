@@ -4,172 +4,263 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.ntwz.feedify.dto.response.ApiError;
 import ru.ntwz.feedify.exception.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
 
 @RestControllerAdvice
 public class ExceptionController {
-
     @ExceptionHandler(InvalidPasswordException.class)
-    public ResponseEntity<Map<String, String>> handleInvalidPasswordException(InvalidPasswordException ex) {
-        Map<String, String> map = new HashMap<>();
-        map.put("error", ex.getMessage());
-        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ApiError> handleInvalidPasswordException(InvalidPasswordException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setMessage(ex.getMessage());
+        apiError.setStatus(HttpStatus.UNAUTHORIZED.name());
+        apiError.setReason("Provided password is invalid");
+        apiError.setErrors(Collections.singletonList(ex.toString()));
+
+        return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(NotAuthorizedException.class)
-    public ResponseEntity<Map<String, String>> handleNotAuthorizedException(NotAuthorizedException ex) {
-        Map<String, String> map = new HashMap<>();
-        map.put("error", ex.getMessage());
-        return new ResponseEntity<>(map, HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<ApiError> handleNotAuthorizedException(NotAuthorizedException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setMessage(ex.getMessage());
+        apiError.setStatus(HttpStatus.UNAUTHORIZED.name());
+        apiError.setReason("User is not authorized");
+        apiError.setErrors(Collections.singletonList(ex.toString()));
+
+        return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleUserNotFoundException(UserNotFoundException ex) {
-        Map<String, String> map = new HashMap<>();
-        map.put("error", ex.getMessage());
-        return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
+    public ResponseEntity<ApiError> handleUserNotFoundException(UserNotFoundException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setMessage(ex.getMessage());
+        apiError.setStatus(HttpStatus.NOT_FOUND.name());
+        apiError.setReason("User not found");
+        apiError.setErrors(Collections.singletonList(ex.toString()));
+
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(UserWithSameNameAlreadyExistsException.class)
-    public ResponseEntity<Map<String, String>> handleUserWithSameNameAlreadyExistsException(UserWithSameNameAlreadyExistsException ex) {
-        Map<String, String> map = new HashMap<>();
-        map.put("error", ex.getMessage());
-        return new ResponseEntity<>(map, HttpStatus.CONFLICT);
+    public ResponseEntity<ApiError> handleUserWithSameNameAlreadyExistsException(UserWithSameNameAlreadyExistsException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setMessage(ex.getMessage());
+        apiError.setStatus(HttpStatus.CONFLICT.name());
+        apiError.setReason("User with the same name already exists");
+        apiError.setErrors(Collections.singletonList(ex.toString()));
+
+        return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(PostNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handlePostNotFoundException(PostNotFoundException ex) {
-        Map<String, String> map = new HashMap<>();
-        map.put("error", ex.getMessage());
-        return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
+    public ResponseEntity<ApiError> handlePostNotFoundException(PostNotFoundException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setMessage(ex.getMessage());
+        apiError.setStatus(HttpStatus.NOT_FOUND.name());
+        apiError.setReason("Post not found");
+        apiError.setErrors(Collections.singletonList(ex.toString()));
+
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(TokenNotProvidedException.class)
-    public ResponseEntity<Map<String, String>> handleTokenNotProvidedException(TokenNotProvidedException ex) {
-        Map<String, String> map = new HashMap<>();
-        map.put("error", ex.getMessage());
-        return new ResponseEntity<>(map, HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<ApiError> handleTokenNotProvidedException(TokenNotProvidedException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setMessage(ex.getMessage());
+        apiError.setStatus(HttpStatus.UNAUTHORIZED.name());
+        apiError.setReason("Access token is not provided");
+        apiError.setErrors(Collections.singletonList(ex.toString()));
+
+        return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(NotPostsOwnerException.class)
-    public ResponseEntity<Map<String, String>> handleNotPostsOwnerException(NotPostsOwnerException ex) {
-        Map<String, String> map = new HashMap<>();
-        map.put("error", ex.getMessage());
-        return new ResponseEntity<>(map, HttpStatus.FORBIDDEN);
+    public ResponseEntity<ApiError> handleNotPostsOwnerException(NotPostsOwnerException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setMessage(ex.getMessage());
+        apiError.setStatus(HttpStatus.FORBIDDEN.name());
+        apiError.setReason("User is not the owner of the post");
+        apiError.setErrors(Collections.singletonList(ex.toString()));
+
+        return new ResponseEntity<>(apiError, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(PostAlreadyDeletedException.class)
-    public ResponseEntity<Map<String, String>> handlePostAlreadyDeletedException(PostAlreadyDeletedException ex) {
-        Map<String, String> map = new HashMap<>();
-        map.put("error", ex.getMessage());
-        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ApiError> handlePostAlreadyDeletedException(PostAlreadyDeletedException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setMessage(ex.getMessage());
+        apiError.setStatus(HttpStatus.NOT_FOUND.name());
+        apiError.setReason("Post has already been deleted");
+        apiError.setErrors(Collections.singletonList(ex.toString()));
+
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(UnknownRatingValueException.class)
-    public ResponseEntity<Map<String, String>> handleUnknownRatingValueException(UnknownRatingValueException ex) {
-        Map<String, String> map = new HashMap<>();
-        map.put("error", ex.getMessage());
-        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ApiError> handleUnknownRatingValueException(UnknownRatingValueException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setMessage(ex.getMessage());
+        apiError.setStatus(HttpStatus.BAD_REQUEST.name());
+        apiError.setReason("Unknown rating value provided");
+        apiError.setErrors(Collections.singletonList(ex.toString()));
+
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(AlreadyVotedForPostException.class)
-    public ResponseEntity<Map<String, String>> handleAlreadyVotedForPostException(AlreadyVotedForPostException ex) {
-        Map<String, String> map = new HashMap<>();
-        map.put("error", ex.getMessage());
-        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ApiError> handleAlreadyVotedForPostException(AlreadyVotedForPostException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setMessage(ex.getMessage());
+        apiError.setStatus(HttpStatus.CONFLICT.name());
+        apiError.setReason("User has already voted for this post");
+        apiError.setErrors(Collections.singletonList(ex.toString()));
+
+        return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Map<String, String>> handleIllegalArgumentException(IllegalArgumentException ex) {
-        Map<String, String> map = new HashMap<>();
-        map.put("error", ex.getMessage());
-        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ApiError> handleIllegalArgumentException(IllegalArgumentException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setMessage(ex.getMessage());
+        apiError.setStatus(HttpStatus.BAD_REQUEST.name());
+        apiError.setReason("Invalid argument provided");
+        apiError.setErrors(Collections.singletonList(ex.toString()));
+
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<Map<String, String>> handleIllegalStateException(IllegalStateException ex) {
-        Map<String, String> map = new HashMap<>();
-        map.put("error", ex.getMessage());
-        return new ResponseEntity<>(map, HttpStatus.CONFLICT);
+    public ResponseEntity<ApiError> handleIllegalStateException(IllegalStateException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setMessage(ex.getMessage());
+        apiError.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.name());
+        apiError.setReason("An unexpected error occurred");
+        apiError.setErrors(Collections.singletonList(ex.toString()));
+
+        return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(SelfFollowingException.class)
-    public ResponseEntity<Map<String, String>> handleSelfSubscriptionException(SelfFollowingException ex) {
-        Map<String, String> map = new HashMap<>();
-        map.put("error", ex.getMessage());
-        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ApiError> handleSelfSubscriptionException(SelfFollowingException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setMessage(ex.getMessage());
+        apiError.setStatus(HttpStatus.BAD_REQUEST.name());
+        apiError.setReason("User cannot follow themselves");
+        apiError.setErrors(Collections.singletonList(ex.toString()));
+
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(AlreadyFollowingException.class)
-    public ResponseEntity<Map<String, String>> handleAlreadySubscribedException(AlreadyFollowingException ex) {
-        Map<String, String> map = new HashMap<>();
-        map.put("error", ex.getMessage());
-        return new ResponseEntity<>(map, HttpStatus.CONFLICT);
+    public ResponseEntity<ApiError> handleAlreadySubscribedException(AlreadyFollowingException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setMessage(ex.getMessage());
+        apiError.setStatus(HttpStatus.CONFLICT.name());
+        apiError.setReason("User is already following this account");
+        apiError.setErrors(Collections.singletonList(ex.toString()));
+
+        return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(NotFollowingException.class)
-    public ResponseEntity<Map<String, String>> handleNotSubscribedException(NotFollowingException ex) {
-        Map<String, String> map = new HashMap<>();
-        map.put("error", ex.getMessage());
-        return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
+    public ResponseEntity<ApiError> handleNotSubscribedException(NotFollowingException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setMessage(ex.getMessage());
+        apiError.setStatus(HttpStatus.NOT_FOUND.name());
+        apiError.setReason("User is not following this account");
+        apiError.setErrors(Collections.singletonList(ex.toString()));
+
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(FileNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleFileNotFoundException(FileNotFoundException ex) {
-        Map<String, String> map = new HashMap<>();
-        map.put("error", ex.getMessage());
-        return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
+    public ResponseEntity<ApiError> handleFileNotFoundException(FileNotFoundException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setMessage(ex.getMessage());
+        apiError.setStatus(HttpStatus.NOT_FOUND.name());
+        apiError.setReason("File not found");
+        apiError.setErrors(Collections.singletonList(ex.toString()));
+
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(FileReadingException.class)
-    public ResponseEntity<Map<String, String>> handleFileReadingException(FileReadingException ex) {
-        Map<String, String> map = new HashMap<>();
-        map.put("error", ex.getMessage());
-        return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ApiError> handleFileReadingException(FileReadingException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setMessage(ex.getMessage());
+        apiError.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.name());
+        apiError.setReason("Error reading file");
+        apiError.setErrors(Collections.singletonList(ex.toString()));
+
+        return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(FileIsEmptyException.class)
-    public ResponseEntity<Map<String, String>> handleFileIsEmptyException(FileIsEmptyException ex) {
-        Map<String, String> map = new HashMap<>();
-        map.put("error", ex.getMessage());
-        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ApiError> handleFileIsEmptyException(FileIsEmptyException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setMessage(ex.getMessage());
+        apiError.setStatus(HttpStatus.BAD_REQUEST.name());
+        apiError.setReason("File is empty");
+        apiError.setErrors(Collections.singletonList(ex.toString()));
+
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(FileIsTooLargeException.class)
-    public ResponseEntity<Map<String, String>> handleFileIsTooLargeException(FileIsTooLargeException ex) {
-        Map<String, String> map = new HashMap<>();
-        map.put("error", ex.getMessage());
-        return new ResponseEntity<>(map, HttpStatus.PAYLOAD_TOO_LARGE);
+    public ResponseEntity<ApiError> handleFileIsTooLargeException(FileIsTooLargeException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setMessage(ex.getMessage());
+        apiError.setStatus(HttpStatus.PAYLOAD_TOO_LARGE.name());
+        apiError.setReason("File is too large");
+        apiError.setErrors(Collections.singletonList(ex.toString()));
+
+        return new ResponseEntity<>(apiError, HttpStatus.PAYLOAD_TOO_LARGE);
     }
 
     @ExceptionHandler(TooManyAttachmentsException.class)
-    public ResponseEntity<Map<String, String>> handleTooManyAttachmentsException(TooManyAttachmentsException ex) {
-        Map<String, String> map = new HashMap<>();
-        map.put("error", ex.getMessage());
-        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ApiError> handleTooManyAttachmentsException(TooManyAttachmentsException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setMessage(ex.getMessage());
+        apiError.setStatus(HttpStatus.BAD_REQUEST.name());
+        apiError.setReason("Too many attachments");
+        apiError.setErrors(Collections.singletonList(ex.toString()));
+
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(AttachmentNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleAttachmentNotFoundException(AttachmentNotFoundException ex) {
-        Map<String, String> map = new HashMap<>();
-        map.put("error", ex.getMessage());
-        return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
+    public ResponseEntity<ApiError> handleAttachmentNotFoundException(AttachmentNotFoundException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setMessage(ex.getMessage());
+        apiError.setStatus(HttpStatus.NOT_FOUND.name());
+        apiError.setReason("Attachment not found");
+        apiError.setErrors(Collections.singletonList(ex.toString()));
+
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(PostHasNoContentAtAllException.class)
-    public ResponseEntity<Map<String, String>> handlePostHasNoContentAtAllException(PostHasNoContentAtAllException ex) {
-        Map<String, String> map = new HashMap<>();
-        map.put("error", ex.getMessage());
-        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ApiError> handlePostHasNoContentAtAllException(PostHasNoContentAtAllException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setMessage(ex.getMessage());
+        apiError.setStatus(HttpStatus.BAD_REQUEST.name());
+        apiError.setReason("Post content cannot be empty");
+        apiError.setErrors(Collections.singletonList(ex.toString()));
+
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(FilesCannotBeEmptyException.class)
-    public ResponseEntity<Map<String, String>> handleFilesCannotBeEmptyException(FilesCannotBeEmptyException ex) {
-        Map<String, String> map = new HashMap<>();
-        map.put("error", ex.getMessage());
-        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ApiError> handleFilesCannotBeEmptyException(FilesCannotBeEmptyException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setMessage(ex.getMessage());
+        apiError.setStatus(HttpStatus.BAD_REQUEST.name());
+        apiError.setReason("Files cannot be empty");
+        apiError.setErrors(Collections.singletonList(ex.toString()));
+
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 }
