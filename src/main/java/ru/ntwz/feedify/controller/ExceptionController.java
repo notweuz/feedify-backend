@@ -1,7 +1,9 @@
 package ru.ntwz.feedify.controller;
 
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.ntwz.feedify.dto.response.ApiError;
@@ -261,6 +263,32 @@ public class ExceptionController {
         apiError.setReason("Files cannot be empty");
         apiError.setErrors(Collections.singletonList(ex.toString()));
 
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiError> handleConstraintViolationException(ConstraintViolationException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setMessage(ex.getMessage());
+        apiError.setStatus(HttpStatus.BAD_REQUEST.name());
+        apiError.setReason("One or more validation constraints were violated");
+        apiError.setErrors(Collections.singletonList(ex.toString()));
+
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiError> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        String message = ex.getBindingResult().getFieldErrors().stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .findFirst()
+                .orElse("Validation failed");
+
+        ApiError apiError = new ApiError();
+        apiError.setMessage(message);
+        apiError.setStatus(HttpStatus.BAD_REQUEST.name());
+        apiError.setReason("Validation failed for one or more fields");
+        apiError.setErrors(Collections.singletonList(ex.toString()));
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 }
