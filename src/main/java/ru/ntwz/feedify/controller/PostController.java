@@ -4,11 +4,11 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.ntwz.feedify.constant.AttributesConstant;
-import ru.ntwz.feedify.dto.request.PostCreateDTO;
-import ru.ntwz.feedify.dto.request.PostUpdateDTO;
-import ru.ntwz.feedify.dto.response.CommentDTO;
+import ru.ntwz.feedify.dto.request.PostCreateDto;
+import ru.ntwz.feedify.dto.request.PostUpdateDto;
+import ru.ntwz.feedify.dto.response.CommentDto;
 import ru.ntwz.feedify.dto.response.PostDTO;
-import ru.ntwz.feedify.dto.response.VoteDTO;
+import ru.ntwz.feedify.dto.response.VoteDto;
 import ru.ntwz.feedify.model.User;
 import ru.ntwz.feedify.service.PostService;
 import ru.ntwz.feedify.service.VoteService;
@@ -32,7 +32,7 @@ public class PostController {
     @PostMapping
     public PostDTO create(
             @RequestAttribute(AttributesConstant.USER) User user,
-            @RequestBody @Valid PostCreateDTO postCreateDTO
+            @RequestBody @Valid PostCreateDto postCreateDTO
     ) {
         return postService.create(user, postCreateDTO);
     }
@@ -41,13 +41,13 @@ public class PostController {
     public PostDTO createComment(
             @RequestAttribute(AttributesConstant.USER) User user,
             @PathVariable Long id,
-            @RequestBody @Valid PostCreateDTO postCreateDTO
+            @RequestBody @Valid PostCreateDto postCreateDTO
     ) {
         return postService.createComment(user, postCreateDTO, id);
     }
 
     @GetMapping("/{id}/comments")
-    public List<CommentDTO> getComments(
+    public List<CommentDto> getComments(
             @PathVariable long id,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size
@@ -69,7 +69,7 @@ public class PostController {
     public PostDTO update(
             @RequestAttribute(AttributesConstant.USER) User user,
             @PathVariable long id,
-            @RequestBody @Valid PostUpdateDTO postUpdateDTO
+            @RequestBody @Valid PostUpdateDto postUpdateDTO
     ) {
         return postService.update(user, id, postUpdateDTO);
     }
@@ -83,7 +83,7 @@ public class PostController {
     }
 
     @PostMapping("/{postId}/vote")
-    public VoteDTO vote(
+    public VoteDto vote(
             @RequestAttribute(AttributesConstant.USER) User user,
             @PathVariable Long postId,
             @RequestParam(defaultValue = "true") boolean upvote
@@ -126,7 +126,7 @@ public class PostController {
     }
 
     @GetMapping("/{postId}/vote")
-    public VoteDTO getUserVote(
+    public VoteDto getUserVote(
             @RequestAttribute(AttributesConstant.USER) User user,
             @PathVariable Long postId
     ) {

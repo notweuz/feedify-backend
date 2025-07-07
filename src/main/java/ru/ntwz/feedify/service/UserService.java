@@ -1,23 +1,23 @@
 package ru.ntwz.feedify.service;
 
-import ru.ntwz.feedify.dto.request.UserUpdateDTO;
-import ru.ntwz.feedify.dto.response.AccessTokenDTO;
-import ru.ntwz.feedify.dto.response.UserDTO;
+import ru.ntwz.feedify.dto.request.UserUpdateDto;
+import ru.ntwz.feedify.dto.response.AccessTokenDto;
+import ru.ntwz.feedify.dto.response.UserDto;
 import ru.ntwz.feedify.exception.UserNotFoundException;
 import ru.ntwz.feedify.model.User;
 
 public interface UserService {
     User create(User user);
 
-    UserDTO findByUsername(String username) throws UserNotFoundException;
+    UserDto findByUsername(String username) throws UserNotFoundException;
 
     User getByUsername(String username) throws UserNotFoundException;
 
     User getById(Long id) throws UserNotFoundException;
 
-    UserDTO getUserInfo(User user);
+    UserDto getUserInfo(User user);
 
-    UserDTO updateUser(User user, UserUpdateDTO userUpdateDTO);
+    UserDto updateUser(User user, UserUpdateDto userUpdateDTO);
 
-    AccessTokenDTO changePassword(User user, String oldPassword, String newPassword);
+    AccessTokenDto changePassword(User user, String oldPassword, String newPassword);
 }

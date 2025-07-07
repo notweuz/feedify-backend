@@ -7,8 +7,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.ntwz.feedify.dto.mapper.FollowingMapper;
 import ru.ntwz.feedify.dto.mapper.UserMapper;
-import ru.ntwz.feedify.dto.response.FollowingDTO;
-import ru.ntwz.feedify.dto.response.UserDTO;
+import ru.ntwz.feedify.dto.response.FollowingDto;
+import ru.ntwz.feedify.dto.response.UserDto;
 import ru.ntwz.feedify.exception.AlreadyFollowingException;
 import ru.ntwz.feedify.exception.NotFollowingException;
 import ru.ntwz.feedify.exception.SelfFollowingException;
@@ -36,7 +36,7 @@ public class FollowingServiceImpl implements FollowingService {
     }
 
     @Override
-    public FollowingDTO follow(User follower, String followingUsername) {
+    public FollowingDto follow(User follower, String followingUsername) {
         User following = userService.getByUsername(followingUsername);
 
         if (follower.getId().equals(following.getId())) {
@@ -69,7 +69,7 @@ public class FollowingServiceImpl implements FollowingService {
     }
 
     @Override
-    public List<UserDTO> getFollowers(String username, int page, int size) {
+    public List<UserDto> getFollowers(String username, int page, int size) {
         User user = userService.getByUsername(username);
 
         log.info("Retrieved followers for user: {}", user.getUsername());
@@ -84,7 +84,7 @@ public class FollowingServiceImpl implements FollowingService {
     }
 
     @Override
-    public List<UserDTO> getFollowing(String username, int page, int size) {
+    public List<UserDto> getFollowing(String username, int page, int size) {
         User user = userService.getByUsername(username);
 
         log.info("Retrieved following for user: {}", user.getUsername());

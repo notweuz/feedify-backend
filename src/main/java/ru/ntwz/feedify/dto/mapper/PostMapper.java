@@ -4,8 +4,8 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.ntwz.feedify.config.CommonConfig;
-import ru.ntwz.feedify.dto.request.PostCreateDTO;
-import ru.ntwz.feedify.dto.response.CommentDTO;
+import ru.ntwz.feedify.dto.request.PostCreateDto;
+import ru.ntwz.feedify.dto.response.CommentDto;
 import ru.ntwz.feedify.dto.response.PostDTO;
 import ru.ntwz.feedify.model.Post;
 import ru.ntwz.feedify.model.VoteType;
@@ -23,8 +23,8 @@ public class PostMapper {
         PostMapper.commonConfig = commonConfig;
     }
 
-    private static CommentDTO toCommentDTO(Post post, int currentDepth, int maxDepth) {
-        CommentDTO commentDTO = new CommentDTO();
+    private static CommentDto toCommentDTO(Post post, int currentDepth, int maxDepth) {
+        CommentDto commentDTO = new CommentDto();
 
         commentDTO.setId(post.getId());
         commentDTO.setRating(post.getVotes().stream().filter(v -> v.getVoteType().equals(VoteType.UPVOTE)).count() -
@@ -50,7 +50,7 @@ public class PostMapper {
         return commentDTO;
     }
 
-    public static CommentDTO toCommentDTO(Post post) {
+    public static CommentDto toCommentDTO(Post post) {
         return toCommentDTO(post, 0, 1);
     }
 
@@ -95,7 +95,7 @@ public class PostMapper {
         return postDTO;
     }
 
-    public static Post toPost(@NotNull PostCreateDTO postDTO) {
+    public static Post toPost(@NotNull PostCreateDto postDTO) {
         Post post = new Post();
         post.setContent(postDTO.getContent());
         post.setCreatedAt(Instant.now());

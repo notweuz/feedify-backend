@@ -1,11 +1,11 @@
 package ru.ntwz.feedify.dto.mapper;
 
-import ru.ntwz.feedify.dto.response.FollowingDTO;
+import ru.ntwz.feedify.dto.response.FollowingDto;
 import ru.ntwz.feedify.model.Following;
 
 public class FollowingMapper {
-    public static FollowingDTO toDTO(Following subscription) {
-        return new FollowingDTO(
+    public static FollowingDto toDTO(Following subscription) {
+        return new FollowingDto(
                 subscription.getId(),
                 UserMapper.toDTO(subscription.getFollower()),
                 UserMapper.toDTO(subscription.getFollowing()),

@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.ntwz.feedify.config.CommonConfig;
 import ru.ntwz.feedify.dto.mapper.StorageMapper;
-import ru.ntwz.feedify.dto.response.FileDTO;
-import ru.ntwz.feedify.dto.response.StorageEntryDTO;
+import ru.ntwz.feedify.dto.response.FileDto;
+import ru.ntwz.feedify.dto.response.StorageEntryDto;
 import ru.ntwz.feedify.exception.*;
 import ru.ntwz.feedify.model.Post;
 import ru.ntwz.feedify.model.StorageEntry;
@@ -66,7 +66,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public FileDTO getFileByUniqueName(String uniqueName) {
+    public FileDto getFileByUniqueName(String uniqueName) {
         StorageEntry storageEntry = storageRepository.findByUniqueName(uniqueName)
                 .orElseThrow(() -> new FileNotFoundException("File with unique name '" + uniqueName + "' not found"));
 
@@ -117,7 +117,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public StorageEntryDTO uploadAvatar(MultipartFile file, User user) {
+    public StorageEntryDto uploadAvatar(MultipartFile file, User user) {
         validateFile(file);
         validateFileType(file);
 
@@ -155,7 +155,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public StorageEntryDTO uploadBanner(MultipartFile file, User user) {
+    public StorageEntryDto uploadBanner(MultipartFile file, User user) {
         validateFile(file);
         validateFileType(file);
 
@@ -222,7 +222,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public List<StorageEntryDTO> uploadTemporaryFiles(List<MultipartFile> files, User user) {
+    public List<StorageEntryDto> uploadTemporaryFiles(List<MultipartFile> files, User user) {
         if (files == null || files.isEmpty()) {
             throw new FilesCannotBeEmptyException("Files list cannot be null or empty");
         }

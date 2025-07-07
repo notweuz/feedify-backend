@@ -5,10 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.ntwz.feedify.config.CommonConfig;
-import ru.ntwz.feedify.dto.request.LoginDTO;
-import ru.ntwz.feedify.dto.request.SignUpDTO;
-import ru.ntwz.feedify.dto.response.AccessTokenDTO;
-import ru.ntwz.feedify.dto.response.AccessTokenStatusDTO;
+import ru.ntwz.feedify.dto.request.LoginDto;
+import ru.ntwz.feedify.dto.request.SignUpDto;
+import ru.ntwz.feedify.dto.response.AccessTokenDto;
+import ru.ntwz.feedify.dto.response.AccessTokenStatusDto;
 import ru.ntwz.feedify.exception.InvalidPasswordException;
 import ru.ntwz.feedify.exception.NotAuthorizedException;
 import ru.ntwz.feedify.exception.UserNotFoundException;
@@ -39,7 +39,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     @Override
-    public AccessTokenDTO signUp(@Valid SignUpDTO signUpDTO) {
+    public AccessTokenDto signUp(@Valid SignUpDto signUpDTO) {
         String displayName = signUpDTO.getDisplayName();
         String username = signUpDTO.getUsername();
         String password = signUpDTO.getPassword();
@@ -55,11 +55,11 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         String token = jwtService.generate(user.getId(), passwordHash);
         log.debug("Generated token for user {} after registration: {}", username, token.substring(0, Math.min(20, token.length())) + "...");
 
-        return new AccessTokenDTO(token);
+        return new AccessTokenDto(token);
     }
 
     @Override
-    public AccessTokenDTO login(LoginDTO loginDTO) throws InvalidPasswordException {
+    public AccessTokenDto login(LoginDto loginDTO) throws InvalidPasswordException {
         String username = loginDTO.getUsername();
         String password = loginDTO.getPassword();
 
@@ -70,19 +70,19 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         if (bCryptService.verify(password, user.getPassword())) {
             String token = jwtService.generate(user.getId(), user.getPassword());
             log.debug("Generated token for user {} after login: {}", username, token.substring(0, Math.min(20, token.length())) + "...");
-            return new AccessTokenDTO(token);
+            return new AccessTokenDto(token);
         } else {
             throw new InvalidPasswordException("Invalid password for user: " + username);
         }
     }
 
     @Override
-    public AccessTokenStatusDTO validate(AccessTokenDTO accessTokenDTO) {
+    public AccessTokenStatusDto validate(AccessTokenDto accessTokenDTO) {
         String accessToken = accessTokenDTO.getAccessToken();
 
         if (accessToken == null || accessToken.isBlank()) {
             log.info("Token is null or blank");
-            return new AccessTokenStatusDTO(false);
+            return new AccessTokenStatusDto(false);
         }
 
         log.info("Validating token: {}", accessToken.substring(0, Math.min(20, accessToken.length())) + "...");
@@ -90,13 +90,13 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         try {
             Long userId = jwtService.validate(accessToken);
             log.info("Token validation successful, userId: {}", userId);
-            return new AccessTokenStatusDTO(userId != null);
+            return new AccessTokenStatusDto(userId != null);
         } catch (NotAuthorizedException e) {
             log.info("Token validation failed - NotAuthorizedException: {}", e.getMessage());
-            return new AccessTokenStatusDTO(false);
+            return new AccessTokenStatusDto(false);
         } catch (Exception e) {
             log.info("Token validation failed - unexpected exception: {} - {}", e.getClass().getSimpleName(), e.getMessage());
-            return new AccessTokenStatusDTO(false);
+            return new AccessTokenStatusDto(false);
         }
     }
 

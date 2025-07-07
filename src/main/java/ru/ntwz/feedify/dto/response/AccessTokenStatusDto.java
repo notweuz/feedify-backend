@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FileDTO {
-    private byte[] data;
-    private String name;
-    private String contentType;
+public class AccessTokenStatusDto {
+    private Boolean active;
 }

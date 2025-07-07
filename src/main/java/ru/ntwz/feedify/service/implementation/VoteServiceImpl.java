@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.ntwz.feedify.dto.mapper.VoteMapper;
-import ru.ntwz.feedify.dto.response.VoteDTO;
+import ru.ntwz.feedify.dto.response.VoteDto;
 import ru.ntwz.feedify.exception.PostNotFoundException;
 import ru.ntwz.feedify.model.Post;
 import ru.ntwz.feedify.model.User;
@@ -29,7 +29,7 @@ public class VoteServiceImpl implements VoteService {
 
     @Override
     @Transactional
-    public VoteDTO vote(Long postId, User user, boolean isUpvote) {
+    public VoteDto vote(Long postId, User user, boolean isUpvote) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException("Post with id " + postId + " not found"));
 
@@ -60,7 +60,7 @@ public class VoteServiceImpl implements VoteService {
     }
 
     @Override
-    public VoteDTO getUserVote(Long postId, User user) {
+    public VoteDto getUserVote(Long postId, User user) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException("Post with id " + postId + " not found"));
         Vote vote = voteRepository.findByUserAndPost(user, post).orElse(null);

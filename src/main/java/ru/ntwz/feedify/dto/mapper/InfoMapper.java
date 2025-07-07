@@ -1,10 +1,10 @@
 package ru.ntwz.feedify.dto.mapper;
 
-import ru.ntwz.feedify.dto.response.InfoHealthDTO;
+import ru.ntwz.feedify.dto.response.InfoHealthDto;
 
 public class InfoMapper {
-    public static InfoHealthDTO toInfoHealthDTO(String status, String version) {
-        InfoHealthDTO infoHealthDTO = new InfoHealthDTO();
+    public static InfoHealthDto toInfoHealthDTO(String status, String version) {
+        InfoHealthDto infoHealthDTO = new InfoHealthDto();
         infoHealthDTO.setStatus(status);
         infoHealthDTO.setVersion(version);
         return infoHealthDTO;

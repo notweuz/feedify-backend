@@ -4,9 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.ntwz.feedify.dto.mapper.UserMapper;
-import ru.ntwz.feedify.dto.request.UserUpdateDTO;
-import ru.ntwz.feedify.dto.response.AccessTokenDTO;
-import ru.ntwz.feedify.dto.response.UserDTO;
+import ru.ntwz.feedify.dto.request.UserUpdateDto;
+import ru.ntwz.feedify.dto.response.AccessTokenDto;
+import ru.ntwz.feedify.dto.response.UserDto;
 import ru.ntwz.feedify.exception.InvalidPasswordException;
 import ru.ntwz.feedify.exception.UserNotFoundException;
 import ru.ntwz.feedify.exception.UserWithSameNameAlreadyExistsException;
@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO findByUsername(String username) throws UserNotFoundException {
+    public UserDto findByUsername(String username) throws UserNotFoundException {
         User user = getByUsername(username);
 
         log.info("Found user: {}", user.getUsername());
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO getUserInfo(User user) {
+    public UserDto getUserInfo(User user) {
         getById(user.getId());
 
         log.info("Retrieved user info for user: {}", user.getUsername());
@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO updateUser(User user, UserUpdateDTO userUpdateDTO) {
+    public UserDto updateUser(User user, UserUpdateDto userUpdateDTO) {
         if (userUpdateDTO.getDisplayName() != null) {
             user.setDisplayName(userUpdateDTO.getDisplayName());
         }
@@ -96,7 +96,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AccessTokenDTO changePassword(User user, String oldPassword, String newPassword) {
+    public AccessTokenDto changePassword(User user, String oldPassword, String newPassword) {
         if (!bCryptService.verify(oldPassword, user.getPassword())) {
             throw new InvalidPasswordException("Wrong old password provided");
         }
@@ -104,6 +104,6 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         String newToken = jwtService.generate(user.getId(), user.getPassword());
         log.info("User {} changed his password", user.getUsername());
-        return new AccessTokenDTO(newToken);
+        return new AccessTokenDto(newToken);
     }
 }

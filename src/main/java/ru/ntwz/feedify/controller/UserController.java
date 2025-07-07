@@ -4,11 +4,11 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.ntwz.feedify.constant.AttributesConstant;
-import ru.ntwz.feedify.dto.request.ChangePasswordDTO;
-import ru.ntwz.feedify.dto.request.UserUpdateDTO;
-import ru.ntwz.feedify.dto.response.AccessTokenDTO;
+import ru.ntwz.feedify.dto.request.ChangePasswordDto;
+import ru.ntwz.feedify.dto.request.UserUpdateDto;
+import ru.ntwz.feedify.dto.response.AccessTokenDto;
 import ru.ntwz.feedify.dto.response.PostDTO;
-import ru.ntwz.feedify.dto.response.UserDTO;
+import ru.ntwz.feedify.dto.response.UserDto;
 import ru.ntwz.feedify.model.User;
 import ru.ntwz.feedify.service.PostService;
 import ru.ntwz.feedify.service.UserService;
@@ -38,29 +38,29 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public UserDTO getSelfInfo(
+    public UserDto getSelfInfo(
             @RequestAttribute(AttributesConstant.USER) User user
     ) {
         return userService.getUserInfo(user);
     }
 
     @GetMapping("/usernames/{username}")
-    public UserDTO getPostsByUser(@PathVariable String username) {
+    public UserDto getPostsByUser(@PathVariable String username) {
         return userService.findByUsername(username);
     }
 
     @PatchMapping("/me")
-    public UserDTO update(
+    public UserDto update(
             @RequestAttribute(AttributesConstant.USER) User user,
-            @RequestBody @Valid UserUpdateDTO userUpdateDTO
+            @RequestBody @Valid UserUpdateDto userUpdateDTO
     ) {
         return userService.updateUser(user, userUpdateDTO);
     }
 
     @PostMapping("/me/password")
-    public AccessTokenDTO changePassword(
+    public AccessTokenDto changePassword(
             @RequestAttribute(AttributesConstant.USER) User user,
-            @RequestBody @Valid ChangePasswordDTO changePasswordDTO
+            @RequestBody @Valid ChangePasswordDto changePasswordDTO
     ) {
         return userService.changePassword(user, changePasswordDTO.getOldPassword(), changePasswordDTO.getNewPassword());
     }

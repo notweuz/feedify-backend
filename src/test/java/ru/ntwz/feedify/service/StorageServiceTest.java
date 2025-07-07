@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 import ru.ntwz.feedify.config.CommonConfig;
-import ru.ntwz.feedify.dto.response.StorageEntryDTO;
+import ru.ntwz.feedify.dto.response.StorageEntryDto;
 import ru.ntwz.feedify.exception.FileIsEmptyException;
 import ru.ntwz.feedify.exception.FileReadingException;
 import ru.ntwz.feedify.model.StorageEntry;
@@ -133,7 +133,7 @@ public class StorageServiceTest {
 
         when(storageRepository.save(Mockito.any(StorageEntry.class))).thenReturn(storageEntry);
 
-        StorageEntryDTO result = storageService.uploadAvatar(mockFile, user);
+        StorageEntryDto result = storageService.uploadAvatar(mockFile, user);
 
         assertThat(result).isNotNull();
         Mockito.verify(storageRepository).save(Mockito.any(StorageEntry.class));
@@ -192,7 +192,7 @@ public class StorageServiceTest {
 
         when(storageRepository.save(Mockito.any(StorageEntry.class))).thenReturn(storageEntry);
 
-        StorageEntryDTO result = storageService.uploadBanner(mockFile, user);
+        StorageEntryDto result = storageService.uploadBanner(mockFile, user);
 
         assertThat(result).isNotNull();
         Mockito.verify(storageRepository).save(Mockito.any(StorageEntry.class));
@@ -259,7 +259,7 @@ public class StorageServiceTest {
             throw new RuntimeException(e);
         }
 
-        List<StorageEntryDTO> result = storageService.uploadTemporaryFiles(List.of(mockFile, mockFile2), user);
+        List<StorageEntryDto> result = storageService.uploadTemporaryFiles(List.of(mockFile, mockFile2), user);
 
         assertThat(result).isNotNull();
         Mockito.verify(storageRepository).saveAll(Mockito.anyList());

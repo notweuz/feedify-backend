@@ -1,7 +1,7 @@
 package ru.ntwz.feedify.service;
 
-import ru.ntwz.feedify.dto.response.InfoHealthDTO;
+import ru.ntwz.feedify.dto.response.InfoHealthDto;
 
 public interface InfoService {
-    InfoHealthDTO health();
+    InfoHealthDto health();
 }

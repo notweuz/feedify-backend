@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostAttachmentDTO {
+public class PostAttachmentDto {
     private Long id;
     private String contentType;
     private String fileUrl;

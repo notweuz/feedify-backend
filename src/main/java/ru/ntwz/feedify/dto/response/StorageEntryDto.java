@@ -4,14 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FollowingDTO {
+public class StorageEntryDto {
     private Long id;
-    private UserDTO follower;
-    private UserDTO following;
-    private Instant createdAt;
+    private String contentType;
+    private Long size;
+    private String fileName;
 }

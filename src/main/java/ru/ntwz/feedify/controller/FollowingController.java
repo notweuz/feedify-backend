@@ -3,8 +3,8 @@ package ru.ntwz.feedify.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.ntwz.feedify.constant.AttributesConstant;
-import ru.ntwz.feedify.dto.response.FollowingDTO;
-import ru.ntwz.feedify.dto.response.UserDTO;
+import ru.ntwz.feedify.dto.response.FollowingDto;
+import ru.ntwz.feedify.dto.response.UserDto;
 import ru.ntwz.feedify.model.User;
 import ru.ntwz.feedify.service.FollowingService;
 
@@ -22,7 +22,7 @@ public class FollowingController {
     }
 
     @PostMapping("/{username}")
-    public FollowingDTO subscribe(
+    public FollowingDto subscribe(
             @RequestAttribute(AttributesConstant.USER) User user,
             @PathVariable String username
     ) {
@@ -38,7 +38,7 @@ public class FollowingController {
     }
 
     @GetMapping("/followers/{username}")
-    public List<UserDTO> getFollowers(
+    public List<UserDto> getFollowers(
             @PathVariable String username,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
@@ -47,7 +47,7 @@ public class FollowingController {
     }
 
     @GetMapping("/following/{username}")
-    public List<UserDTO> getFollowing(
+    public List<UserDto> getFollowing(
             @PathVariable String username,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size

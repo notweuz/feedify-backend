@@ -1,18 +1,18 @@
 package ru.ntwz.feedify.service;
 
-import ru.ntwz.feedify.dto.request.LoginDTO;
-import ru.ntwz.feedify.dto.request.SignUpDTO;
-import ru.ntwz.feedify.dto.response.AccessTokenDTO;
-import ru.ntwz.feedify.dto.response.AccessTokenStatusDTO;
+import ru.ntwz.feedify.dto.request.LoginDto;
+import ru.ntwz.feedify.dto.request.SignUpDto;
+import ru.ntwz.feedify.dto.response.AccessTokenDto;
+import ru.ntwz.feedify.dto.response.AccessTokenStatusDto;
 import ru.ntwz.feedify.exception.NotAuthorizedException;
 import ru.ntwz.feedify.model.User;
 
 public interface AuthorizationService {
-    AccessTokenDTO signUp(SignUpDTO signUpDTO);
+    AccessTokenDto signUp(SignUpDto signUpDTO);
 
-    AccessTokenDTO login(LoginDTO loginDTO);
+    AccessTokenDto login(LoginDto loginDTO);
 
-    AccessTokenStatusDTO validate(AccessTokenDTO accessTokenDTO);
+    AccessTokenStatusDto validate(AccessTokenDto accessTokenDTO);
 
     User authUser(String accessToken) throws NotAuthorizedException;
 }

@@ -1,13 +1,13 @@
 package ru.ntwz.feedify.dto.mapper;
 
-import ru.ntwz.feedify.dto.response.VoteDTO;
+import ru.ntwz.feedify.dto.response.VoteDto;
 import ru.ntwz.feedify.model.Post;
 import ru.ntwz.feedify.model.Vote;
 import ru.ntwz.feedify.model.VoteType;
 
 public class VoteMapper {
-    public static VoteDTO toVoteDTO(Post post, Vote vote) {
-        VoteDTO voteDTO = new VoteDTO();
+    public static VoteDto toVoteDTO(Post post, Vote vote) {
+        VoteDto voteDTO = new VoteDto();
         voteDTO.setPostId(post.getId());
         voteDTO.setRating(post.getVotes().stream()
                 .filter(v -> v.getVoteType().equals(VoteType.UPVOTE)).count() -

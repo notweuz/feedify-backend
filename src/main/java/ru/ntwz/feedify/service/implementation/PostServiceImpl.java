@@ -8,9 +8,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.ntwz.feedify.config.CommonConfig;
 import ru.ntwz.feedify.dto.mapper.PostMapper;
-import ru.ntwz.feedify.dto.request.PostCreateDTO;
-import ru.ntwz.feedify.dto.request.PostUpdateDTO;
-import ru.ntwz.feedify.dto.response.CommentDTO;
+import ru.ntwz.feedify.dto.request.PostCreateDto;
+import ru.ntwz.feedify.dto.request.PostUpdateDto;
+import ru.ntwz.feedify.dto.response.CommentDto;
 import ru.ntwz.feedify.dto.response.PostDTO;
 import ru.ntwz.feedify.exception.*;
 import ru.ntwz.feedify.model.Post;
@@ -45,7 +45,7 @@ public class PostServiceImpl implements PostService {
         this.commonConfig = commonConfig;
     }
 
-    private List<StorageEntry> validateTempFiles(User user, PostCreateDTO postCreateDTO) {
+    private List<StorageEntry> validateTempFiles(User user, PostCreateDto postCreateDTO) {
         List<StorageEntry> temporaryFiles = new ArrayList<>();
 
         if (postCreateDTO.getAttachments() != null && !postCreateDTO.getAttachments().isEmpty()) {
@@ -66,7 +66,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDTO create(User user, PostCreateDTO postCreateDTO) {
+    public PostDTO create(User user, PostCreateDto postCreateDTO) {
         List<StorageEntry> temporaryFiles = new ArrayList<>();
 
         try {
@@ -122,7 +122,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDTO createComment(User user, PostCreateDTO createDTO, Long parentPostId) {
+    public PostDTO createComment(User user, PostCreateDto createDTO, Long parentPostId) {
         Post parentPost = getPostById(parentPostId);
         List<StorageEntry> temporaryFiles = new ArrayList<>();
 
@@ -165,7 +165,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<CommentDTO> getComments(Long parentPostId, int page, int size) {
+    public List<CommentDto> getComments(Long parentPostId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         List<Post> comments = postRepository.findTopCommentsByParentPostId(parentPostId, pageable).getContent();
 
@@ -177,7 +177,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDTO update(User user, Long id, PostUpdateDTO postUpdateDTO) {
+    public PostDTO update(User user, Long id, PostUpdateDto postUpdateDTO) {
         Post post = getPostById(id);
 
         if (!Objects.equals(post.getAuthor().getId(), user.getId()))

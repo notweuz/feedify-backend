@@ -5,10 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class UserUpdateDTO {
-    private String displayName;
+@AllArgsConstructor
+public class LoginDto {
     private String username;
-    private String description;
+    private String password;
 }

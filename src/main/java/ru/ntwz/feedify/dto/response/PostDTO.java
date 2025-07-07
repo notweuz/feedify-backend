@@ -14,11 +14,11 @@ public class PostDTO {
     private Long id;
     private String content;
     private Long rating;
-    private UserDTO author;
+    private UserDto author;
     private Instant createdAt;
     private String uniqueLink;
-    private List<CommentDTO> comments;
-    private List<PostAttachmentDTO> attachments;
+    private List<CommentDto> comments;
+    private List<PostAttachmentDto> attachments;
     private PostDTO parentPost;
     private Boolean isDeleted;
     private Integer commentsCount;

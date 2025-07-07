@@ -10,15 +10,15 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentDTO {
+public class CommentDto {
     private Long id;
     private String content;
     private Long rating;
-    private UserDTO author;
+    private UserDto author;
     private String uniqueLink;
     private Instant createdAt;
-    private List<CommentDTO> comments;
+    private List<CommentDto> comments;
     private Integer commentsCount;
-    private List<PostAttachmentDTO> attachments;
+    private List<PostAttachmentDto> attachments;
     private Boolean isDeleted;
 }

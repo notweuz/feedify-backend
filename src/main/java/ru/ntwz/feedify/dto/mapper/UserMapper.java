@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.ntwz.feedify.config.CommonConfig;
-import ru.ntwz.feedify.dto.response.UserDTO;
+import ru.ntwz.feedify.dto.response.UserDto;
 import ru.ntwz.feedify.model.User;
 
 @Component
@@ -17,8 +17,8 @@ public class UserMapper {
         UserMapper.commonConfig = commonConfig;
     }
 
-    public static UserDTO toDTO(@NotNull User user) {
-        UserDTO userDTO = new UserDTO();
+    public static UserDto toDTO(@NotNull User user) {
+        UserDto userDTO = new UserDto();
         userDTO.setId(user.getId());
         userDTO.setDisplayName(user.getDisplayName());
         userDTO.setUsername(user.getUsername());

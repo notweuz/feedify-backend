@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.ntwz.feedify.constant.AttributesConstant;
-import ru.ntwz.feedify.dto.response.FileDTO;
-import ru.ntwz.feedify.dto.response.StorageEntryDTO;
+import ru.ntwz.feedify.dto.response.FileDto;
+import ru.ntwz.feedify.dto.response.StorageEntryDto;
 import ru.ntwz.feedify.model.User;
 import ru.ntwz.feedify.service.StorageService;
 
@@ -27,7 +27,7 @@ public class StorageController {
     }
 
     @PostMapping("/avatar")
-    public StorageEntryDTO uploadAvatar(
+    public StorageEntryDto uploadAvatar(
             @RequestParam("file") MultipartFile file,
             @RequestAttribute(AttributesConstant.USER) User user
     ) {
@@ -42,7 +42,7 @@ public class StorageController {
     }
 
     @PostMapping("/banner")
-    public StorageEntryDTO uploadBanner(
+    public StorageEntryDto uploadBanner(
             @RequestParam("file") MultipartFile file,
             @RequestAttribute(AttributesConstant.USER) User user
     ) {
@@ -60,7 +60,7 @@ public class StorageController {
     public ResponseEntity<byte[]> getFileByUniqueName(
             @PathVariable String uniqueName
     ) {
-        FileDTO imageData = storageService.getFileByUniqueName(uniqueName);
+        FileDto imageData = storageService.getFileByUniqueName(uniqueName);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentDisposition(
