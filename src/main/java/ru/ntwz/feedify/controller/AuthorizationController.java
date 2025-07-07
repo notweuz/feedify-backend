@@ -17,7 +17,8 @@ import ru.ntwz.feedify.service.AuthorizationService;
 public class AuthorizationController {
     private final AuthorizationService authorizationService;
 
-    public AuthorizationController(@Autowired AuthorizationService authorizationService) {
+    @Autowired
+    public AuthorizationController(AuthorizationService authorizationService) {
         this.authorizationService = authorizationService;
     }
 
