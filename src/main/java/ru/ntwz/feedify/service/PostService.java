@@ -3,6 +3,7 @@ package ru.ntwz.feedify.service;
 import ru.ntwz.feedify.dto.request.PostCreateDto;
 import ru.ntwz.feedify.dto.request.PostUpdateDto;
 import ru.ntwz.feedify.dto.response.PostDto;
+import ru.ntwz.feedify.model.Post;
 import ru.ntwz.feedify.model.User;
 
 import java.util.List;
@@ -31,4 +32,6 @@ public interface PostService {
     List<PostDto> findAllRecentPosts(int page, int size);
 
     List<PostDto> findAllMonthlyPopularPosts(int page, int size);
+
+    Post getPostOrThrow(Long postId);
 }

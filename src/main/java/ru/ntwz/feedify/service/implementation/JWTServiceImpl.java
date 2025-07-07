@@ -18,10 +18,10 @@ import java.util.Date;
 @Service
 @Slf4j
 public class JWTServiceImpl implements JWTService {
-
     private final JWTConfig jwtConfig;
 
-    public JWTServiceImpl(@Autowired JWTConfig jwtConfig) {
+    @Autowired
+    public JWTServiceImpl(JWTConfig jwtConfig) {
         this.jwtConfig = jwtConfig;
     }
 

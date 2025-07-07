@@ -1,7 +1,9 @@
 package ru.ntwz.feedify.service.implementation;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.ntwz.feedify.config.CommonConfig;
@@ -12,10 +14,10 @@ import ru.ntwz.feedify.exception.*;
 import ru.ntwz.feedify.model.Post;
 import ru.ntwz.feedify.model.StorageEntry;
 import ru.ntwz.feedify.model.User;
-import ru.ntwz.feedify.repository.PostRepository;
 import ru.ntwz.feedify.repository.StorageRepository;
-import ru.ntwz.feedify.repository.UserRepository;
+import ru.ntwz.feedify.service.PostService;
 import ru.ntwz.feedify.service.StorageService;
+import ru.ntwz.feedify.service.UserService;
 import ru.ntwz.feedify.util.RandUtils;
 
 import java.nio.file.Files;
@@ -28,22 +30,17 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class StorageServiceImpl implements StorageService {
-
     private final StorageRepository storageRepository;
-
+    private final UserService userService;
     private final CommonConfig commonConfig;
 
-    private final UserRepository userRepository;
-
-    private final PostRepository postRepository;
-
     @Autowired
-    public StorageServiceImpl(StorageRepository storageRepository, CommonConfig commonConfig, UserRepository userRepository, PostRepository postRepository) {
+    public StorageServiceImpl(StorageRepository storageRepository, UserService userService, CommonConfig commonConfig) {
         this.storageRepository = storageRepository;
+        this.userService = userService;
         this.commonConfig = commonConfig;
-        this.userRepository = userRepository;
-        this.postRepository = postRepository;
     }
+
 
     private String getSavePath(String uniqueName) {
         return commonConfig.getContent().getStorage() + "/" + uniqueName;
@@ -126,7 +123,7 @@ public class StorageServiceImpl implements StorageService {
         log.info("Avatar uploaded successfully: uniqueName={}, filePath={}, contentType={}, size={}",
                 storageEntry.getUniqueName(), storageEntry.getFilePath(), storageEntry.getContentType(), storageEntry.getSize());
         user.setAvatar(avatar);
-        userRepository.save(user);
+        userService.save(user);
         return StorageMapper.toDTO(storageEntry);
     }
 
@@ -140,7 +137,7 @@ public class StorageServiceImpl implements StorageService {
         StorageEntry storageEntry = user.getAvatar();
 
         user.setAvatar(null);
-        userRepository.save(user);
+        userService.save(user);
 
         Path filePath = Paths.get(storageEntry.getFilePath());
         try {
@@ -151,7 +148,7 @@ public class StorageServiceImpl implements StorageService {
         }
 
         storageRepository.delete(storageEntry);
-        userRepository.save(user);
+        userService.save(user);
     }
 
     @Override
@@ -164,7 +161,7 @@ public class StorageServiceImpl implements StorageService {
         log.info("Banner uploaded successfully: uniqueName={}, filePath={}, contentType={}, size={}",
                 storageEntry.getUniqueName(), storageEntry.getFilePath(), storageEntry.getContentType(), storageEntry.getSize());
         user.setBanner(banner);
-        userRepository.save(user);
+        userService.save(user);
         return StorageMapper.toDTO(storageEntry);
     }
 
@@ -178,7 +175,7 @@ public class StorageServiceImpl implements StorageService {
         StorageEntry storageEntry = user.getBanner();
 
         user.setBanner(null);
-        userRepository.save(user);
+        userService.save(user);
 
         Path filePath = Paths.get(storageEntry.getFilePath());
         try {
@@ -289,15 +286,11 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public void attachFilesToPost(List<StorageEntry> files, Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new PostNotFoundException("Post not found with id: " + postId));
-
+    public void attachFilesToPost(List<StorageEntry> files, Post post) {
         for (StorageEntry file : files) {
             file.setPost(post);
         }
-
         List<StorageEntry> updatedFiles = storageRepository.saveAll(files);
-        log.info("Attached {} files to post: postId={}", updatedFiles.size(), postId);
+        log.info("Attached {} files to post: postId={}", updatedFiles.size(), post.getId());
     }
 }

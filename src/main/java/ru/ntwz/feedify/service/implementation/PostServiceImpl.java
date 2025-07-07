@@ -27,13 +27,9 @@ import java.util.*;
 @Slf4j
 @Service
 public class PostServiceImpl implements PostService {
-
     private final PostRepository postRepository;
-
     private final UserService userService;
-
     private final StorageService storageService;
-
     private final CommonConfig commonConfig;
 
     @Autowired
@@ -77,7 +73,7 @@ public class PostServiceImpl implements PostService {
             Post savedPost = postRepository.save(post);
 
             if (!temporaryFiles.isEmpty()) {
-                storageService.attachFilesToPost(temporaryFiles, savedPost.getId());
+                storageService.attachFilesToPost(temporaryFiles, savedPost);
                 savedPost = postRepository.findById(savedPost.getId()).orElse(savedPost);
             }
 
@@ -96,7 +92,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDto findById(Long id) {
-        Post post = getPostById(id);
+        Post post = getPostOrThrow(id);
 
         List<Post> comments = postRepository.findTop10CommentsByParentPostId(id, Pageable.ofSize(4)).getContent();
 
@@ -119,7 +115,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDto createComment(User user, PostCreateDto createDTO, Long parentPostId) {
-        Post parentPost = getPostById(parentPostId);
+        Post parentPost = getPostOrThrow(parentPostId);
         List<StorageEntry> temporaryFiles = new ArrayList<>();
 
         try {
@@ -132,7 +128,7 @@ public class PostServiceImpl implements PostService {
             Post savedPost = postRepository.save(post);
 
             if (!temporaryFiles.isEmpty()) {
-                storageService.attachFilesToPost(temporaryFiles, savedPost.getId());
+                storageService.attachFilesToPost(temporaryFiles, savedPost);
                 savedPost = postRepository.findById(savedPost.getId()).orElse(savedPost);
             }
 
@@ -174,7 +170,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDto update(User user, Long id, PostUpdateDto postUpdateDTO) {
-        Post post = getPostById(id);
+        Post post = getPostOrThrow(id);
 
         if (!Objects.equals(post.getAuthor().getId(), user.getId()))
             throw new NotPostsOwnerException("You are not the owner of this post");
@@ -190,7 +186,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void delete(User user, Long id) {
-        Post post = getPostById(id);
+        Post post = getPostOrThrow(id);
 
         if (!Objects.equals(post.getAuthor().getId(), user.getId()))
             throw new NotPostsOwnerException("You are not the owner of this post");
@@ -211,7 +207,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deleteAttachment(User user, Long postId, Long attachmentId) {
-        Post post = getPostById(postId);
+        Post post = getPostOrThrow(postId);
 
         if (!Objects.equals(post.getAuthor().getId(), user.getId())) {
             throw new NotPostsOwnerException("You are not the owner of this post");
@@ -282,7 +278,7 @@ public class PostServiceImpl implements PostService {
         return result;
     }
 
-    private Post getPostById(Long postId) {
+    public Post getPostOrThrow(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException("Post with id " + postId + " not found"));
     }

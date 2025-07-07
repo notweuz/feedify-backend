@@ -19,12 +19,12 @@ import ru.ntwz.feedify.service.UserService;
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
-
     private final UserRepository userRepository;
     private final BCryptService bCryptService;
     private final JWTService jwtService;
 
-    public UserServiceImpl(@Autowired UserRepository userRepository, @Autowired BCryptService bCryptService, @Autowired JWTService jwtService) {
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, BCryptService bCryptService, JWTService jwtService) {
         this.userRepository = userRepository;
         this.bCryptService = bCryptService;
         this.jwtService = jwtService;
@@ -36,6 +36,13 @@ public class UserServiceImpl implements UserService {
             throw new UserWithSameNameAlreadyExistsException("User with username '" + user.getUsername() + "' already exists");
 
         log.info("Creating user: {}", user.getUsername());
+
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User save(User user) {
+        log.info("Saving user: {}", user.getUsername());
 
         return userRepository.save(user);
     }

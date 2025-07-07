@@ -9,6 +9,8 @@ import ru.ntwz.feedify.model.User;
 public interface UserService {
     User create(User user);
 
+    User save(User user);
+
     UserDto findByUsername(String username) throws UserNotFoundException;
 
     User getByUsername(String username) throws UserNotFoundException;

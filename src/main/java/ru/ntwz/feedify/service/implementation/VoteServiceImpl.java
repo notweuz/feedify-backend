@@ -13,25 +13,25 @@ import ru.ntwz.feedify.model.Vote;
 import ru.ntwz.feedify.model.VoteType;
 import ru.ntwz.feedify.repository.PostRepository;
 import ru.ntwz.feedify.repository.VoteRepository;
+import ru.ntwz.feedify.service.PostService;
 import ru.ntwz.feedify.service.VoteService;
 
 @Service
 @Slf4j
 public class VoteServiceImpl implements VoteService {
-
-    private final PostRepository postRepository;
+    private final PostService postService;
     private final VoteRepository voteRepository;
 
-    public VoteServiceImpl(@Autowired PostRepository postRepository, @Autowired VoteRepository voteRepository) {
-        this.postRepository = postRepository;
+    @Autowired
+    public VoteServiceImpl(PostService postService, VoteRepository voteRepository) {
+        this.postService = postService;
         this.voteRepository = voteRepository;
     }
 
     @Override
     @Transactional
     public VoteDto vote(Long postId, User user, boolean isUpvote) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new PostNotFoundException("Post with id " + postId + " not found"));
+        Post post = postService.getPostOrThrow(postId);
 
         VoteType voteType = isUpvote ? VoteType.UPVOTE : VoteType.DOWNVOTE;
         Vote existingVote = voteRepository.findByUserAndPost(user, post).orElse(null);
@@ -61,8 +61,7 @@ public class VoteServiceImpl implements VoteService {
 
     @Override
     public VoteDto getUserVote(Long postId, User user) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new PostNotFoundException("Post with id " + postId + " not found"));
+        Post post = postService.getPostOrThrow(postId);
         Vote vote = voteRepository.findByUserAndPost(user, post).orElse(null);
         return VoteMapper.toVoteDTO(post, vote);
     }

@@ -9,7 +9,6 @@ import ru.ntwz.feedify.service.InfoService;
 
 @Service
 public class InfoServiceImpl implements InfoService {
-
     private final CommonConfig commonConfig;
 
     @Autowired

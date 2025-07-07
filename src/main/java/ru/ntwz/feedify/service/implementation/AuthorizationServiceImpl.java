@@ -21,13 +21,9 @@ import ru.ntwz.feedify.service.UserService;
 @Service
 @Slf4j
 public class AuthorizationServiceImpl implements AuthorizationService {
-
     private final UserService userService;
-
     private final CommonConfig commonConfig;
-
     private final BCryptService bCryptService;
-
     private final JWTService jwtService;
 
     @Autowired

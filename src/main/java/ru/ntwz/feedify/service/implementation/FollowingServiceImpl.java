@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class FollowingServiceImpl implements FollowingService {
-
     private final FollowingRepository followingRepository;
     private final UserService userService;
 

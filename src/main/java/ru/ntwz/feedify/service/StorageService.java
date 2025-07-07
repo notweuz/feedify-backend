@@ -5,6 +5,7 @@ import ru.ntwz.feedify.dto.response.FileDto;
 import ru.ntwz.feedify.dto.response.StorageEntryDto;
 import ru.ntwz.feedify.model.StorageEntry;
 import ru.ntwz.feedify.model.User;
+import ru.ntwz.feedify.model.Post;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ public interface StorageService {
 
     void deleteTemporaryFilesByIds(List<Long> fileIds, User user);
 
-    void attachFilesToPost(List<StorageEntry> files, Long postId);
+    void attachFilesToPost(List<StorageEntry> files, Post post);
 
     StorageEntryDto uploadBanner(MultipartFile file, User user);
 
