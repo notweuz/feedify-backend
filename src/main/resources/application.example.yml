@@ -18,7 +18,7 @@ spring:
       max-request-size: 100MB
 
 common:
-  version: 0.1.1
+  version: ${version}
   env: release
   public-domain: https://example.com
   content:

@@ -20,7 +20,7 @@ spring:
       max-request-size: 100MB
 
 common:
-  version: 0.1
+  version: ${version}
   env: test
   public-domain: https://test.example.com
   content:
