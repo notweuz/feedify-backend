@@ -14,7 +14,7 @@ public class PostDto {
     private Long id;
     private String content;
     private Long rating;
-    private UserDto author;
+    private UserShortDto author;
     private Instant createdAt;
     private String uniqueLink;
     private List<PostAttachmentDto> attachments;

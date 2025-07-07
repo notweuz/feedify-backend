@@ -1,11 +1,23 @@
 package ru.ntwz.feedify.dto.mapper;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import ru.ntwz.feedify.config.CommonConfig;
 import ru.ntwz.feedify.dto.response.FileDto;
 import ru.ntwz.feedify.dto.response.PostAttachmentDto;
 import ru.ntwz.feedify.dto.response.StorageEntryDto;
 import ru.ntwz.feedify.model.StorageEntry;
 
+@Component
 public class StorageMapper {
+
+    private static CommonConfig commonConfig;
+
+    @Autowired
+    public void setCommonConfig(CommonConfig commonConfig) {
+        StorageMapper.commonConfig = commonConfig;
+    }
+
     public static StorageEntryDto toDTO(StorageEntry storageEntry) {
         StorageEntryDto dto = new StorageEntryDto();
         dto.setId(storageEntry.getId());
@@ -29,5 +41,9 @@ public class StorageMapper {
         dto.setContentType(storageEntry.getContentType());
         dto.setFileUrl(fileUrl);
         return dto;
+    }
+
+    public static String getStorageUrl(String filePath) {
+        return commonConfig.getPublicDomain() + "/storage/" + filePath;
     }
 }
