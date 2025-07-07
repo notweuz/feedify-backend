@@ -1,22 +1,11 @@
 package ru.ntwz.feedify.dto.mapper;
 
 import jakarta.validation.constraints.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import ru.ntwz.feedify.config.CommonConfig;
 import ru.ntwz.feedify.dto.response.UserDto;
+import ru.ntwz.feedify.dto.response.UserShortDto;
 import ru.ntwz.feedify.model.User;
 
-@Component
 public class UserMapper {
-
-    private static CommonConfig commonConfig;
-
-    @Autowired
-    public void setCommonConfig(CommonConfig commonConfig) {
-        UserMapper.commonConfig = commonConfig;
-    }
-
     public static UserDto toDTO(@NotNull User user) {
         UserDto userDTO = new UserDto();
         userDTO.setId(user.getId());
@@ -27,8 +16,17 @@ public class UserMapper {
         userDTO.setPostsCount(user.getPosts().size());
         userDTO.setFollowersCount(user.getFollowers().size());
         userDTO.setFollowingCount(user.getFollowing().size());
-        userDTO.setAvatarUrl(user.getAvatar() != null ? commonConfig.getPublicDomain() + "/storage/" + user.getAvatar().getUniqueName() : null);
-        userDTO.setBannerUrl(user.getBanner() != null ? commonConfig.getPublicDomain() + "/storage/" + user.getBanner().getUniqueName() : null);
+        userDTO.setAvatarUrl(user.getAvatar() != null ? StorageMapper.getStorageUrl(user.getAvatar().getUniqueName()) : null);
+        userDTO.setBannerUrl(user.getBanner() != null ? StorageMapper.getStorageUrl(user.getBanner().getUniqueName()) : null);
         return userDTO;
+    }
+
+    public static UserShortDto toUserShortDto(@NotNull User user) {
+        UserShortDto userShortDTO = new UserShortDto();
+        userShortDTO.setId(user.getId());
+        userShortDTO.setDisplayName(user.getDisplayName());
+        userShortDTO.setUsername(user.getUsername());
+        userShortDTO.setAvatarUrl(user.getAvatar() != null ? StorageMapper.getStorageUrl(user.getAvatar().getUniqueName()) : null);
+        return userShortDTO;
     }
 }
