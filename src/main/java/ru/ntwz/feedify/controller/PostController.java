@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.ntwz.feedify.constant.AttributesConstant;
 import ru.ntwz.feedify.dto.request.PostCreateDto;
 import ru.ntwz.feedify.dto.request.PostUpdateDto;
-import ru.ntwz.feedify.dto.response.CommentDto;
 import ru.ntwz.feedify.dto.response.PostDTO;
 import ru.ntwz.feedify.dto.response.VoteDto;
 import ru.ntwz.feedify.model.User;
@@ -47,7 +46,7 @@ public class PostController {
     }
 
     @GetMapping("/{id}/comments")
-    public List<CommentDto> getComments(
+    public List<PostDTO> getComments(
             @PathVariable long id,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size

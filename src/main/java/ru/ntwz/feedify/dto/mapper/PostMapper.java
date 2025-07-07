@@ -5,13 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.ntwz.feedify.config.CommonConfig;
 import ru.ntwz.feedify.dto.request.PostCreateDto;
-import ru.ntwz.feedify.dto.response.CommentDto;
 import ru.ntwz.feedify.dto.response.PostDTO;
 import ru.ntwz.feedify.model.Post;
 import ru.ntwz.feedify.model.VoteType;
 
 import java.time.Instant;
-import java.util.List;
 
 @Component
 public class PostMapper {
@@ -23,38 +21,7 @@ public class PostMapper {
         PostMapper.commonConfig = commonConfig;
     }
 
-    private static CommentDto toCommentDTO(Post post, int currentDepth, int maxDepth) {
-        CommentDto commentDTO = new CommentDto();
-
-        commentDTO.setId(post.getId());
-        commentDTO.setRating(post.getVotes().stream().filter(v -> v.getVoteType().equals(VoteType.UPVOTE)).count() -
-                post.getVotes().stream().filter(v -> v.getVoteType().equals(VoteType.DOWNVOTE)).count());
-        commentDTO.setContent(post.getContent());
-        commentDTO.setAuthor(UserMapper.toDTO(post.getAuthor()));
-        commentDTO.setCreatedAt(post.getCreatedAt());
-        commentDTO.setCommentsCount(post.getComments().size());
-        commentDTO.setIsDeleted(post.getIsDeleted());
-        commentDTO.setUniqueLink(post.getUniqueLink());
-        commentDTO.setAttachments(post.getAttachments().stream()
-                .map(attachment -> StorageMapper.toPostAttachmentDTO(attachment, commonConfig.getPublicDomain() + "/storage/" + attachment.getUniqueName()))
-                .toList());
-
-        if (currentDepth < maxDepth) {
-            commentDTO.setComments(post.getComments().stream()
-                    .map(childPost -> toCommentDTO(childPost, currentDepth + 1, maxDepth))
-                    .toList());
-        } else {
-            commentDTO.setComments(List.of());
-        }
-
-        return commentDTO;
-    }
-
-    public static CommentDto toCommentDTO(Post post) {
-        return toCommentDTO(post, 0, 1);
-    }
-
-    private static PostDTO mapPostToDTO(Post post, boolean includeParent, boolean includeComments) {
+    private static PostDTO mapPostToDTO(Post post, boolean includeParent) {
         PostDTO postDTO = new PostDTO();
 
         postDTO.setId(post.getId());
@@ -70,29 +37,15 @@ public class PostMapper {
                 .map(attachment -> StorageMapper.toPostAttachmentDTO(attachment, commonConfig.getPublicDomain() + "/storage/" + attachment.getUniqueName()))
                 .toList());
 
-        if (includeComments) {
-            postDTO.setComments(post.getComments().stream()
-                    .map(PostMapper::toCommentDTO)
-                    .toList());
-        } else {
-            postDTO.setComments(List.of());
-        }
-
         if (includeParent && post.getParentPost() != null) {
-            postDTO.setParentPost(mapPostToDTO(post.getParentPost(), false, false));
+            postDTO.setParentPost(mapPostToDTO(post.getParentPost(), false));
         }
 
         return postDTO;
     }
 
     public static PostDTO toPostDTO(@NotNull Post post) {
-        PostDTO postDTO = mapPostToDTO(post, true, true);
-
-        if (post.getParentPost() != null && post.getParentPost().getParentPost() != null) {
-            postDTO.getParentPost().setParentPost(mapPostToDTO(post.getParentPost().getParentPost(), false, false));
-        }
-
-        return postDTO;
+        return mapPostToDTO(post, true);
     }
 
     public static Post toPost(@NotNull PostCreateDto postDTO) {

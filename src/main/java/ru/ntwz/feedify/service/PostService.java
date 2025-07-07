@@ -2,7 +2,6 @@ package ru.ntwz.feedify.service;
 
 import ru.ntwz.feedify.dto.request.PostCreateDto;
 import ru.ntwz.feedify.dto.request.PostUpdateDto;
-import ru.ntwz.feedify.dto.response.CommentDto;
 import ru.ntwz.feedify.dto.response.PostDTO;
 import ru.ntwz.feedify.model.User;
 
@@ -19,7 +18,7 @@ public interface PostService {
 
     PostDTO findByUniqueLink(String uniqueLink);
 
-    List<CommentDto> getComments(Long parentPostId, int page, int size);
+    List<PostDTO> getComments(Long parentPostId, int page, int size);
 
     PostDTO update(User user, Long id, PostUpdateDto postUpdateDTO);
 

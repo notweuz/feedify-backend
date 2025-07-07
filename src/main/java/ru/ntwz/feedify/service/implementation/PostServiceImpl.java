@@ -10,7 +10,6 @@ import ru.ntwz.feedify.config.CommonConfig;
 import ru.ntwz.feedify.dto.mapper.PostMapper;
 import ru.ntwz.feedify.dto.request.PostCreateDto;
 import ru.ntwz.feedify.dto.request.PostUpdateDto;
-import ru.ntwz.feedify.dto.response.CommentDto;
 import ru.ntwz.feedify.dto.response.PostDTO;
 import ru.ntwz.feedify.exception.*;
 import ru.ntwz.feedify.model.Post;
@@ -102,9 +101,6 @@ public class PostServiceImpl implements PostService {
         List<Post> comments = postRepository.findTop10CommentsByParentPostId(id, Pageable.ofSize(4)).getContent();
 
         PostDTO postDTO = PostMapper.toPostDTO(post);
-        postDTO.setComments(comments.stream()
-                .map(PostMapper::toCommentDTO)
-                .toList());
 
         log.info("Found post: {}", postDTO.getContent());
 
@@ -165,14 +161,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<CommentDto> getComments(Long parentPostId, int page, int size) {
+    public List<PostDTO> getComments(Long parentPostId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         List<Post> comments = postRepository.findTopCommentsByParentPostId(parentPostId, pageable).getContent();
 
         log.info("Retrieved {} comments for post with id {}", comments.size(), parentPostId);
 
         return comments.stream()
-                .map(PostMapper::toCommentDTO)
+                .map(PostMapper::toPostDTO)
                 .toList();
     }
 
