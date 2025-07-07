@@ -1,9 +1,7 @@
 package ru.ntwz.feedify.service.implementation;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.ntwz.feedify.config.CommonConfig;
@@ -15,7 +13,6 @@ import ru.ntwz.feedify.model.Post;
 import ru.ntwz.feedify.model.StorageEntry;
 import ru.ntwz.feedify.model.User;
 import ru.ntwz.feedify.repository.StorageRepository;
-import ru.ntwz.feedify.service.PostService;
 import ru.ntwz.feedify.service.StorageService;
 import ru.ntwz.feedify.service.UserService;
 import ru.ntwz.feedify.util.RandUtils;

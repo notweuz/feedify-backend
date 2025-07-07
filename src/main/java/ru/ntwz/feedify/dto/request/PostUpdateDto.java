@@ -12,7 +12,7 @@ import ru.ntwz.feedify.constant.ValidationConstant;
 @NoArgsConstructor
 public class PostUpdateDto {
     @NotBlank
-    @Size(max = ValidationConstant.Length.POST_CONTENT_MAX ,
+    @Size(max = ValidationConstant.Length.POST_CONTENT_MAX,
             message = "Post content" + ValidationConstant.Message.WRONG_LENGTH)
     private String content;
 }
