@@ -17,10 +17,9 @@ import ru.ntwz.feedify.exception.FileIsEmptyException;
 import ru.ntwz.feedify.exception.FileReadingException;
 import ru.ntwz.feedify.model.StorageEntry;
 import ru.ntwz.feedify.model.User;
-import ru.ntwz.feedify.repository.PostRepository;
 import ru.ntwz.feedify.repository.StorageRepository;
-import ru.ntwz.feedify.repository.UserRepository;
 import ru.ntwz.feedify.service.implementation.StorageServiceImpl;
+import ru.ntwz.feedify.service.UserService;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -31,18 +30,14 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class StorageServiceTest {
-    private static final Logger log = LoggerFactory.getLogger(StorageServiceTest.class);
     @Mock
     private StorageRepository storageRepository;
 
     @Mock
-    private UserRepository userRepository;
-
-    @Mock
-    private PostRepository postRepository;
-
-    @Mock
     private CommonConfig commonConfig;
+
+    @Mock
+    private UserService userService;
 
     @InjectMocks
     private StorageServiceImpl storageService;
@@ -137,6 +132,7 @@ public class StorageServiceTest {
 
         assertThat(result).isNotNull();
         Mockito.verify(storageRepository).save(Mockito.any(StorageEntry.class));
+        Mockito.verify(userService).save(user);
     }
 
     @Test
@@ -169,6 +165,7 @@ public class StorageServiceTest {
         storageService.deleteAvatar(user);
 
         Mockito.verify(storageRepository).delete(avatar);
+        Mockito.verify(userService, Mockito.times(2)).save(user);
         assertThat(user.getAvatar()).isNull();
     }
 
@@ -196,6 +193,7 @@ public class StorageServiceTest {
 
         assertThat(result).isNotNull();
         Mockito.verify(storageRepository).save(Mockito.any(StorageEntry.class));
+        Mockito.verify(userService).save(user);
     }
 
     @Test
@@ -228,6 +226,7 @@ public class StorageServiceTest {
         storageService.deleteBanner(user);
 
         Mockito.verify(storageRepository).delete(banner);
+        Mockito.verify(userService).save(user);
         assertThat(user.getBanner()).isNull();
     }
 
