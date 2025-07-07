@@ -10,7 +10,7 @@ import ru.ntwz.feedify.config.CommonConfig;
 import ru.ntwz.feedify.dto.mapper.PostMapper;
 import ru.ntwz.feedify.dto.request.PostCreateDto;
 import ru.ntwz.feedify.dto.request.PostUpdateDto;
-import ru.ntwz.feedify.dto.response.PostDTO;
+import ru.ntwz.feedify.dto.response.PostDto;
 import ru.ntwz.feedify.exception.*;
 import ru.ntwz.feedify.model.Post;
 import ru.ntwz.feedify.model.StorageEntry;
@@ -65,7 +65,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDTO create(User user, PostCreateDto postCreateDTO) {
+    public PostDto create(User user, PostCreateDto postCreateDTO) {
         List<StorageEntry> temporaryFiles = new ArrayList<>();
 
         try {
@@ -95,12 +95,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDTO findById(Long id) {
+    public PostDto findById(Long id) {
         Post post = getPostById(id);
 
         List<Post> comments = postRepository.findTop10CommentsByParentPostId(id, Pageable.ofSize(4)).getContent();
 
-        PostDTO postDTO = PostMapper.toPostDTO(post);
+        PostDto postDTO = PostMapper.toPostDTO(post);
 
         log.info("Found post: {}", postDTO.getContent());
 
@@ -108,7 +108,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDTO> getPostsByUser(long userId, int page, int size) {
+    public List<PostDto> getPostsByUser(long userId, int page, int size) {
         User user = userService.getById(userId);
 
         log.info("Retrieved posts by user: {}", user.getUsername());
@@ -118,7 +118,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDTO createComment(User user, PostCreateDto createDTO, Long parentPostId) {
+    public PostDto createComment(User user, PostCreateDto createDTO, Long parentPostId) {
         Post parentPost = getPostById(parentPostId);
         List<StorageEntry> temporaryFiles = new ArrayList<>();
 
@@ -151,7 +151,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDTO findByUniqueLink(String uniqueLink) {
+    public PostDto findByUniqueLink(String uniqueLink) {
         Post post = postRepository.findByUniqueLink(uniqueLink)
                 .orElseThrow(() -> new PostNotFoundException("Post with unique link '" + uniqueLink + "' not found"));
 
@@ -161,7 +161,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDTO> getComments(Long parentPostId, int page, int size) {
+    public List<PostDto> getComments(Long parentPostId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         List<Post> comments = postRepository.findTopCommentsByParentPostId(parentPostId, pageable).getContent();
 
@@ -173,7 +173,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDTO update(User user, Long id, PostUpdateDto postUpdateDTO) {
+    public PostDto update(User user, Long id, PostUpdateDto postUpdateDTO) {
         Post post = getPostById(id);
 
         if (!Objects.equals(post.getAuthor().getId(), user.getId()))
@@ -234,7 +234,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDTO> findUserRecommendations(User user, int page, int size) {
+    public List<PostDto> findUserRecommendations(User user, int page, int size) {
         log.info("Finding user recommendations for user: {}, page: {}, size: {}", user.getUsername(), page, size);
         Pageable pageable = PageRequest.of(page, size);
 
@@ -247,7 +247,7 @@ public class PostServiceImpl implements PostService {
         recommendedPosts.addAll(new HashSet<>(topPostsByRatingAndCommentsMonthly.getContent()));
         recommendedPosts.addAll(new HashSet<>(postsLikedByFollowings.getContent()));
 
-        List<PostDTO> result = recommendedPosts.stream()
+        List<PostDto> result = recommendedPosts.stream()
                 .sorted(Comparator.comparing(Post::getCreatedAt).reversed())
                 .filter(post -> !post.getAuthor().getId().equals(user.getId()))
                 .map(PostMapper::toPostDTO)
@@ -258,25 +258,25 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDTO> findAllRecentPosts(int page, int size) {
+    public List<PostDto> findAllRecentPosts(int page, int size) {
         log.info("Finding all recent posts, page: {}, size: {}", page, size);
         Pageable pageable = PageRequest.of(page, size);
 
         Page<Post> allRecentPosts = postRepository.findAllActivePosts(pageable);
-        List<PostDTO> result = allRecentPosts.getContent().stream().map(PostMapper::toPostDTO).toList();
+        List<PostDto> result = allRecentPosts.getContent().stream().map(PostMapper::toPostDTO).toList();
 
         log.info("Found {} recent posts", result.size());
         return result;
     }
 
     @Override
-    public List<PostDTO> findAllMonthlyPopularPosts(int page, int size) {
+    public List<PostDto> findAllMonthlyPopularPosts(int page, int size) {
         log.info("Finding all monthly popular posts, page: {}, size: {}", page, size);
         Pageable pageable = PageRequest.of(page, size);
 
         Page<Post> allPopularMonthlyPosts = postRepository.findTopPostsByRatingAndCommentsMonthly(
                 getThirtyOneDaysAgo(), pageable);
-        List<PostDTO> result = allPopularMonthlyPosts.getContent().stream().map(PostMapper::toPostDTO).toList();
+        List<PostDto> result = allPopularMonthlyPosts.getContent().stream().map(PostMapper::toPostDTO).toList();
 
         log.info("Found {} monthly popular posts", result.size());
         return result;

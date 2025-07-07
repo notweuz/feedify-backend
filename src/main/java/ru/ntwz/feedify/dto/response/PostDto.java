@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostDTO {
+public class PostDto {
     private Long id;
     private String content;
     private Long rating;
@@ -18,7 +18,7 @@ public class PostDTO {
     private Instant createdAt;
     private String uniqueLink;
     private List<PostAttachmentDto> attachments;
-    private PostDTO parentPost;
+    private PostDto parentPost;
     private Boolean isDeleted;
     private Integer commentsCount;
 }

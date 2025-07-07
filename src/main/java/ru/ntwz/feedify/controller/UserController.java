@@ -7,7 +7,7 @@ import ru.ntwz.feedify.constant.AttributesConstant;
 import ru.ntwz.feedify.dto.request.ChangePasswordDto;
 import ru.ntwz.feedify.dto.request.UserUpdateDto;
 import ru.ntwz.feedify.dto.response.AccessTokenDto;
-import ru.ntwz.feedify.dto.response.PostDTO;
+import ru.ntwz.feedify.dto.response.PostDto;
 import ru.ntwz.feedify.dto.response.UserDto;
 import ru.ntwz.feedify.model.User;
 import ru.ntwz.feedify.service.PostService;
@@ -29,7 +29,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/posts")
-    public List<PostDTO> getPostsByUser(
+    public List<PostDto> getPostsByUser(
             @PathVariable long userId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size

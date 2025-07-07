@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.ntwz.feedify.constant.AttributesConstant;
 import ru.ntwz.feedify.dto.request.PostCreateDto;
 import ru.ntwz.feedify.dto.request.PostUpdateDto;
-import ru.ntwz.feedify.dto.response.PostDTO;
+import ru.ntwz.feedify.dto.response.PostDto;
 import ru.ntwz.feedify.dto.response.VoteDto;
 import ru.ntwz.feedify.model.User;
 import ru.ntwz.feedify.service.PostService;
@@ -29,7 +29,7 @@ public class PostController {
     }
 
     @PostMapping
-    public PostDTO create(
+    public PostDto create(
             @RequestAttribute(AttributesConstant.USER) User user,
             @RequestBody @Valid PostCreateDto postCreateDTO
     ) {
@@ -37,7 +37,7 @@ public class PostController {
     }
 
     @PostMapping("/{id}/comments")
-    public PostDTO createComment(
+    public PostDto createComment(
             @RequestAttribute(AttributesConstant.USER) User user,
             @PathVariable Long id,
             @RequestBody @Valid PostCreateDto postCreateDTO
@@ -46,7 +46,7 @@ public class PostController {
     }
 
     @GetMapping("/{id}/comments")
-    public List<PostDTO> getComments(
+    public List<PostDto> getComments(
             @PathVariable long id,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size
@@ -55,17 +55,17 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public PostDTO getById(@PathVariable long id) {
+    public PostDto getById(@PathVariable long id) {
         return postService.findById(id);
     }
 
     @GetMapping("/unique/{uniqueLink}")
-    public PostDTO getByUniqueLink(@PathVariable String uniqueLink) {
+    public PostDto getByUniqueLink(@PathVariable String uniqueLink) {
         return postService.findByUniqueLink(uniqueLink);
     }
 
     @PatchMapping("/{id}")
-    public PostDTO update(
+    public PostDto update(
             @RequestAttribute(AttributesConstant.USER) User user,
             @PathVariable long id,
             @RequestBody @Valid PostUpdateDto postUpdateDTO
@@ -100,7 +100,7 @@ public class PostController {
     }
 
     @GetMapping("/feed/recommendations")
-    public List<PostDTO> findUserRecommendations(
+    public List<PostDto> findUserRecommendations(
             @RequestAttribute(AttributesConstant.USER) User user,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
@@ -109,7 +109,7 @@ public class PostController {
     }
 
     @GetMapping("/feed/recent")
-    public List<PostDTO> findRecentPosts(
+    public List<PostDto> findRecentPosts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
@@ -117,7 +117,7 @@ public class PostController {
     }
 
     @GetMapping("/feed/popular")
-    public List<PostDTO> findMonthlyPopularPosts(
+    public List<PostDto> findMonthlyPopularPosts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
