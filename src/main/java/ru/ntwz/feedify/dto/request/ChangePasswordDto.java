@@ -11,7 +11,7 @@ import ru.ntwz.feedify.constant.ValidationConstant;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChangePasswordDto {
-    @NotNull
+    @NotNull(message = "Old password" + ValidationConstant.Message.REQUIRED)
     private String oldPassword;
 
     @NotNull

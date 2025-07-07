@@ -11,7 +11,7 @@ import ru.ntwz.feedify.constant.ValidationConstant;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostUpdateDto {
-    @NotBlank
+    @NotBlank(message = "Post content" + ValidationConstant.Message.CAN_NOT_BE_BLANK)
     @Size(max = ValidationConstant.Length.POST_CONTENT_MAX,
             message = "Post content" + ValidationConstant.Message.WRONG_LENGTH)
     private String content;
