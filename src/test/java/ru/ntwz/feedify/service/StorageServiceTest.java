@@ -8,8 +8,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 import ru.ntwz.feedify.config.CommonConfig;
 import ru.ntwz.feedify.dto.response.StorageEntryDto;
@@ -19,7 +17,6 @@ import ru.ntwz.feedify.model.StorageEntry;
 import ru.ntwz.feedify.model.User;
 import ru.ntwz.feedify.repository.StorageRepository;
 import ru.ntwz.feedify.service.implementation.StorageServiceImpl;
-import ru.ntwz.feedify.service.UserService;
 
 import java.io.IOException;
 import java.nio.file.Path;
