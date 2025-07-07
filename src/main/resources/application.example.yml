@@ -18,8 +18,8 @@ spring:
       max-request-size: 100MB
 
 common:
-  version: 0.1
-  env: dev
+  version: 0.1.0
+  env: release
   public-domain: https://example.com
   content:
     storage: /home/example/path/
