@@ -13,7 +13,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/followings/")
 public class FollowingController {
-
     private final FollowingService followingService;
 
     @Autowired

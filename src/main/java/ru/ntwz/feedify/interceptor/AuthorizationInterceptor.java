@@ -19,7 +19,6 @@ import java.util.Objects;
 @Slf4j
 @Component
 public class AuthorizationInterceptor implements HandlerInterceptor {
-
     private final AuthorizationService authorizationService;
 
     @Autowired

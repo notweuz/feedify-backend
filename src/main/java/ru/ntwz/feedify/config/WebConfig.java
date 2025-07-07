@@ -9,7 +9,6 @@ import ru.ntwz.feedify.interceptor.AuthorizationInterceptor;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-
     private final AuthorizationInterceptor authorizationInterceptor;
 
     public WebConfig(@Autowired AuthorizationInterceptor authorizationInterceptor) {

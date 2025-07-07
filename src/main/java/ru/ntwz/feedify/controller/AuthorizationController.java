@@ -15,7 +15,6 @@ import ru.ntwz.feedify.service.AuthorizationService;
 @RestController
 @RequestMapping("/auth")
 public class AuthorizationController {
-
     private final AuthorizationService authorizationService;
 
     public AuthorizationController(@Autowired AuthorizationService authorizationService) {

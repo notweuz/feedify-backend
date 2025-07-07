@@ -10,7 +10,6 @@ import ru.ntwz.feedify.service.InfoService;
 @RestController
 @RequestMapping("/info")
 public class InfoController {
-
     private final InfoService infoService;
 
     @Autowired
