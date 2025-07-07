@@ -25,6 +25,8 @@ public class ValidationConstant {
         public static final String SHOULD_BE_POSITIVE = " should be positive";
 
         public static final String WRONG_LENGTH = " should be between {min} and {max} characters";
+
+        public static final String CAN_NOT_BE_BLANK = " can't be blank";
     }
 
     public static class Regex {
