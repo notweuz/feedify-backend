@@ -19,7 +19,11 @@ public interface UserService {
 
     UserDto getUserInfo(User user);
 
-    UserDto updateUser(User user, UserUpdateDto userUpdateDTO);
+    UserDto getUserById(Long id);
+
+    User updateUser(User user, UserUpdateDto userUpdateDTO);
+
+    UserDto updateUserDto(User user, UserUpdateDto userUpdateDTO);
 
     AccessTokenDto changePassword(User user, String oldPassword, String newPassword);
 }

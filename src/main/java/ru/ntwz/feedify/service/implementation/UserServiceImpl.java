@@ -84,18 +84,21 @@ public class UserServiceImpl implements UserService {
     public User getById(Long id) throws UserNotFoundException {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User with ID '" + id + "' not found"));
-
         log.info("Retrieved user by ID: {}", id);
-
         return user;
+    }
+
+    @Override
+    public UserDto getUserById(Long userId) {
+        User user = getById(userId);
+        log.info("Retrieved user by ID: {}", userId);
+        return UserMapper.toDTO(user);
     }
 
     @Override
     public UserDto getUserInfo(User user) {
         getById(user.getId());
-
         log.info("Retrieved user info for user: {}", user.getUsername());
-
         return UserMapper.toDTO(user);
     }
 
@@ -104,7 +107,7 @@ public class UserServiceImpl implements UserService {
         @CachePut(value = "users", key = "#user.username"),
         @CachePut(value = "usersById", key = "#user.id")
     })
-    public UserDto updateUser(User user, UserUpdateDto userUpdateDTO) {
+    public User updateUser(User user, UserUpdateDto userUpdateDTO) {
         if (userUpdateDTO.getDisplayName() != null) {
             user.setDisplayName(userUpdateDTO.getDisplayName());
         }
@@ -114,10 +117,15 @@ public class UserServiceImpl implements UserService {
         if (userUpdateDTO.getDescription() != null) {
             user.setDescription(userUpdateDTO.getDescription());
         }
-
         log.info("Updated user info for user: {}", user.getUsername());
+        return userRepository.save(user);
+    }
 
-        return UserMapper.toDTO(userRepository.save(user));
+
+    @Override
+    public UserDto updateUserDto(User user, UserUpdateDto userUpdateDTO) {
+        User updated = updateUser(user, userUpdateDTO);
+        return UserMapper.toDTO(updated);
     }
 
     @Override

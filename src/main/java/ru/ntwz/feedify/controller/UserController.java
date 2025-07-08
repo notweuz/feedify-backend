@@ -36,6 +36,13 @@ public class UserController {
         return postService.getPostsByUser(userId, page, size);
     }
 
+    @GetMapping("/{userId}")
+    public UserDto getUserById(
+            @PathVariable long userId
+    ) {
+        return userService.getUserById(userId);
+    }
+
     @GetMapping("/me")
     public UserDto getSelfInfo(
             @RequestAttribute(AttributesConstant.USER) User user
@@ -53,7 +60,7 @@ public class UserController {
             @RequestAttribute(AttributesConstant.USER) User user,
             @RequestBody @Valid UserUpdateDto userUpdateDTO
     ) {
-        return userService.updateUser(user, userUpdateDTO);
+        return userService.updateUserDto(user, userUpdateDTO);
     }
 
     @PostMapping("/me/password")
