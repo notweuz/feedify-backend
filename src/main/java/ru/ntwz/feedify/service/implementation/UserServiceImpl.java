@@ -2,6 +2,10 @@ package ru.ntwz.feedify.service.implementation;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import ru.ntwz.feedify.dto.mapper.UserMapper;
 import ru.ntwz.feedify.dto.request.UserUpdateDto;
@@ -31,6 +35,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Caching(put = {
+        @CachePut(value = "users", key = "#user.username"),
+        @CachePut(value = "usersById", key = "#user.id")
+    })
     public User create(User user) {
         if (userRepository.findByUsername(user.getUsername()).isPresent())
             throw new UserWithSameNameAlreadyExistsException("User with username '" + user.getUsername() + "' already exists");
@@ -41,6 +49,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Caching(put = {
+        @CachePut(value = "users", key = "#user.username"),
+        @CachePut(value = "usersById", key = "#user.id")
+    })
     public User save(User user) {
         log.info("Saving user: {}", user.getUsername());
 
@@ -57,6 +69,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "users", key = "#username")
     public User getByUsername(String username) throws UserNotFoundException {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User with username '" + username + "' not found"));
@@ -67,6 +80,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "usersById", key = "#id")
     public User getById(Long id) throws UserNotFoundException {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User with ID '" + id + "' not found"));
@@ -86,6 +100,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Caching(put = {
+        @CachePut(value = "users", key = "#user.username"),
+        @CachePut(value = "usersById", key = "#user.id")
+    })
     public UserDto updateUser(User user, UserUpdateDto userUpdateDTO) {
         if (userUpdateDTO.getDisplayName() != null) {
             user.setDisplayName(userUpdateDTO.getDisplayName());
@@ -103,6 +121,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Caching(evict = {
+        @CacheEvict(value = "users", key = "#user.username"),
+        @CacheEvict(value = "usersById", key = "#user.id")
+    })
     public AccessTokenDto changePassword(User user, String oldPassword, String newPassword) {
         if (!bCryptService.verify(oldPassword, user.getPassword())) {
             throw new InvalidPasswordException("Wrong old password provided");

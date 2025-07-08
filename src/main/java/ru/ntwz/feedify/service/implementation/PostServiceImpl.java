@@ -2,6 +2,9 @@ package ru.ntwz.feedify.service.implementation;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -61,6 +64,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @CachePut(value = "posts", key = "#result.id")
     public PostDto create(User user, PostCreateDto postCreateDTO) {
         List<StorageEntry> temporaryFiles = new ArrayList<>();
 
@@ -91,10 +95,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Cacheable(value = "posts", key = "#id")
     public PostDto findById(Long id) {
         Post post = getPostOrThrow(id);
-
-        List<Post> comments = postRepository.findTop10CommentsByParentPostId(id, Pageable.ofSize(4)).getContent();
 
         PostDto postDTO = PostMapper.toPostDTO(post);
 
@@ -114,6 +117,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @CachePut(value = "posts", key = "#result.id")
     public PostDto createComment(User user, PostCreateDto createDTO, Long parentPostId) {
         Post parentPost = getPostOrThrow(parentPostId);
         List<StorageEntry> temporaryFiles = new ArrayList<>();
@@ -147,6 +151,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Cacheable(value = "posts", key = "#uniqueLink")
     public PostDto findByUniqueLink(String uniqueLink) {
         Post post = postRepository.findByUniqueLink(uniqueLink)
                 .orElseThrow(() -> new PostNotFoundException("Post with unique link '" + uniqueLink + "' not found"));
@@ -169,6 +174,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @CachePut(value = "posts", key = "#id")
     public PostDto update(User user, Long id, PostUpdateDto postUpdateDTO) {
         Post post = getPostOrThrow(id);
 
@@ -185,6 +191,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @CacheEvict(value = "posts", key = "#id")
     public void delete(User user, Long id) {
         Post post = getPostOrThrow(id);
 
@@ -206,6 +213,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @CacheEvict(value = "posts", key = "#postId")
     public void deleteAttachment(User user, Long postId, Long attachmentId) {
         Post post = getPostOrThrow(postId);
 

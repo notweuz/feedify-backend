@@ -3,6 +3,8 @@ package ru.ntwz.feedify.service.implementation;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import ru.ntwz.feedify.dto.mapper.VoteMapper;
 import ru.ntwz.feedify.dto.response.VoteDto;
@@ -28,6 +30,7 @@ public class VoteServiceImpl implements VoteService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "votes", key = "#postId")
     public VoteDto vote(Long postId, User user, boolean isUpvote) {
         Post post = postService.getPostOrThrow(postId);
 
@@ -58,6 +61,7 @@ public class VoteServiceImpl implements VoteService {
     }
 
     @Override
+    @Cacheable(value = "votes", key = "#postId")
     public VoteDto getUserVote(Long postId, User user) {
         Post post = postService.getPostOrThrow(postId);
         Vote vote = voteRepository.findByUserAndPost(user, post).orElse(null);

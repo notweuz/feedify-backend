@@ -2,6 +2,8 @@ package ru.ntwz.feedify.service.implementation;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.ntwz.feedify.config.CommonConfig;
@@ -60,6 +62,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    @Cacheable(value = "files", key = "#uniqueName")
     public FileDto getFileByUniqueName(String uniqueName) {
         StorageEntry storageEntry = storageRepository.findByUniqueName(uniqueName)
                 .orElseThrow(() -> new FileNotFoundException("File with unique name '" + uniqueName + "' not found"));
@@ -105,12 +108,14 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    @CacheEvict(value = "files", key = "#result.uniqueName")
     public StorageEntry uploadFile(MultipartFile file, User user) {
         StorageEntry storageEntry = saveFileToStorage(file, user);
         return storageRepository.save(storageEntry);
     }
 
     @Override
+    @CacheEvict(value = "files", key = "#result.uniqueName")
     public StorageEntryDto uploadAvatar(MultipartFile file, User user) {
         validateFile(file);
         validateFileType(file);
@@ -125,6 +130,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    @CacheEvict(value = "files", key = "#user.avatar?.uniqueName")
     public void deleteAvatar(User user) {
         if (user.getAvatar() == null) {
             log.warn("User {} has no avatar to delete", user.getUsername());
@@ -149,6 +155,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    @CacheEvict(value = "files", key = "#result.uniqueName")
     public StorageEntryDto uploadBanner(MultipartFile file, User user) {
         validateFile(file);
         validateFileType(file);
@@ -163,6 +170,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    @CacheEvict(value = "files", key = "#user.banner?.uniqueName")
     public void deleteBanner(User user) {
         if (user.getBanner() == null) {
             log.warn("User {} has no banner to delete", user.getUsername());
@@ -186,6 +194,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    @CacheEvict(value = "files", key = "#storageEntry.uniqueName")
     public void deleteFile(StorageEntry storageEntry) {
         Path filePath = Paths.get(storageEntry.getFilePath());
         try {
@@ -199,6 +208,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    @CacheEvict(value = "files", allEntries = true)
     public void deleteFiles(List<StorageEntry> storageEntries) {
         if (storageEntries == null || storageEntries.isEmpty()) {
             log.warn("No files to delete");

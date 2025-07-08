@@ -3,6 +3,9 @@ package ru.ntwz.feedify.service.implementation;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.ntwz.feedify.dto.mapper.FollowingMapper;
@@ -55,6 +58,7 @@ public class FollowingServiceImpl implements FollowingService {
 
     @Override
     @Transactional
+    @CacheEvict(value = {"followers", "following", "isFollowing"}, allEntries = true)
     public void unfollow(User follower, String followingUsername) {
         User following = userService.getByUsername(followingUsername);
 
@@ -68,6 +72,7 @@ public class FollowingServiceImpl implements FollowingService {
     }
 
     @Override
+    @Cacheable(value = "followers", key = "#username + '-' + #page + '-' + #size")
     public List<UserDto> getFollowers(String username, int page, int size) {
         User user = userService.getByUsername(username);
 
@@ -83,6 +88,7 @@ public class FollowingServiceImpl implements FollowingService {
     }
 
     @Override
+    @Cacheable(value = "following", key = "#username + '-' + #page + '-' + #size")
     public List<UserDto> getFollowing(String username, int page, int size) {
         User user = userService.getByUsername(username);
 
@@ -98,6 +104,7 @@ public class FollowingServiceImpl implements FollowingService {
     }
 
     @Override
+    @Cacheable(value = "isFollowing", key = "#follower.id + '-' + #followingUsername")
     public boolean isFollowing(User follower, String followingUsername) {
         try {
             User following = userService.getByUsername(followingUsername);
