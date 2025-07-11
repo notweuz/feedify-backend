@@ -64,7 +64,7 @@ public class StorageServiceTest {
     @Test
     void uploadFile_shouldUploadFileSuccessfully() {
         when(commonConfig.getContent()).thenReturn(content);
-        when(commonConfig.getContent()).thenReturn(content);
+        when(userService.getCurrentUser()).thenReturn(user);
 
         MultipartFile mockFile = Mockito.mock(MultipartFile.class);
         StorageEntry storageEntry = new StorageEntry();
@@ -82,7 +82,7 @@ public class StorageServiceTest {
 
         when(storageRepository.save(Mockito.any(StorageEntry.class))).thenReturn(storageEntry);
 
-        StorageEntry result = storageService.uploadFile(mockFile, user);
+        StorageEntry result = storageService.uploadFile(mockFile);
 
         assertThat(result).isNotNull();
         Mockito.verify(storageRepository).save(Mockito.any(StorageEntry.class));
@@ -95,9 +95,10 @@ public class StorageServiceTest {
     void uploadFile_shouldThrowExceptionWhenFileIsEmpty() {
         MultipartFile mockFile = Mockito.mock(MultipartFile.class);
         when(mockFile.isEmpty()).thenReturn(true);
+        when(userService.getCurrentUser()).thenReturn(user);
 
         try {
-            storageService.uploadFile(mockFile, user);
+            storageService.uploadFile(mockFile);
         } catch (FileIsEmptyException e) {
             assertThat(e.getMessage()).isEqualTo("File is empty");
         }
@@ -108,6 +109,7 @@ public class StorageServiceTest {
     @Test
     void uploadAvatar_shouldUploadAvatarSuccessfully() {
         when(commonConfig.getContent()).thenReturn(content);
+        when(userService.getCurrentUser()).thenReturn(user);
 
         MultipartFile mockFile = Mockito.mock(MultipartFile.class);
         StorageEntry storageEntry = new StorageEntry();
@@ -125,7 +127,7 @@ public class StorageServiceTest {
 
         when(storageRepository.save(Mockito.any(StorageEntry.class))).thenReturn(storageEntry);
 
-        StorageEntryDto result = storageService.uploadAvatar(mockFile, user);
+        StorageEntryDto result = storageService.uploadAvatar(mockFile);
 
         assertThat(result).isNotNull();
         Mockito.verify(storageRepository).save(Mockito.any(StorageEntry.class));
@@ -142,7 +144,7 @@ public class StorageServiceTest {
         when(mockFile.isEmpty()).thenReturn(false);
 
         try {
-            storageService.uploadAvatar(mockFile, user);
+            storageService.uploadAvatar(mockFile);
         } catch (FileReadingException e) {
             assertThat(e.getMessage()).isEqualTo("File is not an image or GIF: text/plain");
         }
@@ -152,6 +154,7 @@ public class StorageServiceTest {
 
     @Test
     void deleteAvatar_shouldDeleteAvatarIfExist() {
+        when(userService.getCurrentUser()).thenReturn(user);
         StorageEntry avatar = new StorageEntry();
         avatar.setId(1L);
         avatar.setAuthor(user);
@@ -159,7 +162,7 @@ public class StorageServiceTest {
         user.setAvatar(avatar);
         assertThat(user.getAvatar()).isNotNull();
 
-        storageService.deleteAvatar(user);
+        storageService.deleteAvatar();
 
         Mockito.verify(storageRepository).delete(avatar);
         Mockito.verify(userService, Mockito.times(2)).save(user);
@@ -169,6 +172,7 @@ public class StorageServiceTest {
     @Test
     void uploadBanner_shouldUploadBannerSuccessfully() {
         when(commonConfig.getContent()).thenReturn(content);
+        when(userService.getCurrentUser()).thenReturn(user);
 
         MultipartFile mockFile = Mockito.mock(MultipartFile.class);
         StorageEntry storageEntry = new StorageEntry();
@@ -186,7 +190,7 @@ public class StorageServiceTest {
 
         when(storageRepository.save(Mockito.any(StorageEntry.class))).thenReturn(storageEntry);
 
-        StorageEntryDto result = storageService.uploadBanner(mockFile, user);
+        StorageEntryDto result = storageService.uploadBanner(mockFile);
 
         assertThat(result).isNotNull();
         Mockito.verify(storageRepository).save(Mockito.any(StorageEntry.class));
@@ -203,7 +207,7 @@ public class StorageServiceTest {
         when(mockFile.isEmpty()).thenReturn(false);
 
         try {
-            storageService.uploadBanner(mockFile, user);
+            storageService.uploadBanner(mockFile);
         } catch (FileReadingException e) {
             assertThat(e.getMessage()).isEqualTo("File is not an image or GIF: text/plain");
         }
@@ -213,6 +217,7 @@ public class StorageServiceTest {
 
     @Test
     void deleteBanner_shouldDeleteBannerIfExist() {
+        when(userService.getCurrentUser()).thenReturn(user);
         StorageEntry banner = new StorageEntry();
         banner.setId(1L);
         banner.setAuthor(user);
@@ -220,7 +225,7 @@ public class StorageServiceTest {
         user.setBanner(banner);
         assertThat(user.getBanner()).isNotNull();
 
-        storageService.deleteBanner(user);
+        storageService.deleteBanner();
 
         Mockito.verify(storageRepository).delete(banner);
         Mockito.verify(userService).save(user);
@@ -230,6 +235,7 @@ public class StorageServiceTest {
     @Test
     void attachFilesToPost_shouldAttachFilesToPostSuccessfully() {
         when(commonConfig.getContent()).thenReturn(content);
+        when(userService.getCurrentUser()).thenReturn(user);
 
         MultipartFile mockFile = Mockito.mock(MultipartFile.class);
         StorageEntry storageEntry = new StorageEntry();
@@ -255,7 +261,7 @@ public class StorageServiceTest {
             throw new RuntimeException(e);
         }
 
-        List<StorageEntryDto> result = storageService.uploadTemporaryFiles(List.of(mockFile, mockFile2), user);
+        List<StorageEntryDto> result = storageService.uploadTemporaryFiles(List.of(mockFile, mockFile2));
 
         assertThat(result).isNotNull();
         Mockito.verify(storageRepository).saveAll(Mockito.anyList());
@@ -264,6 +270,7 @@ public class StorageServiceTest {
     @Test
     void uploadTemporaryFiles_shouldDeleteAllFilesIfSomeFileIsEmpty() {
         when(commonConfig.getContent()).thenReturn(content);
+        when(userService.getCurrentUser()).thenReturn(user);
 
         MultipartFile mockFile = Mockito.mock(MultipartFile.class);
         MultipartFile mockFile2 = Mockito.mock(MultipartFile.class);
@@ -281,7 +288,7 @@ public class StorageServiceTest {
         when(mockFile2.isEmpty()).thenReturn(true);
 
         try {
-            storageService.uploadTemporaryFiles(List.of(mockFile, mockFile2), user);
+            storageService.uploadTemporaryFiles(List.of(mockFile, mockFile2));
         } catch (FileIsEmptyException e) {
             assertThat(e.getMessage()).isEqualTo("File is empty");
         }
