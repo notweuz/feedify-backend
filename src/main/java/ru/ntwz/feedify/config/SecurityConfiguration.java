@@ -19,7 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import ru.ntwz.feedify.security.AuthorizationFilter;
 import ru.ntwz.feedify.security.BCryptServicePasswordEncoder;
-import ru.ntwz.feedify.service.UserService;
+import ru.ntwz.feedify.service.implementation.CustomUserDetailsServiceImpl;
 
 import java.util.Arrays;
 
@@ -28,17 +28,17 @@ import java.util.Arrays;
 @EnableMethodSecurity
 public class SecurityConfiguration {
     private final AuthorizationFilter authorizationFilter;
-    private final UserService userService;
+    private final CustomUserDetailsServiceImpl userDetailsService;
     private final BCryptServicePasswordEncoder passwordEncoder;
 
     @Autowired
     public SecurityConfiguration(
             AuthorizationFilter authorizationFilter,
-            UserService userService,
+            CustomUserDetailsServiceImpl userDetailsService,
             BCryptServicePasswordEncoder passwordEncoder
     ) {
         this.authorizationFilter = authorizationFilter;
-        this.userService = userService;
+        this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -73,15 +73,15 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return passwordEncoder;
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(userDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder);
+        return authenticationProvider;
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userService.userDetailsService());
-        provider.setPasswordEncoder(passwordEncoder);
-        return provider;
+    public PasswordEncoder passwordEncoder() {
+        return passwordEncoder;
     }
 
     @Bean

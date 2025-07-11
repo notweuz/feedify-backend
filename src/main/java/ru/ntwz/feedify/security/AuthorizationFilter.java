@@ -11,25 +11,26 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.ntwz.feedify.constant.AuthorizationConstant;
 import ru.ntwz.feedify.exception.NotAuthorizedException;
 import ru.ntwz.feedify.service.JWTService;
-import ru.ntwz.feedify.service.UserService;
+import ru.ntwz.feedify.service.implementation.CustomUserDetailsServiceImpl;
 
 import java.io.IOException;
 
 @Component
 public class AuthorizationFilter extends OncePerRequestFilter {
     private final JWTService jwtService;
-    private final UserService userService;
+    private final CustomUserDetailsServiceImpl userDetailsService;
 
     @Autowired
-    public AuthorizationFilter(JWTService jwtService, UserService userService) {
+    public AuthorizationFilter(JWTService jwtService, CustomUserDetailsServiceImpl userDetailsService) {
         this.jwtService = jwtService;
-        this.userService = userService;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -46,33 +47,38 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         }
 
         String jwt = authorizationHeader.substring(AuthorizationConstant.TOKEN_PREFIX.length());
-        String username = jwtService.extractUsername(jwt);
+        Long userId = null;
+        try {
+            userId = jwtService.extractUserId(jwt);
 
-        if (StringUtils.isEmpty(username)) {
-            throw new NotAuthorizedException("Invalid JWT token: username not found");
-        }
-
-        if (StringUtils.isNotEmpty(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userService
-                    .userDetailsService()
-                    .loadUserByUsername(username);
-
-            if (!jwtService.validateToken(jwt, userDetails)) {
-                throw new NotAuthorizedException("Invalid JWT token");
+            if (userId == null) {
+                throw new NotAuthorizedException("Invalid JWT token: user id not found");
             }
 
-            SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+            if (SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
 
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    userDetails,
-                    null,
-                    userDetails.getAuthorities()
-            );
+                if (!jwtService.validateToken(jwt, userDetails)) {
+                    throw new NotAuthorizedException("Invalid JWT token");
+                }
 
-            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            securityContext.setAuthentication(authenticationToken);
-            SecurityContextHolder.setContext(securityContext);
+                SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities()
+                );
+
+                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                securityContext.setAuthentication(authenticationToken);
+                SecurityContextHolder.setContext(securityContext);
+            }
+            filterChain.doFilter(request, response);
+        } catch (NotAuthorizedException ex) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\": \"" + ex.getMessage() + "\"}");
         }
-        filterChain.doFilter(request, response);
     }
 }

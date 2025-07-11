@@ -48,8 +48,31 @@ public class JWTServiceImpl implements JWTService {
 
     @Override
     public boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+        Long userIdFromToken = extractUserId(token);
+        String passwordHashFromToken = extractPasswordHash(token);
+        if (userDetails instanceof User user) {
+            return userIdFromToken.equals(user.getId())
+                && !isTokenExpired(token)
+                && user.getPassword().equals(passwordHashFromToken);
+        }
+        return false;
+    }
+
+    @Override
+    public Long extractUserId(String token) {
+        Object idClaim = extractClaim(token, claims -> claims.get("id"));
+        if (idClaim instanceof Integer) {
+            return ((Integer) idClaim).longValue();
+        } else if (idClaim instanceof Long) {
+            return (Long) idClaim;
+        } else if (idClaim instanceof String) {
+            try {
+                return Long.parseLong((String) idClaim);
+            } catch (NumberFormatException e) {
+                throw new RuntimeException("Invalid id in JWT token");
+            }
+        }
+        throw new RuntimeException("User id not found in JWT token");
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolvers) {
@@ -85,5 +108,10 @@ public class JWTServiceImpl implements JWTService {
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtConfig.getSecret()));
+    }
+
+    private String extractPasswordHash(String token) {
+        Object hash = extractClaim(token, claims -> claims.get("passwordHash"));
+        return hash != null ? hash.toString() : null;
     }
 }

@@ -28,12 +28,14 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final BCryptService bCryptService;
     private final JWTService jwtService;
+    private final CustomUserDetailsServiceImpl customUserDetailsService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, BCryptService bCryptService, JWTService jwtService) {
+    public UserServiceImpl(UserRepository userRepository, BCryptService bCryptService, JWTService jwtService, CustomUserDetailsServiceImpl customUserDetailsService) {
         this.userRepository = userRepository;
         this.bCryptService = bCryptService;
         this.jwtService = jwtService;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     @Override
@@ -62,8 +64,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetailsService userDetailsService() {
-        return this::getByUsername;
+    public CustomUserDetailsServiceImpl userDetailsService() {
+        return customUserDetailsService;
     }
 
     @Override
@@ -126,6 +128,9 @@ public class UserServiceImpl implements UserService {
             user.setDisplayName(userUpdateDTO.getDisplayName());
         }
         if (userUpdateDTO.getUsername() != null) {
+            if (userRepository.findByUsername(userUpdateDTO.getUsername()).isPresent()) {
+                throw new UserWithSameNameAlreadyExistsException("User with username '" + userUpdateDTO.getUsername() + "' already exists");
+            }
             user.setUsername(userUpdateDTO.getUsername());
         }
         if (userUpdateDTO.getDescription() != null) {
@@ -143,12 +148,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public AccessTokenDto changePassword(String oldPassword, String newPassword) {
+        User user = getCurrentUser();
+        return doChangePassword(user, oldPassword, newPassword);
+    }
+
     @Caching(evict = {
         @CacheEvict(value = "users", key = "#user.username"),
         @CacheEvict(value = "usersById", key = "#user.id")
     })
-    public AccessTokenDto changePassword(String oldPassword, String newPassword) {
-        User user = getCurrentUser();
+    private AccessTokenDto doChangePassword(User user, String oldPassword, String newPassword) {
         if (!bCryptService.verify(oldPassword, user.getPassword())) {
             throw new InvalidPasswordException("Wrong old password provided");
         }

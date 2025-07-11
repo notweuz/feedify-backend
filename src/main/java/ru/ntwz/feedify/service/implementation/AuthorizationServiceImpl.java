@@ -74,9 +74,10 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             throw new InvalidPasswordException("Invalid password provided");
         }
 
-        UserDetails user = userService.userDetailsService().loadUserByUsername(loginDto.getUsername());
-        String jwt = jwtService.generateToken(user);
-        log.debug("Generated token for user {} after login: {}", user.getUsername(),
+        User user = userService.getByUsername(loginDto.getUsername());
+        UserDetails userDetails = userService.userDetailsService().loadUserByUsername(user.getId());
+        String jwt = jwtService.generateToken(userDetails);
+        log.debug("Generated token for user {} after login: {}", userDetails.getUsername(),
                 jwt.substring(0, Math.min(20, jwt.length())) + "...");
         return new AccessTokenDto(jwt);
     }
@@ -92,7 +93,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
         try {
             String username = jwtService.extractUsername(accessTokenDto.getAccessToken());
-            UserDetails userDetails = userService.userDetailsService().loadUserByUsername(username);
+            User user = userService.getByUsername(username);
+            UserDetails userDetails = userService.userDetailsService().loadUserByUsername(user.getId());
 
             boolean isValid = jwtService.validateToken(accessTokenDto.getAccessToken(), userDetails);
 

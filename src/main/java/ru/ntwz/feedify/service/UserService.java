@@ -1,18 +1,18 @@
 package ru.ntwz.feedify.service;
 
-import org.springframework.security.core.userdetails.UserDetailsService;
 import ru.ntwz.feedify.dto.request.UserUpdateDto;
 import ru.ntwz.feedify.dto.response.AccessTokenDto;
 import ru.ntwz.feedify.dto.response.UserDto;
 import ru.ntwz.feedify.exception.UserNotFoundException;
 import ru.ntwz.feedify.model.User;
+import ru.ntwz.feedify.service.implementation.CustomUserDetailsServiceImpl;
 
 public interface UserService {
     User create(User user);
 
     User save(User user);
 
-    UserDetailsService userDetailsService();
+    CustomUserDetailsServiceImpl userDetailsService();
 
     User getCurrentUser();
 
