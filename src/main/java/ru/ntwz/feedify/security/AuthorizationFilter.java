@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.ntwz.feedify.constant.AuthorizationConstant;
+import ru.ntwz.feedify.exception.NotAuthorizedException;
 import ru.ntwz.feedify.service.JWTService;
 import ru.ntwz.feedify.service.UserService;
 
@@ -47,24 +48,30 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         String jwt = authorizationHeader.substring(AuthorizationConstant.TOKEN_PREFIX.length());
         String username = jwtService.extractUsername(jwt);
 
+        if (StringUtils.isEmpty(username)) {
+            throw new NotAuthorizedException("Invalid JWT token: username not found");
+        }
+
         if (StringUtils.isNotEmpty(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userService
                     .userDetailsService()
                     .loadUserByUsername(username);
 
-            if (jwtService.validateToken(jwt, userDetails)) {
-                SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
-
-                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                securityContext.setAuthentication(authenticationToken);
-                SecurityContextHolder.setContext(securityContext);
+            if (!jwtService.validateToken(jwt, userDetails)) {
+                throw new NotAuthorizedException("Invalid JWT token");
             }
+
+            SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                    userDetails,
+                    null,
+                    userDetails.getAuthorities()
+            );
+
+            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            securityContext.setAuthentication(authenticationToken);
+            SecurityContextHolder.setContext(securityContext);
         }
         filterChain.doFilter(request, response);
     }
