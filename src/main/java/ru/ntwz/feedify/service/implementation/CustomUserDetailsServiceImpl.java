@@ -7,9 +7,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.ntwz.feedify.model.User;
 import ru.ntwz.feedify.repository.UserRepository;
+import ru.ntwz.feedify.service.CustomUserDetailsService;
 
 @Service
-public class CustomUserDetailsServiceImpl implements UserDetailsService {
+public class CustomUserDetailsServiceImpl implements UserDetailsService, CustomUserDetailsService {
     private final UserRepository userRepository;
 
     @Autowired
