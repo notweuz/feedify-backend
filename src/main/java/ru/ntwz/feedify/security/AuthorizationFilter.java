@@ -59,7 +59,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         }
 
         String jwt = authorizationHeader.substring(AuthorizationConstant.TOKEN_PREFIX.length());
-        Long userId = null;
+        Long userId;
         try {
             userId = jwtService.extractUserId(jwt);
 
