@@ -6,6 +6,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import ru.ntwz.feedify.dto.mapper.UserMapper;
 import ru.ntwz.feedify.dto.request.UserUpdateDto;
@@ -57,6 +59,17 @@ public class UserServiceImpl implements UserService {
         log.info("Saving user: {}", user.getUsername());
 
         return userRepository.save(user);
+    }
+
+    @Override
+    public UserDetailsService userDetailsService() {
+        return this::getByUsername;
+    }
+
+    @Override
+    public User getCurrentUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return getByUsername(username);
     }
 
     @Override
@@ -139,7 +152,7 @@ public class UserServiceImpl implements UserService {
         }
         user.setPassword(bCryptService.getHash(newPassword));
         userRepository.save(user);
-        String newToken = jwtService.generate(user.getId(), user.getPassword());
+        String newToken = jwtService.generateToken(user);
         log.info("User {} changed his password", user.getUsername());
         return new AccessTokenDto(newToken);
     }

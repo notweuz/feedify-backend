@@ -13,6 +13,4 @@ public interface AuthorizationService {
     AccessTokenDto login(LoginDto loginDTO);
 
     AccessTokenStatusDto validate(AccessTokenDto accessTokenDTO);
-
-    User authUser(String accessToken) throws NotAuthorizedException;
 }

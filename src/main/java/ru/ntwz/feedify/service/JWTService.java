@@ -1,13 +1,23 @@
 package ru.ntwz.feedify.service;
 
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.crypto.SecretKey;
 
 public interface JWTService {
-    String generate(long id, String passwordHash);
+    String extractUsername(String token);
 
-    Long validate(String token);
+    String generateToken(UserDetails userDetails);
 
-    SecretKey getSigningKey();
+    boolean validateToken(String token, UserDetails userDetails);
 
-    String extractPasswordHash(String token);
+//    String generate(long id, String passwordHash);
+//
+//    Long validate(String token);
+//
+//    SecretKey getSigningKey();
+//
+//    String extractPasswordHash(String token);
+//
+//    String extractUsername(String token);
 }

@@ -7,13 +7,18 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import ru.ntwz.feedify.config.JWTConfig;
 import ru.ntwz.feedify.exception.NotAuthorizedException;
+import ru.ntwz.feedify.model.User;
 import ru.ntwz.feedify.service.JWTService;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 @Service
 @Slf4j
@@ -26,51 +31,60 @@ public class JWTServiceImpl implements JWTService {
     }
 
     @Override
-    public String generate(long id, String passwordHash) {
-        long now = System.currentTimeMillis();
-        Date expirationDate = new Date(now + jwtConfig.getExpiration() * 1000);
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
 
-        return Jwts.builder()
-                .id(String.valueOf(id))
-                .subject(passwordHash)
+    @Override
+    public String generateToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        if (userDetails instanceof User customUserDetails) {
+            claims.put("id", customUserDetails.getId());
+            claims.put("username", customUserDetails.getUsername());
+            claims.put("displayName", customUserDetails.getDisplayName());
+            claims.put("passwordHash", customUserDetails.getPassword());
+        }
+        return generateToken(claims, userDetails);
+    }
+
+    @Override
+    public boolean validateToken(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    }
+
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolvers) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolvers.apply(claims);
+    }
+
+    private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+        Date now = new Date();
+        Date expirationDate = new Date(now.getTime() + jwtConfig.getExpiration() * 1000);
+
+        return Jwts.builder().claims(extraClaims).subject(userDetails.getUsername())
+                .issuedAt(now)
                 .expiration(expirationDate)
-                .signWith(getSigningKey())
-                .compact();
+                .signWith(getSigningKey()).compact();
     }
 
-    @Override
-    public Long validate(String token) throws NotAuthorizedException {
-        if (token == null || token.trim().isEmpty()) {
-            throw new NotAuthorizedException("Token is null or empty");
-        }
+    private boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
 
-        if (token.chars().filter(ch -> ch == '.').count() != 2) {
-            throw new NotAuthorizedException("Invalid token format: Token must contain exactly two periods");
-        }
+    private Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
 
+    private Claims extractAllClaims(String token) {
         Jws<Claims> claimsJws = Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()
                 .parseSignedClaims(token);
-
-        if (claimsJws.getPayload().getId() == null) throw new NotAuthorizedException("Invalid token: no user ID found");
-        if (claimsJws.getPayload().getSubject() == null)
-            throw new NotAuthorizedException("Invalid token: no password hash found");
-
-        return Long.parseLong(claimsJws.getPayload().getId());
+        return claimsJws.getPayload();
     }
 
-    @Override
-    public SecretKey getSigningKey() {
+    private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtConfig.getSecret()));
-    }
-
-    @Override
-    public String extractPasswordHash(String token) {
-        Jws<Claims> claimsJws = Jwts.parser()
-                .verifyWith(getSigningKey())
-                .build()
-                .parseSignedClaims(token);
-        return claimsJws.getPayload().getSubject();
     }
 }
