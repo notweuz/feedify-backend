@@ -27,32 +27,26 @@ public class StorageController {
 
     @PostMapping("/avatar")
     public StorageEntryDto uploadAvatar(
-            @RequestParam("file") MultipartFile file,
-            @RequestAttribute(AttributesConstant.USER) User user
+            @RequestParam("file") MultipartFile file
     ) {
-        return storageService.uploadAvatar(file, user);
+        return storageService.uploadAvatar(file);
     }
 
     @DeleteMapping("/avatar")
-    public void deleteAvatar(
-            @RequestAttribute(AttributesConstant.USER) User user
-    ) {
-        storageService.deleteAvatar(user);
+    public void deleteAvatar() {
+        storageService.deleteAvatar();
     }
 
     @PostMapping("/banner")
     public StorageEntryDto uploadBanner(
-            @RequestParam("file") MultipartFile file,
-            @RequestAttribute(AttributesConstant.USER) User user
+            @RequestParam("file") MultipartFile file
     ) {
-        return storageService.uploadBanner(file, user);
+        return storageService.uploadBanner(file);
     }
 
     @DeleteMapping("/banner")
-    public void deleteBanner(
-            @RequestAttribute(AttributesConstant.USER) User user
-    ) {
-        storageService.deleteBanner(user);
+    public void deleteBanner() {
+        storageService.deleteBanner();
     }
 
     @GetMapping("/{uniqueName}")
@@ -76,17 +70,15 @@ public class StorageController {
 
     @PostMapping("/temporary")
     public Object uploadTemporaryFiles(
-            @RequestParam("files") List<MultipartFile> files,
-            @RequestAttribute(AttributesConstant.USER) User user
+            @RequestParam("files") List<MultipartFile> files
     ) {
-        return storageService.uploadTemporaryFiles(files, user);
+        return storageService.uploadTemporaryFiles(files);
     }
 
     @DeleteMapping("/temporary")
     public void deleteTemporaryFiles(
-            @RequestAttribute(AttributesConstant.USER) User user,
             @RequestBody List<Long> fileIds
     ) {
-        storageService.deleteTemporaryFilesByIds(fileIds, user);
+        storageService.deleteTemporaryFilesByIds(fileIds);
     }
 }

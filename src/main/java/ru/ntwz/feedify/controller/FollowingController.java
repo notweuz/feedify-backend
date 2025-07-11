@@ -22,18 +22,16 @@ public class FollowingController {
 
     @PostMapping("/{username}")
     public FollowingDto subscribe(
-            @RequestAttribute(AttributesConstant.USER) User user,
             @PathVariable String username
     ) {
-        return followingService.follow(user, username);
+        return followingService.follow(username);
     }
 
     @DeleteMapping("/{username}")
     public void unsubscribe(
-            @RequestAttribute(AttributesConstant.USER) User user,
             @PathVariable String username
     ) {
-        followingService.unfollow(user, username);
+        followingService.unfollow(username);
     }
 
     @GetMapping("/followers/{username}")
@@ -56,9 +54,8 @@ public class FollowingController {
 
     @GetMapping("/check/{username}")
     public boolean isFollowing(
-            @RequestAttribute(AttributesConstant.USER) User user,
             @PathVariable String username
     ) {
-        return followingService.isFollowing(user, username);
+        return followingService.isFollowing(username);
     }
 }

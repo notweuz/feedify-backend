@@ -37,7 +37,8 @@ public class FollowingServiceImpl implements FollowingService {
     }
 
     @Override
-    public FollowingDto follow(User follower, String followingUsername) {
+    public FollowingDto follow(String followingUsername) {
+        User follower = userService.getCurrentUser();
         User following = userService.getByUsername(followingUsername);
 
         if (follower.getId().equals(following.getId())) {
@@ -58,7 +59,8 @@ public class FollowingServiceImpl implements FollowingService {
     @Override
     @Transactional
     @CacheEvict(value = {"followers", "following", "isFollowing"}, allEntries = true)
-    public void unfollow(User follower, String followingUsername) {
+    public void unfollow(String followingUsername) {
+        User follower = userService.getCurrentUser();
         User following = userService.getByUsername(followingUsername);
 
         if (!followingRepository.existsByFollowerAndFollowing(follower, following)) {
@@ -104,7 +106,8 @@ public class FollowingServiceImpl implements FollowingService {
 
     @Override
     @Cacheable(value = "isFollowing", key = "#follower.id + '-' + #followingUsername")
-    public boolean isFollowing(User follower, String followingUsername) {
+    public boolean isFollowing(String followingUsername) {
+        User follower = userService.getCurrentUser();
         try {
             User following = userService.getByUsername(followingUsername);
 

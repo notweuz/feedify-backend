@@ -109,16 +109,18 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     @CacheEvict(value = "files", key = "#result.uniqueName")
-    public StorageEntry uploadFile(MultipartFile file, User user) {
+    public StorageEntry uploadFile(MultipartFile file) {
+        User user = userService.getCurrentUser();
         StorageEntry storageEntry = saveFileToStorage(file, user);
         return storageRepository.save(storageEntry);
     }
 
     @Override
     @CacheEvict(value = "files", key = "#result.uniqueName")
-    public StorageEntryDto uploadAvatar(MultipartFile file, User user) {
+    public StorageEntryDto uploadAvatar(MultipartFile file) {
         validateFile(file);
         validateFileType(file);
+        User user = userService.getCurrentUser();
 
         StorageEntry storageEntry = saveFileToStorage(file, user);
         StorageEntry avatar = storageRepository.save(storageEntry);
@@ -131,7 +133,8 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     @CacheEvict(value = "files", key = "#user.avatar?.uniqueName")
-    public void deleteAvatar(User user) {
+    public void deleteAvatar() {
+        User user = userService.getCurrentUser();
         if (user.getAvatar() == null) {
             log.warn("User {} has no avatar to delete", user.getUsername());
             return;
@@ -156,9 +159,10 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     @CacheEvict(value = "files", key = "#result.uniqueName")
-    public StorageEntryDto uploadBanner(MultipartFile file, User user) {
+    public StorageEntryDto uploadBanner(MultipartFile file) {
         validateFile(file);
         validateFileType(file);
+        User user = userService.getCurrentUser();
 
         StorageEntry storageEntry = saveFileToStorage(file, user);
         StorageEntry banner = storageRepository.save(storageEntry);
@@ -171,7 +175,8 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     @CacheEvict(value = "files", key = "#user.banner?.uniqueName")
-    public void deleteBanner(User user) {
+    public void deleteBanner() {
+        User user = userService.getCurrentUser();
         if (user.getBanner() == null) {
             log.warn("User {} has no banner to delete", user.getUsername());
             return;
@@ -226,7 +231,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public List<StorageEntryDto> uploadTemporaryFiles(List<MultipartFile> files, User user) {
+    public List<StorageEntryDto> uploadTemporaryFiles(List<MultipartFile> files) {
         if (files == null || files.isEmpty()) {
             throw new FilesCannotBeEmptyException("Files list cannot be null or empty");
         }
@@ -234,6 +239,7 @@ public class StorageServiceImpl implements StorageService {
             throw new TooManyAttachmentsException("Too many attachments. Trying to add: " + files.size() +
                     ", maximum allowed: " + commonConfig.getContent().getMaxAttachments());
         }
+        User user = userService.getCurrentUser();
 
         List<StorageEntry> storageEntries = new ArrayList<>();
         try {
@@ -254,7 +260,8 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public List<StorageEntry> getTemporaryFilesByIds(List<Long> attachmentIds, User user) {
+    public List<StorageEntry> getTemporaryFilesByIds(List<Long> attachmentIds) {
+        User user = userService.getCurrentUser();
         List<StorageEntry> files = storageRepository.findAllById(attachmentIds);
 
         List<StorageEntry> userTemporaryFiles = files.stream()
@@ -287,8 +294,8 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public void deleteTemporaryFilesByIds(List<Long> fileIds, User user) {
-        List<StorageEntry> files = getTemporaryFilesByIds(fileIds, user);
+    public void deleteTemporaryFilesByIds(List<Long> fileIds) {
+        List<StorageEntry> files = getTemporaryFilesByIds(fileIds);
         deleteTemporaryFiles(files);
     }
 

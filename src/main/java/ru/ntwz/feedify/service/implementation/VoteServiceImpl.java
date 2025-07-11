@@ -14,6 +14,7 @@ import ru.ntwz.feedify.model.Vote;
 import ru.ntwz.feedify.model.VoteType;
 import ru.ntwz.feedify.repository.VoteRepository;
 import ru.ntwz.feedify.service.PostService;
+import ru.ntwz.feedify.service.UserService;
 import ru.ntwz.feedify.service.VoteService;
 
 @Service
@@ -21,17 +22,20 @@ import ru.ntwz.feedify.service.VoteService;
 public class VoteServiceImpl implements VoteService {
     private final PostService postService;
     private final VoteRepository voteRepository;
+    private final UserService userService;
 
     @Autowired
-    public VoteServiceImpl(PostService postService, VoteRepository voteRepository) {
+    public VoteServiceImpl(PostService postService, VoteRepository voteRepository, UserService userService) {
         this.postService = postService;
         this.voteRepository = voteRepository;
+        this.userService = userService;
     }
 
     @Override
     @Transactional
     @CacheEvict(value = "votes", key = "#postId")
-    public VoteDto vote(Long postId, User user, boolean isUpvote) {
+    public VoteDto vote(Long postId, boolean isUpvote) {
+        User user = userService.getCurrentUser();
         Post post = postService.getPostOrThrow(postId);
 
         VoteType voteType = isUpvote ? VoteType.UPVOTE : VoteType.DOWNVOTE;
@@ -62,7 +66,8 @@ public class VoteServiceImpl implements VoteService {
 
     @Override
     @Cacheable(value = "votes", key = "#postId")
-    public VoteDto getUserVote(Long postId, User user) {
+    public VoteDto getUserVote(Long postId) {
+        User user = userService.getCurrentUser();
         Post post = postService.getPostOrThrow(postId);
         Vote vote = voteRepository.findByUserAndPost(user, post).orElse(null);
         return VoteMapper.toVoteDTO(post, vote);

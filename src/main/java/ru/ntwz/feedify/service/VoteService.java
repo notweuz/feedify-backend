@@ -5,7 +5,7 @@ import ru.ntwz.feedify.model.User;
 
 public interface VoteService {
 
-    VoteDto vote(Long postId, User user, boolean isUpvote);
+    VoteDto vote(Long postId, boolean isUpvote);
 
-    VoteDto getUserVote(Long postId, User user);
+    VoteDto getUserVote(Long postId);
 }

@@ -109,8 +109,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUserInfo(User user) {
-        getById(user.getId());
+    public UserDto getUserInfo() {
+        User user = getCurrentUser();
         log.info("Retrieved user info for user: {}", user.getUsername());
         return UserMapper.toDTO(user);
     }
@@ -120,7 +120,8 @@ public class UserServiceImpl implements UserService {
         @CachePut(value = "users", key = "#user.username"),
         @CachePut(value = "usersById", key = "#user.id")
     })
-    public User updateUser(User user, UserUpdateDto userUpdateDTO) {
+    public User updateUser(UserUpdateDto userUpdateDTO) {
+        User user = getCurrentUser();
         if (userUpdateDTO.getDisplayName() != null) {
             user.setDisplayName(userUpdateDTO.getDisplayName());
         }
@@ -136,8 +137,8 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserDto updateUserDto(User user, UserUpdateDto userUpdateDTO) {
-        User updated = updateUser(user, userUpdateDTO);
+    public UserDto updateUserDto(UserUpdateDto userUpdateDTO) {
+        User updated = updateUser(userUpdateDTO);
         return UserMapper.toDTO(updated);
     }
 
@@ -146,7 +147,8 @@ public class UserServiceImpl implements UserService {
         @CacheEvict(value = "users", key = "#user.username"),
         @CacheEvict(value = "usersById", key = "#user.id")
     })
-    public AccessTokenDto changePassword(User user, String oldPassword, String newPassword) {
+    public AccessTokenDto changePassword(String oldPassword, String newPassword) {
+        User user = getCurrentUser();
         if (!bCryptService.verify(oldPassword, user.getPassword())) {
             throw new InvalidPasswordException("Wrong old password provided");
         }

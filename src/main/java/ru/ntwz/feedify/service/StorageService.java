@@ -12,27 +12,27 @@ import java.util.List;
 public interface StorageService {
     FileDto getFileByUniqueName(String uniqueName);
 
-    StorageEntryDto uploadAvatar(MultipartFile file, User user);
+    StorageEntryDto uploadAvatar(MultipartFile file);
 
-    StorageEntry uploadFile(MultipartFile file, User user);
+    StorageEntry uploadFile(MultipartFile file);
 
-    void deleteAvatar(User user);
+    void deleteAvatar();
 
     void deleteFile(StorageEntry storageEntry);
 
     void deleteFiles(List<StorageEntry> storageEntries);
 
-    List<StorageEntryDto> uploadTemporaryFiles(List<MultipartFile> files, User user);
+    List<StorageEntryDto> uploadTemporaryFiles(List<MultipartFile> files);
 
-    List<StorageEntry> getTemporaryFilesByIds(List<Long> attachmentIds, User user);
+    List<StorageEntry> getTemporaryFilesByIds(List<Long> attachmentIds);
 
     void deleteTemporaryFiles(List<StorageEntry> temporaryFiles);
 
-    void deleteTemporaryFilesByIds(List<Long> fileIds, User user);
+    void deleteTemporaryFilesByIds(List<Long> fileIds);
 
     void attachFilesToPost(List<StorageEntry> files, Post post);
 
-    StorageEntryDto uploadBanner(MultipartFile file, User user);
+    StorageEntryDto uploadBanner(MultipartFile file);
 
-    void deleteBanner(User user);
+    void deleteBanner();
 }

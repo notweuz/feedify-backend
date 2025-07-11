@@ -44,10 +44,8 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public UserDto getSelfInfo(
-            @RequestAttribute(AttributesConstant.USER) User user
-    ) {
-        return userService.getUserInfo(user);
+    public UserDto getSelfInfo() {
+        return userService.getUserInfo();
     }
 
     @GetMapping("/usernames/{username}")
@@ -57,17 +55,15 @@ public class UserController {
 
     @PatchMapping("/me")
     public UserDto update(
-            @RequestAttribute(AttributesConstant.USER) User user,
             @RequestBody @Valid UserUpdateDto userUpdateDTO
     ) {
-        return userService.updateUserDto(user, userUpdateDTO);
+        return userService.updateUserDto(userUpdateDTO);
     }
 
     @PostMapping("/me/password")
     public AccessTokenDto changePassword(
-            @RequestAttribute(AttributesConstant.USER) User user,
             @RequestBody @Valid ChangePasswordDto changePasswordDTO
     ) {
-        return userService.changePassword(user, changePasswordDTO.getOldPassword(), changePasswordDTO.getNewPassword());
+        return userService.changePassword(changePasswordDTO.getOldPassword(), changePasswordDTO.getNewPassword());
     }
 }

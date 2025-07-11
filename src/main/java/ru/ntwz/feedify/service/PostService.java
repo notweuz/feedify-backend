@@ -9,25 +9,25 @@ import ru.ntwz.feedify.model.User;
 import java.util.List;
 
 public interface PostService {
-    PostDto create(User user, PostCreateDto post);
+    PostDto create(PostCreateDto post);
 
     PostDto findById(Long id);
 
     List<PostDto> getPostsByUser(long userId, int page, int size);
 
-    PostDto createComment(User user, PostCreateDto post, Long parentPostId);
+    PostDto createComment(PostCreateDto post, Long parentPostId);
 
     PostDto findByUniqueLink(String uniqueLink);
 
     List<PostDto> getComments(Long parentPostId, int page, int size);
 
-    PostDto update(User user, Long id, PostUpdateDto postUpdateDTO);
+    PostDto update(Long id, PostUpdateDto postUpdateDTO);
 
-    void delete(User user, Long id);
+    void delete(Long id);
 
-    void deleteAttachment(User user, Long postId, Long attachmentId);
+    void deleteAttachment(Long postId, Long attachmentId);
 
-    List<PostDto> findUserRecommendations(User user, int page, int size);
+    List<PostDto> findUserRecommendations(int page, int size);
 
     List<PostDto> findAllRecentPosts(int page, int size);
 

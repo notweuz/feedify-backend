@@ -7,13 +7,13 @@ import ru.ntwz.feedify.model.User;
 import java.util.List;
 
 public interface FollowingService {
-    FollowingDto follow(User follower, String followingUsername);
+    FollowingDto follow(String followingUsername);
 
-    void unfollow(User follower, String followingUsername);
+    void unfollow(String followingUsername);
 
     List<UserDto> getFollowers(String username, int page, int size);
 
     List<UserDto> getFollowing(String username, int page, int size);
 
-    boolean isFollowing(User follower, String followingUsername);
+    boolean isFollowing(String followingUsername);
 }

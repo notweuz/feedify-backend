@@ -22,13 +22,13 @@ public interface UserService {
 
     User getById(Long id) throws UserNotFoundException;
 
-    UserDto getUserInfo(User user);
+    UserDto getUserInfo();
 
     UserDto getUserById(Long id);
 
-    User updateUser(User user, UserUpdateDto userUpdateDTO);
+    User updateUser(UserUpdateDto userUpdateDTO);
 
-    UserDto updateUserDto(User user, UserUpdateDto userUpdateDTO);
+    UserDto updateUserDto(UserUpdateDto userUpdateDTO);
 
-    AccessTokenDto changePassword(User user, String oldPassword, String newPassword);
+    AccessTokenDto changePassword(String oldPassword, String newPassword);
 }

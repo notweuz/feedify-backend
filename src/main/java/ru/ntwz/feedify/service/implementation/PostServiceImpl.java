@@ -43,13 +43,14 @@ public class PostServiceImpl implements PostService {
         this.commonConfig = commonConfig;
     }
 
-    private List<StorageEntry> validateTempFiles(User user, PostCreateDto postCreateDTO) {
+    private List<StorageEntry> validateTempFiles(PostCreateDto postCreateDTO) {
+        User user = userService.getCurrentUser();
         List<StorageEntry> temporaryFiles = new ArrayList<>();
 
         if (postCreateDTO.getAttachments() != null && !postCreateDTO.getAttachments().isEmpty()) {
             log.info("Validating {} attachments for post", postCreateDTO.getAttachments().size());
 
-            temporaryFiles = storageService.getTemporaryFilesByIds(postCreateDTO.getAttachments(), user);
+            temporaryFiles = storageService.getTemporaryFilesByIds(postCreateDTO.getAttachments());
 
             log.info("Validated {} attachments for post", temporaryFiles.size());
 
@@ -65,11 +66,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @CachePut(value = "posts", key = "#result.id")
-    public PostDto create(User user, PostCreateDto postCreateDTO) {
+    public PostDto create(PostCreateDto postCreateDTO) {
+        User user = userService.getCurrentUser();
         List<StorageEntry> temporaryFiles = new ArrayList<>();
 
         try {
-            temporaryFiles = validateTempFiles(user, postCreateDTO);
+            temporaryFiles = validateTempFiles(postCreateDTO);
 
             Post post = PostMapper.toPost(postCreateDTO);
             post.setAuthor(user);
@@ -118,12 +120,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @CachePut(value = "posts", key = "#result.id")
-    public PostDto createComment(User user, PostCreateDto createDTO, Long parentPostId) {
+    public PostDto createComment(PostCreateDto createDTO, Long parentPostId) {
+        User user = userService.getCurrentUser();
         Post parentPost = getPostOrThrow(parentPostId);
         List<StorageEntry> temporaryFiles = new ArrayList<>();
 
         try {
-            temporaryFiles = validateTempFiles(user, createDTO);
+            temporaryFiles = validateTempFiles(createDTO);
 
             Post post = PostMapper.toPost(createDTO);
             post.setParentPost(parentPost);
@@ -175,7 +178,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @CachePut(value = "posts", key = "#id")
-    public PostDto update(User user, Long id, PostUpdateDto postUpdateDTO) {
+    public PostDto update(Long id, PostUpdateDto postUpdateDTO) {
+        User user = userService.getCurrentUser();
         Post post = getPostOrThrow(id);
 
         if (!Objects.equals(post.getAuthor().getId(), user.getId()))
@@ -192,7 +196,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @CacheEvict(value = "posts", key = "#id")
-    public void delete(User user, Long id) {
+    public void delete(Long id) {
+        User user = userService.getCurrentUser();
         Post post = getPostOrThrow(id);
 
         if (!Objects.equals(post.getAuthor().getId(), user.getId()))
@@ -214,7 +219,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @CacheEvict(value = "posts", key = "#postId")
-    public void deleteAttachment(User user, Long postId, Long attachmentId) {
+    public void deleteAttachment(Long postId, Long attachmentId) {
+        User user = userService.getCurrentUser();
         Post post = getPostOrThrow(postId);
 
         if (!Objects.equals(post.getAuthor().getId(), user.getId())) {
@@ -238,7 +244,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> findUserRecommendations(User user, int page, int size) {
+    public List<PostDto> findUserRecommendations(int page, int size) {
+        User user = userService.getCurrentUser();
         log.info("Finding user recommendations for user: {}, page: {}, size: {}", user.getUsername(), page, size);
         Pageable pageable = PageRequest.of(page, size);
 

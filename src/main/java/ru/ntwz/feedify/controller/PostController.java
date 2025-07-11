@@ -28,19 +28,17 @@ public class PostController {
 
     @PostMapping
     public PostDto create(
-            @RequestAttribute(AttributesConstant.USER) User user,
             @RequestBody @Valid PostCreateDto postCreateDTO
     ) {
-        return postService.create(user, postCreateDTO);
+        return postService.create(postCreateDTO);
     }
 
     @PostMapping("/{id}/comments")
     public PostDto createComment(
-            @RequestAttribute(AttributesConstant.USER) User user,
             @PathVariable Long id,
             @RequestBody @Valid PostCreateDto postCreateDTO
     ) {
-        return postService.createComment(user, postCreateDTO, id);
+        return postService.createComment(postCreateDTO, id);
     }
 
     @GetMapping("/{id}/comments")
@@ -64,46 +62,41 @@ public class PostController {
 
     @PatchMapping("/{id}")
     public PostDto update(
-            @RequestAttribute(AttributesConstant.USER) User user,
             @PathVariable long id,
             @RequestBody @Valid PostUpdateDto postUpdateDTO
     ) {
-        return postService.update(user, id, postUpdateDTO);
+        return postService.update(id, postUpdateDTO);
     }
 
     @DeleteMapping("/{id}")
     public void delete(
-            @RequestAttribute(AttributesConstant.USER) User user,
             @PathVariable long id
     ) {
-        postService.delete(user, id);
+        postService.delete(id);
     }
 
     @PostMapping("/{postId}/vote")
     public VoteDto vote(
-            @RequestAttribute(AttributesConstant.USER) User user,
             @PathVariable Long postId,
             @RequestParam(defaultValue = "true") boolean upvote
     ) {
-        return voteService.vote(postId, user, upvote);
+        return voteService.vote(postId, upvote);
     }
 
     @DeleteMapping("/{postId}/attachments/{id}")
     public void deleteAttachment(
-            @RequestAttribute(AttributesConstant.USER) User user,
             @PathVariable Long postId,
             @PathVariable Long id
     ) {
-        postService.deleteAttachment(user, postId, id);
+        postService.deleteAttachment(postId, id);
     }
 
     @GetMapping("/feed/recommendations")
     public List<PostDto> findUserRecommendations(
-            @RequestAttribute(AttributesConstant.USER) User user,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        return postService.findUserRecommendations(user, page, size);
+        return postService.findUserRecommendations(page, size);
     }
 
     @GetMapping("/feed/recent")
@@ -124,9 +117,8 @@ public class PostController {
 
     @GetMapping("/{postId}/vote")
     public VoteDto getUserVote(
-            @RequestAttribute(AttributesConstant.USER) User user,
             @PathVariable Long postId
     ) {
-        return voteService.getUserVote(postId, user);
+        return voteService.getUserVote(postId);
     }
 }
