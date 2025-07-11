@@ -15,6 +15,7 @@ import ru.ntwz.feedify.dto.request.SignUpDto;
 import ru.ntwz.feedify.dto.response.AccessTokenDto;
 import ru.ntwz.feedify.dto.response.AccessTokenStatusDto;
 import ru.ntwz.feedify.exception.InvalidPasswordException;
+import ru.ntwz.feedify.exception.TokenNotProvidedException;
 import ru.ntwz.feedify.model.User;
 import ru.ntwz.feedify.security.BCryptServicePasswordEncoder;
 import ru.ntwz.feedify.service.AuthorizationService;
@@ -83,6 +84,30 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
     @Override
     public AccessTokenStatusDto validate(@Valid AccessTokenDto accessTokenDto) {
-        return null;
+        log.info("Validating access token");
+
+        if (accessTokenDto == null || accessTokenDto.getAccessToken() == null) {
+            log.warn("Token validation failed: token not provided");
+            throw new TokenNotProvidedException("Access token must be provided");
+        }
+
+        try {
+            String username = jwtService.extractUsername(accessTokenDto.getAccessToken());
+            UserDetails userDetails = userService.userDetailsService().loadUserByUsername(username);
+
+            boolean isValid = jwtService.validateToken(accessTokenDto.getAccessToken(), userDetails);
+
+            if (isValid) {
+                log.debug("Token validated successfully for user: {}", username);
+                return new AccessTokenStatusDto(true);
+            } else {
+                log.warn("Token validation failed for user: {}", username);
+                return new AccessTokenStatusDto(false);
+            }
+
+        } catch (Exception e) {
+            log.warn("Token validation failed with exception: {}", e.getMessage());
+            return new AccessTokenStatusDto(false);
+        }
     }
 }
