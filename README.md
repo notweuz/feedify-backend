@@ -1,7 +1,8 @@
 # Feedify Backend
 
-Этот проект — пет-проект, разработанный для практики и возможного использования в качестве дипломной работы для колледжа.  
-Feedify — это серверная часть приложения для управления лентой новостей, пользователями, постами и файлами.
+Этот пет-проект, разработанный для укрепления навыков и возможного использования в качестве дипломной работы для колледжа.
+Представляет собой небольшую социальную сеть подписками, голосами, аттачментами и т.п.
+Данный репозиторий содержит серверную часть этого проекта.
 
 ## Функционал
 
@@ -9,6 +10,7 @@ Feedify — это серверная часть приложения для у�
 - Создание, редактирование и удаление постов
 - Хранение и загрузка файлов
 - Система подписок и голосования за посты
+- JUnit, Mockito и DataJpa тестирование
 
 ## Технологии
 
@@ -39,8 +41,9 @@ Feedify — это серверная часть приложения для у�
 
 # Feedify Backend
 
-This project is a pet project developed for practice and may be used as a diploma (graduation) project for college.  
-Feedify is a backend application for managing a news feed, users, posts, and files.
+This pet project is designed to strengthen skills and possibly be used as a college diploma.
+It is a small social network with subscriptions, votes, attachments, etc.
+This repository contains the server part of this project.
 
 ## Functionality
 
@@ -48,6 +51,7 @@ Feedify is a backend application for managing a news feed, users, posts, and fil
 - Creating, editing, and deleting posts
 - File storage and upload
 - Followers system and post voting
+- JUnit, Mockito и DataJpa tests
 
 ## Technologies
 
