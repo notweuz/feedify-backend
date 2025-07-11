@@ -4,7 +4,6 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.ntwz.feedify.dto.response.FileDto;
 import ru.ntwz.feedify.dto.response.StorageEntryDto;
 import ru.ntwz.feedify.model.StorageEntry;
-import ru.ntwz.feedify.model.User;
 import ru.ntwz.feedify.model.Post;
 
 import java.util.List;

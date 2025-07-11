@@ -2,7 +2,6 @@ package ru.ntwz.feedify.service;
 
 import ru.ntwz.feedify.dto.response.FollowingDto;
 import ru.ntwz.feedify.dto.response.UserDto;
-import ru.ntwz.feedify.model.User;
 
 import java.util.List;
 

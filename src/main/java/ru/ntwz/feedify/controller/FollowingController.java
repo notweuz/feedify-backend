@@ -2,10 +2,8 @@ package ru.ntwz.feedify.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.ntwz.feedify.constant.AttributesConstant;
 import ru.ntwz.feedify.dto.response.FollowingDto;
 import ru.ntwz.feedify.dto.response.UserDto;
-import ru.ntwz.feedify.model.User;
 import ru.ntwz.feedify.service.FollowingService;
 
 import java.util.List;

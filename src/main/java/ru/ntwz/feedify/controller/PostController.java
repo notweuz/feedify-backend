@@ -3,12 +3,10 @@ package ru.ntwz.feedify.controller;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.ntwz.feedify.constant.AttributesConstant;
 import ru.ntwz.feedify.dto.request.PostCreateDto;
 import ru.ntwz.feedify.dto.request.PostUpdateDto;
 import ru.ntwz.feedify.dto.response.PostDto;
 import ru.ntwz.feedify.dto.response.VoteDto;
-import ru.ntwz.feedify.model.User;
 import ru.ntwz.feedify.service.PostService;
 import ru.ntwz.feedify.service.VoteService;
 

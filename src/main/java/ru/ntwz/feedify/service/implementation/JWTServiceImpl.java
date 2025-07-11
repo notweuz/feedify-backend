@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import ru.ntwz.feedify.config.JWTConfig;
-import ru.ntwz.feedify.exception.NotAuthorizedException;
 import ru.ntwz.feedify.model.User;
 import ru.ntwz.feedify.service.JWTService;
 
