@@ -63,7 +63,7 @@ public class User implements UserDetails {
     @JoinColumn(name = "banner_id")
     private StorageEntry banner;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Post> posts = new ArrayList<>();
 
     public User(String displayName, String username, String password) {
