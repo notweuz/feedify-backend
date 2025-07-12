@@ -8,6 +8,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.ntwz.feedify.dto.mapper.UserMapper;
 import ru.ntwz.feedify.dto.request.UserUpdateDto;
 import ru.ntwz.feedify.dto.response.AccessTokenDto;
@@ -74,6 +75,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDto findByUsername(String username) throws UserNotFoundException {
         User user = getByUsername(username);
 
@@ -103,6 +105,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDto getUserById(Long userId) {
         User user = getById(userId);
         log.info("Retrieved user by ID: {}", userId);
@@ -110,6 +113,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDto getUserInfo() {
         User user = getCurrentUser();
         log.info("Retrieved user info for user: {}", user.getUsername());
