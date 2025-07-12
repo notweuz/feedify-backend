@@ -3,8 +3,6 @@ package ru.ntwz.feedify.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.ntwz.feedify.dto.response.FollowingDto;
-import ru.ntwz.feedify.dto.response.UserDto;
-import ru.ntwz.feedify.dto.response.UserShortDto;
 import ru.ntwz.feedify.dto.response.UserShortWithFollowersDto;
 import ru.ntwz.feedify.service.FollowingService;
 

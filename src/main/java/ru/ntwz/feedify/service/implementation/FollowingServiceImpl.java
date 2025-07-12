@@ -8,8 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.ntwz.feedify.dto.mapper.FollowingMapper;
 import ru.ntwz.feedify.dto.mapper.UserMapper;
 import ru.ntwz.feedify.dto.response.FollowingDto;
-import ru.ntwz.feedify.dto.response.UserDto;
-import ru.ntwz.feedify.dto.response.UserShortDto;
 import ru.ntwz.feedify.dto.response.UserShortWithFollowersDto;
 import ru.ntwz.feedify.exception.AlreadyFollowingException;
 import ru.ntwz.feedify.exception.NotFollowingException;
