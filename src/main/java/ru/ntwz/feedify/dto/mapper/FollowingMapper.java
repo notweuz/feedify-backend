@@ -7,8 +7,8 @@ public class FollowingMapper {
     public static FollowingDto toDTO(Following subscription) {
         return new FollowingDto(
                 subscription.getId(),
-                UserMapper.toDTO(subscription.getFollower()),
-                UserMapper.toDTO(subscription.getFollowing()),
+                UserMapper.toUserShortWithFollowersDto(subscription.getFollower()),
+                UserMapper.toUserShortWithFollowersDto(subscription.getFollowing()),
                 subscription.getCreatedAt()
         );
     }

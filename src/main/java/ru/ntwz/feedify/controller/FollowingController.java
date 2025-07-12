@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.ntwz.feedify.dto.response.FollowingDto;
 import ru.ntwz.feedify.dto.response.UserDto;
+import ru.ntwz.feedify.dto.response.UserShortDto;
+import ru.ntwz.feedify.dto.response.UserShortWithFollowersDto;
 import ru.ntwz.feedify.service.FollowingService;
 
 import java.util.List;
@@ -33,7 +35,7 @@ public class FollowingController {
     }
 
     @GetMapping("/followers/{username}")
-    public List<UserDto> getFollowers(
+    public List<UserShortWithFollowersDto> getFollowers(
             @PathVariable String username,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
@@ -42,7 +44,7 @@ public class FollowingController {
     }
 
     @GetMapping("/following/{username}")
-    public List<UserDto> getFollowing(
+    public List<UserShortWithFollowersDto> getFollowing(
             @PathVariable String username,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size

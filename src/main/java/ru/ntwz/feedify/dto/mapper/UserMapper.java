@@ -3,6 +3,7 @@ package ru.ntwz.feedify.dto.mapper;
 import jakarta.validation.constraints.NotNull;
 import ru.ntwz.feedify.dto.response.UserDto;
 import ru.ntwz.feedify.dto.response.UserShortDto;
+import ru.ntwz.feedify.dto.response.UserShortWithFollowersDto;
 import ru.ntwz.feedify.model.User;
 
 public class UserMapper {
@@ -28,5 +29,15 @@ public class UserMapper {
         userShortDTO.setUsername(user.getUsername());
         userShortDTO.setAvatarUrl(user.getAvatar() != null ? StorageMapper.getStorageUrl(user.getAvatar().getUniqueName()) : null);
         return userShortDTO;
+    }
+
+    public static UserShortWithFollowersDto toUserShortWithFollowersDto(@NotNull User user) {
+        UserShortWithFollowersDto userShortWithFollowersDTO = new UserShortWithFollowersDto();
+        userShortWithFollowersDTO.setId(user.getId());
+        userShortWithFollowersDTO.setDisplayName(user.getDisplayName());
+        userShortWithFollowersDTO.setUsername(user.getUsername());
+        userShortWithFollowersDTO.setAvatarUrl(user.getAvatar() != null ? StorageMapper.getStorageUrl(user.getAvatar().getUniqueName()) : null);
+        userShortWithFollowersDTO.setFollowersCount(user.getFollowers().size());
+        return userShortWithFollowersDTO;
     }
 }

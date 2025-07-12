@@ -1,16 +1,16 @@
 package ru.ntwz.feedify.service.implementation;
 
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.ntwz.feedify.dto.mapper.FollowingMapper;
 import ru.ntwz.feedify.dto.mapper.UserMapper;
 import ru.ntwz.feedify.dto.response.FollowingDto;
 import ru.ntwz.feedify.dto.response.UserDto;
+import ru.ntwz.feedify.dto.response.UserShortDto;
+import ru.ntwz.feedify.dto.response.UserShortWithFollowersDto;
 import ru.ntwz.feedify.exception.AlreadyFollowingException;
 import ru.ntwz.feedify.exception.NotFollowingException;
 import ru.ntwz.feedify.exception.SelfFollowingException;
@@ -37,6 +37,7 @@ public class FollowingServiceImpl implements FollowingService {
     }
 
     @Override
+    @Transactional
     public FollowingDto follow(String followingUsername) {
         User follower = userService.getCurrentUser();
         User following = userService.getByUsername(followingUsername);
@@ -72,7 +73,8 @@ public class FollowingServiceImpl implements FollowingService {
     }
 
     @Override
-    public List<UserDto> getFollowers(String username, int page, int size) {
+    @Transactional(readOnly = true)
+    public List<UserShortWithFollowersDto> getFollowers(String username, int page, int size) {
         User user = userService.getByUsername(username);
 
         log.info("Retrieved followers for user: {}", user.getUsername());
@@ -81,13 +83,14 @@ public class FollowingServiceImpl implements FollowingService {
                 .stream()
                 .map(follow -> {
                     User follower = follow.getFollower();
-                    return UserMapper.toDTO(follower);
+                    return UserMapper.toUserShortWithFollowersDto(follower);
                 })
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<UserDto> getFollowing(String username, int page, int size) {
+    @Transactional(readOnly = true)
+    public List<UserShortWithFollowersDto> getFollowing(String username, int page, int size) {
         User user = userService.getByUsername(username);
 
         log.info("Retrieved following for user: {}", user.getUsername());
@@ -96,7 +99,7 @@ public class FollowingServiceImpl implements FollowingService {
                 .stream()
                 .map(follow -> {
                     User following = follow.getFollowing();
-                    return UserMapper.toDTO(following);
+                    return UserMapper.toUserShortWithFollowersDto(following);
                 })
                 .collect(Collectors.toList());
     }

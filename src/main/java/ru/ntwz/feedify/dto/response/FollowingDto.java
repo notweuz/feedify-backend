@@ -11,7 +11,7 @@ import java.time.Instant;
 @AllArgsConstructor
 public class FollowingDto {
     private Long id;
-    private UserDto follower;
-    private UserDto following;
+    private UserShortWithFollowersDto follower;
+    private UserShortWithFollowersDto following;
     private Instant createdAt;
 }
