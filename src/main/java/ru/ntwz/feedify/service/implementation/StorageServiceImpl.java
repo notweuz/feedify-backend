@@ -116,7 +116,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    @CacheEvict(value = "files", key = "#result.uniqueName")
+    @CacheEvict(value = "files", allEntries = true)
     public StorageEntryDto uploadAvatar(MultipartFile file) {
         validateFile(file);
         validateFileType(file);
@@ -132,7 +132,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    @CacheEvict(value = "files", key = "#user.avatar?.uniqueName")
+    @CacheEvict(value = "files", allEntries = true)
     public void deleteAvatar() {
         User user = userService.getCurrentUser();
         if (user.getAvatar() == null) {
@@ -158,7 +158,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    @CacheEvict(value = "files", key = "#result.uniqueName")
+    @CacheEvict(value = "files", allEntries = true)
     public StorageEntryDto uploadBanner(MultipartFile file) {
         validateFile(file);
         validateFileType(file);
@@ -174,7 +174,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    @CacheEvict(value = "files", key = "#user.banner?.uniqueName")
+    @CacheEvict(value = "files", allEntries = true)
     public void deleteBanner() {
         User user = userService.getCurrentUser();
         if (user.getBanner() == null) {
@@ -199,7 +199,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    @CacheEvict(value = "files", key = "#storageEntry.uniqueName")
+    @CacheEvict(value = "files", allEntries = true)
     public void deleteFile(StorageEntry storageEntry) {
         Path filePath = Paths.get(storageEntry.getFilePath());
         try {
@@ -213,7 +213,6 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    @CacheEvict(value = "files", allEntries = true)
     public void deleteFiles(List<StorageEntry> storageEntries) {
         if (storageEntries == null || storageEntries.isEmpty()) {
             log.warn("No files to delete");
@@ -231,6 +230,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    @CacheEvict(value = "files", allEntries = true)
     public List<StorageEntryDto> uploadTemporaryFiles(List<MultipartFile> files) {
         if (files == null || files.isEmpty()) {
             throw new FilesCannotBeEmptyException("Files list cannot be null or empty");
@@ -260,6 +260,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    @Cacheable(value = "temporaryFiles", key = "#attachmentIds.toString()")
     public List<StorageEntry> getTemporaryFilesByIds(List<Long> attachmentIds) {
         User user = userService.getCurrentUser();
         List<StorageEntry> files = storageRepository.findAllById(attachmentIds);
@@ -277,6 +278,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    @CacheEvict(value = "temporaryFiles", allEntries = true)
     public void deleteTemporaryFiles(List<StorageEntry> temporaryFiles) {
         if (temporaryFiles == null || temporaryFiles.isEmpty()) {
             return;
@@ -294,12 +296,14 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    @CacheEvict(value = "temporaryFiles", allEntries = true)
     public void deleteTemporaryFilesByIds(List<Long> fileIds) {
         List<StorageEntry> files = getTemporaryFilesByIds(fileIds);
         deleteTemporaryFiles(files);
     }
 
     @Override
+    @CacheEvict(value = "files", allEntries = true)
     public void attachFilesToPost(List<StorageEntry> files, Post post) {
         for (StorageEntry file : files) {
             file.setPost(post);
