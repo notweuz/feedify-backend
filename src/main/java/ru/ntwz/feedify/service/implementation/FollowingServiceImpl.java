@@ -58,7 +58,6 @@ public class FollowingServiceImpl implements FollowingService {
 
     @Override
     @Transactional
-    @CacheEvict(value = {"followers", "following", "isFollowing"}, allEntries = true)
     public void unfollow(String followingUsername) {
         User follower = userService.getCurrentUser();
         User following = userService.getByUsername(followingUsername);
@@ -73,7 +72,6 @@ public class FollowingServiceImpl implements FollowingService {
     }
 
     @Override
-    @Cacheable(value = "followers", key = "#username + '-' + #page + '-' + #size")
     public List<UserDto> getFollowers(String username, int page, int size) {
         User user = userService.getByUsername(username);
 
@@ -89,7 +87,6 @@ public class FollowingServiceImpl implements FollowingService {
     }
 
     @Override
-    @Cacheable(value = "following", key = "#username + '-' + #page + '-' + #size")
     public List<UserDto> getFollowing(String username, int page, int size) {
         User user = userService.getByUsername(username);
 
@@ -105,7 +102,6 @@ public class FollowingServiceImpl implements FollowingService {
     }
 
     @Override
-    @Cacheable(value = "isFollowing", key = "#follower.id + '-' + #followingUsername")
     public boolean isFollowing(String followingUsername) {
         User follower = userService.getCurrentUser();
         try {
